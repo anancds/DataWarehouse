@@ -198,7 +198,7 @@ public class FileUtils {
 	 * @param str  添加的子字符串
 	 * @return 是否成功
 	 */
-	public final static boolean appendLine(File file, String str) {
+	public static boolean appendLine(File file, String str) {
 		try (RandomAccessFile randomFile = new RandomAccessFile(file, "rw")) {
 			long fileLength = randomFile.length();
 			randomFile.seek(fileLength);
@@ -218,7 +218,7 @@ public class FileUtils {
 	 * @param encoding 指定写入的编码
 	 * @return 是否成功
 	 */
-	public final static boolean appendLine(File file, String str, String encoding) {
+	public static boolean appendLine(File file, String str, String encoding) {
 		String lineSeparator = System.getProperty("line.separator", "\n");
 		try (RandomAccessFile randomFile = new RandomAccessFile(file, "rw")) {
 			long fileLength = randomFile.length();
@@ -233,7 +233,7 @@ public class FileUtils {
 	/**
 	 * 将字符串写入到文件中
 	 */
-	public final static boolean write(File file, String str) {
+	public static boolean write(File file, String str) {
 		try (RandomAccessFile randomFile = new RandomAccessFile(file, "rw")) {
 			randomFile.writeBytes(str);
 			return true;
@@ -261,7 +261,7 @@ public class FileUtils {
 	/**
 	 * 将字符串以制定的编码写入到文件中
 	 */
-	public final static boolean write(File file, String str, String encoding) {
+	public static boolean write(File file, String str, String encoding) {
 		try (RandomAccessFile randomFile = new RandomAccessFile(file, "rw")) {
 			randomFile.write(str.getBytes(encoding));
 			return true;
@@ -274,7 +274,7 @@ public class FileUtils {
 	/**
 	 * 将字符串以追加的方式以制定的编码写入到文件中
 	 */
-	public final static boolean writeAppend(File file, String str, String encoding) {
+	public static boolean writeAppend(File file, String str, String encoding) {
 		try (RandomAccessFile randomFile = new RandomAccessFile(file, "rw")) {
 			long fileLength = randomFile.length();
 			randomFile.seek(fileLength);
@@ -292,7 +292,7 @@ public class FileUtils {
 	 * @param file 需要处理的文件
 	 * @return 是否成功
 	 */
-	public final static boolean cleanFile(File file) {
+	public static boolean cleanFile(File file) {
 		try (FileWriter fw = new FileWriter(file)) {
 			fw.write("");
 			return true;
@@ -309,7 +309,7 @@ public class FileUtils {
 	 * @return 返回文件的mime类型
 	 * @throws java.io.IOException
 	 */
-	public final static String mimeType(String file) throws java.io.IOException {
+	public static String mimeType(String file) throws java.io.IOException {
 		FileNameMap fileNameMap = URLConnection.getFileNameMap();
 		return fileNameMap.getContentTypeFor(file);
 	}
@@ -322,7 +322,7 @@ public class FileUtils {
 	 * @param file 需要处理的文件
 	 * @return 文件类型
 	 */
-	public final static String fileType(File file) {
+	public static String fileType(File file) {
 		return FileTypeImpl.getFileType(file);
 	}
 
@@ -332,7 +332,7 @@ public class FileUtils {
 	 * @param file 需要处理的文件
 	 * @return 返回文件的修改时间
 	 */
-	public final static Date modifyTime(File file) {
+	public static Date modifyTime(File file) {
 		return new Date(file.lastModified());
 	}
 
@@ -343,7 +343,7 @@ public class FileUtils {
 	 * @param targetPath   目标文件
 	 * @return 是否成功
 	 */
-	public final static boolean copy(String resourcePath, String targetPath) {
+	public static boolean copy(String resourcePath, String targetPath) {
 		File file = new File(resourcePath);
 		return copy(file, targetPath);
 	}
@@ -356,7 +356,7 @@ public class FileUtils {
 	 * @param targetFile 目标文件
 	 * @return 是否成功
 	 */
-	public final static boolean copy(File file, String targetFile) {
+	public static boolean copy(File file, String targetFile) {
 		try (FileInputStream fin = new FileInputStream(file);
 				FileOutputStream fout = new FileOutputStream(new File(targetFile))) {
 			FileChannel in = fin.getChannel();
@@ -382,7 +382,7 @@ public class FileUtils {
 	 * @param paths 需要创建的目录
 	 * @return 是否成功
 	 */
-	public final static boolean createPaths(String paths) {
+	public static boolean createPaths(String paths) {
 		File dir = new File(paths);
 		return !dir.exists() && dir.mkdir();
 	}
@@ -393,7 +393,7 @@ public class FileUtils {
 	 * @param filePath 需要创建的文件
 	 * @return 是否成功
 	 */
-	public final static boolean createFiles(String filePath) {
+	public static boolean createFiles(String filePath) {
 		File file = new File(filePath);
 		File dir = file.getParentFile();
 		if (!dir.exists()) {
@@ -414,7 +414,7 @@ public class FileUtils {
 	 * @param file 需要处理的文件
 	 * @return 是否成功
 	 */
-	public final static boolean deleteFile(File file) {
+	public static boolean deleteFile(File file) {
 		return file.delete();
 	}
 
@@ -424,7 +424,7 @@ public class FileUtils {
 	 * @param file 需要处理的文件
 	 * @return 是否成功
 	 */
-	public final static boolean deleteDir(File file) {
+	public static boolean deleteDir(File file) {
 		List<File> files = listFileAll(file);
 		if (ValidateUtils.valid(files)) {
 			for (File f : files) {
@@ -444,7 +444,7 @@ public class FileUtils {
 	 * @param file 需要处理的文件
 	 * @return 是否成功
 	 */
-	public final static boolean deleteBigFile(File file) {
+	public static boolean deleteBigFile(File file) {
 		return cleanFile(file) && file.delete();
 	}
 
@@ -454,7 +454,7 @@ public class FileUtils {
 	 * @param filePath   需要处理的文件
 	 * @param targetPath 目标文件
 	 */
-	public final static void copyDir(String filePath, String targetPath) {
+	public static void copyDir(String filePath, String targetPath) {
 		File file = new File(filePath);
 		copyDir(file, targetPath);
 	}
@@ -465,7 +465,7 @@ public class FileUtils {
 	 * @param filePath   需要处理的文件
 	 * @param targetPath 目标文件
 	 */
-	public final static void copyDir(File filePath, String targetPath) {
+	public static void copyDir(File filePath, String targetPath) {
 		File targetFile = new File(targetPath);
 		if (!targetFile.exists()) {
 			createPaths(targetPath);
