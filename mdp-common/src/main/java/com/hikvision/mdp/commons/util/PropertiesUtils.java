@@ -7,6 +7,9 @@
  */
 package com.hikvision.mdp.commons.util;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.*;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -23,7 +26,8 @@ import java.util.Properties;
  * @modify by reason:{方法名}:{原因}
  */
 public class PropertiesUtils {
-	//	public static Logger logger = Logger.getLogger(PropertiesUtils.class);
+
+	private static Logger logger = LogManager.getLogger(PropertiesUtils.class);
 
 	/**
 	 * 从系统属性文件中获取相应的值
@@ -58,7 +62,7 @@ public class PropertiesUtils {
 		try {
 			pps.load(in);
 		} catch (IOException e) {
-			//			logger.error("load properties error:"+e.getMessage());
+			logger.error("load properties error:" + e.getMessage());
 		}
 		Enumeration en = pps.propertyNames();
 		while (en.hasMoreElements()) {
@@ -81,7 +85,7 @@ public class PropertiesUtils {
 		try (InputStream in = new BufferedInputStream(new FileInputStream(filePath))) {
 			return properties(in);
 		} catch (IOException e) {
-			//			logger.error("load properties error");
+			logger.error("load properties error");
 		}
 		return map;
 	}
