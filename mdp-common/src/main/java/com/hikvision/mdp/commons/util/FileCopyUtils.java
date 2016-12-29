@@ -13,7 +13,6 @@ import org.springframework.util.StreamUtils;
 import java.io.*;
 import java.nio.channels.FileChannel;
 
-
 /**
  * <p>文件拷贝工具类</p>
  *
@@ -25,7 +24,6 @@ import java.nio.channels.FileChannel;
  */
 public class FileCopyUtils {
 	public static final int BUFFER_SIZE = StreamUtils.BUFFER_SIZE;
-
 
 	//---------------------------------------------------------------------
 	// Copy methods for java.io.File
@@ -72,7 +70,6 @@ public class FileCopyUtils {
 		Assert.notNull(in, "No input File specified");
 		return copyToByteArray(new BufferedInputStream(new FileInputStream(in)));
 	}
-
 
 	//---------------------------------------------------------------------
 	// Copy methods for java.io.InputStream / java.io.OutputStream
@@ -144,7 +141,6 @@ public class FileCopyUtils {
 		copy(in, out);
 		return out.toByteArray();
 	}
-
 
 	//---------------------------------------------------------------------
 	// Copy methods for java.io.Reader / java.io.Writer
@@ -220,11 +216,9 @@ public class FileCopyUtils {
 		return out.toString();
 	}
 
-
 	//-------------------------file system copy---------------------------//
 
-	@SuppressWarnings("ResultOfMethodCallIgnored")
-	public static void copyDirectory(String srcDir, String tarDir) {
+	@SuppressWarnings("ResultOfMethodCallIgnored") public static void copyDirectory(String srcDir, String tarDir) {
 		Assert.notNull(srcDir, "the srcDir must not be null!");
 		Assert.notNull(tarDir, "the tarDir must not be null!");
 
@@ -269,7 +263,6 @@ public class FileCopyUtils {
 		}
 	}
 
-
 	/**
 	 * Delete the supplied {@link File} - for directories,
 	 * recursively delete any nested directories or files as well.
@@ -302,7 +295,8 @@ public class FileCopyUtils {
 	 * @throws IOException in the case of I/O errors
 	 */
 	public static void copyRecursively(File src, File dest) throws IOException {
-		Assert.isTrue(src != null && (src.isDirectory() || src.isFile()), "Source File must denote a directory or file");
+		Assert.isTrue(src != null && (src.isDirectory() || src.isFile()),
+				"Source File must denote a directory or file");
 		Assert.notNull(dest, "Destination File must not be null");
 		doCopyRecursively(src, dest);
 	}

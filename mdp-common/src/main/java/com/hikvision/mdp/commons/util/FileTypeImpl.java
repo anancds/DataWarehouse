@@ -63,7 +63,6 @@ public class FileTypeImpl {
 		FILE_TYPE_MAP.put("mid", "4D546864");  //MIDI (mid)
 	}
 
-
 	public final static String getFileType(File file) {
 		String filetype = null;
 		byte[] b = new byte[50];

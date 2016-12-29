@@ -69,8 +69,7 @@ public final class ValidateUtils {
 	/**
 	 * 判断字符串是否只包含字母和数字.
 	 *
-	 * @param str
-	 *            字符串
+	 * @param str 字符串
 	 * @return 如果字符串只包含字母和数字, 则返回 <code>true</code>, 否则返回 <code>false</code>.
 	 */
 	public static boolean isAlphanumeric(String str) {
@@ -81,7 +80,7 @@ public final class ValidateUtils {
 	 * <p>
 	 * Checks if a String is whitespace, empty ("") or null.
 	 * </p>
-	 *
+	 * <p>
 	 * <pre>
 	 *   StringUtils.isBlank(null)                = true
 	 *   StringUtils.isBlank(&quot;&quot;)        = true
@@ -90,8 +89,7 @@ public final class ValidateUtils {
 	 *   StringUtils.isBlank(&quot;  bob  &quot;) = false
 	 * </pre>
 	 *
-	 * @param str
-	 *            the String to check, may be null
+	 * @param str the String to check, may be null
 	 * @return <code>true</code> if the String is null, empty or whitespace
 	 */
 	public static boolean isBlank(String str) {
@@ -110,8 +108,7 @@ public final class ValidateUtils {
 	/**
 	 * 是否为中国移动手机号码。
 	 *
-	 * @param str
-	 *            字符串
+	 * @param str 字符串
 	 * @return 如果是移动号码，返回 <code>true</code>，否则返回 <code>false</code>。
 	 */
 	public static boolean isChinaMobile(String str) {
@@ -121,8 +118,7 @@ public final class ValidateUtils {
 	/**
 	 * 是否为中国联通手机号码。
 	 *
-	 * @param str
-	 *            字符串
+	 * @param str 字符串
 	 * @return 如果是联通号码，返回 <code>true</code>，否则返回 <code>false</code>。
 	 */
 	public static boolean isChinaUnicom(String str) {
@@ -132,8 +128,7 @@ public final class ValidateUtils {
 	/**
 	 * 判断是否为电信手机。
 	 *
-	 * @param str
-	 *            字符串
+	 * @param str 字符串
 	 * @return 如果是电信号码，返回 <code>true</code>，否则返回 <code>false</code>。
 	 */
 	public static boolean isChinaTelecom(String str) {
@@ -143,21 +138,18 @@ public final class ValidateUtils {
 	/**
 	 * 判断是否为小灵通手机(Personal Access Phone System, PAS)。
 	 *
-	 * @param str
-	 *            字符串
+	 * @param str 字符串
 	 * @return 如果是小灵通号码，返回 <code>true</code>，否则返回 <code>false</code>。
 	 * @deprecated 已经被 {@link #isChinaTelecom(String)} 取代
 	 */
-	@Deprecated
-	public static boolean isChinaPAS(String str) {
+	@Deprecated public static boolean isChinaPAS(String str) {
 		return isChinaTelecom(str);
 	}
 
 	/**
 	 * 是否是合法的日期字符串
 	 *
-	 * @param str
-	 *            日期字符串
+	 * @param str 日期字符串
 	 * @return 是true，否则false
 	 */
 	public static boolean isDate(String str) {
@@ -184,8 +176,7 @@ public final class ValidateUtils {
 	/**
 	 * 是否是合法的日期时间字符串
 	 *
-	 * @param str
-	 *            日期时间字符串
+	 * @param str 日期时间字符串
 	 * @return 是true，否则false
 	 */
 	public static boolean isDateTime(String str) {
@@ -205,8 +196,7 @@ public final class ValidateUtils {
 	/**
 	 * 判断字符串是否是合法的电子邮箱地址.
 	 *
-	 * @param str
-	 *            字符串
+	 * @param str 字符串
 	 * @return 是true，否则false
 	 */
 	public static boolean isEmail(String str) {
@@ -226,8 +216,7 @@ public final class ValidateUtils {
 	/**
 	 * 字符串是否为Empty，null和空格都算是Empty
 	 *
-	 * @param str
-	 *            字符串
+	 * @param str 字符串
 	 * @return true/false
 	 */
 	public static boolean isEmpty(String str) {
@@ -237,10 +226,8 @@ public final class ValidateUtils {
 	/**
 	 * 判断集合是否为空。
 	 *
-	 * @param <T>
-	 *            集合泛型
-	 * @param collection
-	 *            集合对象
+	 * @param <T>        集合泛型
+	 * @param collection 集合对象
 	 * @return 当集合对象为 <code>null</code> 或者长度为零时返回 <code>true</code>，否则返回 <code>false</code>。
 	 */
 	public static <T> boolean isEmpty(Collection<T> collection) {
@@ -252,8 +239,7 @@ public final class ValidateUtils {
 	 * Validating for ID card number.
 	 * </p>
 	 *
-	 * @param str
-	 *            string to be validated
+	 * @param str string to be validated
 	 * @return If the str is valid ID card number return <code>true</code>, otherwise return <code>false</code>.
 	 */
 	public static boolean isIdCardNumber(String str) {
@@ -264,8 +250,7 @@ public final class ValidateUtils {
 	/**
 	 * 是否为手机号码, 包括移动, 联通, 小灵通等手机号码.
 	 *
-	 * @param str
-	 *            字符串
+	 * @param str 字符串
 	 * @return 若是合法的手机号码返回 <code>true</code>, 否则返回 <code>false</code>.
 	 */
 	public static boolean isMobile(String str) {
@@ -275,8 +260,7 @@ public final class ValidateUtils {
 	/**
 	 * 是否为数字的字符串。
 	 *
-	 * @param str
-	 *            字符串
+	 * @param str 字符串
 	 * @return true/false
 	 */
 	public static boolean isNumber(String str) {
@@ -312,8 +296,7 @@ public final class ValidateUtils {
 	/**
 	 * 判断字符是否为整数或浮点数. <br>
 	 *
-	 * @param str
-	 *            字符串
+	 * @param str 字符串
 	 * @return 若为整数或浮点数则返回 <code>true</code>, 否则返回 <code>false</code>
 	 */
 	public static boolean isNumeric(String str) {
@@ -323,10 +306,8 @@ public final class ValidateUtils {
 	/**
 	 * 判断字符是否为符合精度要求的整数或浮点数。
 	 *
-	 * @param str
-	 *            字符串
-	 * @param fractionNum
-	 *            小数部分的最多允许的位数
+	 * @param str         字符串
+	 * @param fractionNum 小数部分的最多允许的位数
 	 * @return 若为整数或浮点数则返回 <code>true</code>, 否则返回 <code>false</code>
 	 */
 	public static boolean isNumeric(String str, int fractionNum) {
@@ -343,12 +324,11 @@ public final class ValidateUtils {
 	 * <p>
 	 * Validating for phone number.
 	 * </p>
-	 *
+	 * <p>
 	 * e.g. <li>78674585 --> valid</li> <li>6872-4585 --> valid</li> <li>(6872)4585 --> valid</li> <li>0086-10-6872-4585
 	 * --> valid</li> <li>0086-(10)-6872-4585 --> invalid</li> <li>0086(10)68724585 --> invalid</li>
 	 *
-	 * @param str
-	 *            string to be validated
+	 * @param str string to be validated
 	 * @return If the str is valid phone number return <code>true</code>, otherwise return <code>false</code>.
 	 */
 	public static boolean isPhoneNumber(String str) {
@@ -359,8 +339,7 @@ public final class ValidateUtils {
 	/**
 	 * 判断是否是合法的邮编
 	 *
-	 * @param str
-	 *            字符串
+	 * @param str 字符串
 	 * @return true/false
 	 */
 	public static boolean isPostcode(String str) {
@@ -390,11 +369,9 @@ public final class ValidateUtils {
 
 		if (minLength < 0) {
 			return str.length() <= maxLength;
-		}
-		else if (maxLength < 0) {
+		} else if (maxLength < 0) {
 			return str.length() >= minLength;
-		}
-		else {
+		} else {
 			return str.length() >= minLength && str.length() <= maxLength;
 		}
 	}
@@ -402,8 +379,7 @@ public final class ValidateUtils {
 	/**
 	 * 判断是否是合法的时间字符串。
 	 *
-	 * @param str
-	 *            字符串
+	 * @param str 字符串
 	 * @return true/false
 	 */
 	public static boolean isTime(String str) {
@@ -430,8 +406,7 @@ public final class ValidateUtils {
 	/**
 	 * 是否是简体中文字符串。
 	 *
-	 * @param str
-	 *            字符串
+	 * @param str 字符串
 	 * @return true/false
 	 */
 	public static boolean isSimpleChinese(String str) {
@@ -441,16 +416,13 @@ public final class ValidateUtils {
 	/**
 	 * 判断字符串是否匹配了正则表达式。
 	 *
-	 * @param str
-	 *            字符串
-	 * @param regex
-	 *            正则表达式
+	 * @param str   字符串
+	 * @param regex 正则表达式
 	 * @return true/false
 	 */
 	public static boolean isRegexMatch(String str, String regex) {
 		return str != null && str.matches(regex);
 	}
-
 
 	/**
 	 * 判断字符串有效性
@@ -461,6 +433,7 @@ public final class ValidateUtils {
 
 	/**
 	 * 判断一组字符串是否有效
+	 *
 	 * @param src
 	 * @return
 	 */
@@ -473,7 +446,6 @@ public final class ValidateUtils {
 		return true;
 	}
 
-
 	/**
 	 * 判断一个对象是否为空
 	 */
@@ -483,6 +455,7 @@ public final class ValidateUtils {
 
 	/**
 	 * 判断一组对象是否有效
+	 *
 	 * @param objs
 	 * @return
 	 */
@@ -502,6 +475,7 @@ public final class ValidateUtils {
 
 	/**
 	 * 判断一组集合是否有效
+	 *
 	 * @param cols
 	 * @return
 	 */
@@ -516,6 +490,7 @@ public final class ValidateUtils {
 
 	/**
 	 * 判断map是否有效
+	 *
 	 * @param map
 	 * @return
 	 */
@@ -525,6 +500,7 @@ public final class ValidateUtils {
 
 	/**
 	 * 判断一组map是否有效
+	 *
 	 * @param maps 需要判断map
 	 * @return 是否全部有效
 	 */

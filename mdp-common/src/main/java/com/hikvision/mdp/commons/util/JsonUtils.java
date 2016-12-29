@@ -7,7 +7,6 @@
  */
 package com.hikvision.mdp.commons.util;
 
-
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JavaType;
@@ -136,16 +135,14 @@ public final class JsonUtils {
 	/**
 	 * 构造Collection类型.
 	 */
-	public JavaType contructCollectionType(Class<? extends Collection> collectionClass,
-			Class<?> elementClass) {
+	public JavaType contructCollectionType(Class<? extends Collection> collectionClass, Class<?> elementClass) {
 		return mapper.getTypeFactory().constructCollectionType(collectionClass, elementClass);
 	}
 
 	/**
 	 * 构造Map类型.
 	 */
-	public JavaType contructMapType(Class<? extends Map> mapClass, Class<?> keyClass,
-			Class<?> valueClass) {
+	public JavaType contructMapType(Class<? extends Map> mapClass, Class<?> keyClass, Class<?> valueClass) {
 		return mapper.getTypeFactory().constructMapType(mapClass, keyClass, valueClass);
 	}
 

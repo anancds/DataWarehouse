@@ -18,8 +18,6 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 
-
-
 /**
  * <p>获取系统相关信息的工具类</p>
  *
@@ -34,15 +32,15 @@ public class SysUtils {
 	/**
 	 * JVM的版本
 	 */
-	public static final String JVM_VERSION     = PropertiesUtils.key("java.version");
+	public static final String JVM_VERSION = PropertiesUtils.key("java.version");
 	/**
 	 * JVM的编码
 	 */
-	public static final String JVM_ENCODING    = PropertiesUtils.key("file.encoding");
+	public static final String JVM_ENCODING = PropertiesUtils.key("file.encoding");
 	/**
 	 * JVM默认的临时目录
 	 */
-	public static final String JVM_TEMPDIR     = PropertiesUtils.key("java.io.tmpdir");
+	public static final String JVM_TEMPDIR = PropertiesUtils.key("java.io.tmpdir");
 	public static final String HTTP_PROXY_HOST = "http.proxyHost";
 	public static final String HTTP_PROXY_PORT = "http.proxyPort";
 	;
@@ -61,23 +59,23 @@ public class SysUtils {
 	/**
 	 * 主机架构
 	 */
-	public static String OS_ARCH           = PropertiesUtils.key("os.arch");
+	public static String OS_ARCH = PropertiesUtils.key("os.arch");
 	/**
 	 * 主机类型
 	 */
-	public static String OS_NAME           = PropertiesUtils.key("os.name");
+	public static String OS_NAME = PropertiesUtils.key("os.name");
 	/**
 	 * 主机类型版本
 	 */
-	public static String OS_VERSION        = PropertiesUtils.key("os.version");
+	public static String OS_VERSION = PropertiesUtils.key("os.version");
 	/**
 	 * 操作系统类型
 	 */
-	public static String SUN_DESKTOP       = PropertiesUtils.key("sun.desktop");
+	public static String SUN_DESKTOP = PropertiesUtils.key("sun.desktop");
 	/**
 	 * 当前用户
 	 */
-	public static String CURRENT_USER      = PropertiesUtils.key("user.name");
+	public static String CURRENT_USER = PropertiesUtils.key("user.name");
 	/**
 	 * 当前用户的家目录
 	 */
@@ -85,14 +83,14 @@ public class SysUtils {
 	/**
 	 * 当用用户的工作目录
 	 */
-	public static String CURRENT_USER_DIR  = PropertiesUtils.key("user.dir");
-	public static String FILE_SEPARATOR    = PropertiesUtils.key("file.separator");
-	public static String PATH_SEPARATOR    = PropertiesUtils.key("path.separator");
-	public static String LINE_SEPARATOR    = PropertiesUtils.key("line.separator");
+	public static String CURRENT_USER_DIR = PropertiesUtils.key("user.dir");
+	public static String FILE_SEPARATOR = PropertiesUtils.key("file.separator");
+	public static String PATH_SEPARATOR = PropertiesUtils.key("path.separator");
+	public static String LINE_SEPARATOR = PropertiesUtils.key("line.separator");
 	/**
 	 * 总的物理内存
 	 */
-	public static  long                  TotalMemorySize;
+	public static long TotalMemorySize;
 	private static OperatingSystemMXBean osmxb;
 	private static int kb = 1024;
 
@@ -128,10 +126,7 @@ public class SysUtils {
 			e.printStackTrace();
 		}
 
-
 	}
-
-
 
 	/**
 	 * 已使用的物理内存
@@ -145,7 +140,6 @@ public class SysUtils {
 
 	/**
 	 * 获取JVM内存总量
-	 *
 	 */
 	public final static long JVMtotalMem() {
 		return Runtime.getRuntime().totalMemory() / kb;
@@ -153,7 +147,6 @@ public class SysUtils {
 
 	/**
 	 * 虚拟机空闲内存量
-	 *
 	 */
 	public final static long JVMfreeMem() {
 		return Runtime.getRuntime().freeMemory() / kb;
@@ -161,7 +154,6 @@ public class SysUtils {
 
 	/**
 	 * 虚拟机使用最大内存量
-	 *
 	 */
 	public final static long JVMmaxMem() {
 		return Runtime.getRuntime().maxMemory() / kb;

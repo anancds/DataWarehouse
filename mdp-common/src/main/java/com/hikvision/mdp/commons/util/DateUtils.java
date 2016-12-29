@@ -23,7 +23,7 @@ import java.util.GregorianCalendar;
  * @modify by reason:{方法名}:{原因}
  */
 public class DateUtils {
-	private static final int[] DAY_OF_MONTH = new int[]{31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+	private static final int[] DAY_OF_MONTH = new int[] { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 
 	/**
 	 * 取得指定天数后的时间
@@ -497,7 +497,6 @@ public class DateUtils {
 
 	/**
 	 * 获取上周的指定星期的日期。
-	 *
 	 */
 	public static Date getDateOfPreviousWeek(int dayOfWeek) {
 		if (dayOfWeek > 7 || dayOfWeek < 1) {

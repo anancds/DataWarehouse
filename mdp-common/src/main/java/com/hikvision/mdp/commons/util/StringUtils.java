@@ -23,11 +23,21 @@ import java.util.List;
  * @modify by reason:{方法名}:{原因}
  */
 public final class StringUtils {
+	public static final String EMPTY = "";
+	public static final String SEPARATOR_MULTI = ";";
+	public static final String SEPARATOR_SINGLE = "#";
+	public static final String SQL_REPLACE = "_";
+	private static final String BOOLEAN_TRUE_STRING = "true";
+	private static final String BOOLEAN_FALSE_STRING = "false";
+	private static final String BOOLEAN_TRUE_NUMBER = "1";
+	private static final String BOOLEAN_FALSE_NUMBER = "0";
+
 	/**
 	 * 对给定的字符序列判空
 	 * StringUtils.hasLength(null) = false
 	 * StringUtils.hasLength("") = false
 	 * StringUtils.hasLength(" ") = true
+	 *
 	 * @param str
 	 * @return
 	 */
@@ -55,16 +65,6 @@ public final class StringUtils {
 	public static boolean hasText(String str) {
 		return hasText((CharSequence) str);
 	}
-
-	public static final String EMPTY = "";
-	public static final String SEPARATOR_MULTI = ";";
-	public static final String SEPARATOR_SINGLE = "#";
-	public static final String SQL_REPLACE = "_";
-
-	private static final String BOOLEAN_TRUE_STRING = "true";
-	private static final String BOOLEAN_FALSE_STRING = "false";
-	private static final String BOOLEAN_TRUE_NUMBER = "1";
-	private static final String BOOLEAN_FALSE_NUMBER = "0";
 
 	/**
 	 * 在str右边加入足够多的addStr字符串
@@ -147,10 +147,8 @@ public final class StringUtils {
 	}
 
 	/**
-	 * @param str
-	 *            the String to check, may be null
-	 * @param sub
-	 *            the substring to count, may be null
+	 * @param str the String to check, may be null
+	 * @param sub the substring to count, may be null
 	 * @return the number of occurrences, 0 if either String is <code>null</code>
 	 */
 	public static int countMatches(String str, String sub) {
@@ -166,7 +164,6 @@ public final class StringUtils {
 		}
 		return count;
 	}
-
 
 	/**
 	 * 截取固定长度的字符串，超长部分用suffix代替，最终字符串真实长度不会超过maxLength.
@@ -188,8 +185,7 @@ public final class StringUtils {
 			char c = str.charAt(charIndex);
 			if (c >= 256) {
 				byteIndex += 2;
-			}
-			else {
+			} else {
 				byteIndex++;
 			}
 			charIndex++;
@@ -235,15 +231,12 @@ public final class StringUtils {
 	}
 
 	/**
-	 * @param text
-	 *            将要被格式化的字符串 <br>
-	 *            eg:参数一:{0},参数二:{1},参数三:{2}
-	 *
-	 * @param args
-	 *            将替代字符串中的参数,些参数将替换{X} <br>
-	 *            eg:new Object[] { "0001", "0005049", new Integer(1) }
+	 * @param text 将要被格式化的字符串 <br>
+	 *             eg:参数一:{0},参数二:{1},参数三:{2}
+	 * @param args 将替代字符串中的参数,些参数将替换{X} <br>
+	 *             eg:new Object[] { "0001", "0005049", new Integer(1) }
 	 * @return 格式化后的字符串 <br>
-	 *         eg: 在上面的输入下输出为:参数一:0001,参数二:0005049,参数三:1
+	 * eg: 在上面的输入下输出为:参数一:0001,参数二:0005049,参数三:1
 	 */
 	public static String format(String text, Object[] args) {
 		if (ValidateUtils.isEmpty(text) || args == null || args.length == 0) {
@@ -258,8 +251,7 @@ public final class StringUtils {
 	/**
 	 * 格式化浮点型数字成字符串, 保留两位小数位.
 	 *
-	 * @param number
-	 *            浮点数字
+	 * @param number 浮点数字
 	 * @return 格式化之后的字符串
 	 */
 	public static String formatDecimal(double number) {
@@ -275,12 +267,9 @@ public final class StringUtils {
 	/**
 	 * 格式化浮点类型数据.
 	 *
-	 * @param number
-	 *            浮点数据
-	 * @param minFractionDigits
-	 *            最小保留小数位
-	 * @param maxFractionDigits
-	 *            最大保留小数位
+	 * @param number            浮点数据
+	 * @param minFractionDigits 最小保留小数位
+	 * @param maxFractionDigits 最大保留小数位
 	 * @return 将浮点数据格式化后的字符串
 	 */
 	public static String formatDecimal(double number, int minFractionDigits, int maxFractionDigits) {
@@ -294,8 +283,7 @@ public final class StringUtils {
 	/**
 	 * 取得字符串的真实长度，一个汉字长度为两个字节。
 	 *
-	 * @param str
-	 *            字符串
+	 * @param str 字符串
 	 * @return 字符串的字节数
 	 */
 	public static int getRealLength(String str) {
@@ -309,8 +297,7 @@ public final class StringUtils {
 		for (int i = 0; i < str.length(); i++) {
 			if (str.charAt(i) >= separator) {
 				realLength += 2;
-			}
-			else {
+			} else {
 				realLength++;
 			}
 		}
@@ -319,10 +306,10 @@ public final class StringUtils {
 
 	/**
 	 * HTML 文本过滤，如果 value 为 <code>null</code> 或为空串，则返回 "&amp;nbsp;"。
-	 *
+	 * <p>
 	 * <p>
 	 * 转换的字符串关系如下：
-	 *
+	 * <p>
 	 * <ul>
 	 * <li>&amp; --> &amp;amp;</li>
 	 * <li>&lt; --> &amp;lt;</li>
@@ -332,11 +319,10 @@ public final class StringUtils {
 	 * <li>\t --> &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;</li>
 	 * <li>空格 --> &amp;nbsp;</li>
 	 * </ul>
-	 *
+	 * <p>
 	 * <strong>此方法适用于在 HTML 页面上的非文本框元素（div、span、table 等）中显示文本时调用。</strong>
 	 *
-	 * @param value
-	 *            要过滤的文本
+	 * @param value 要过滤的文本
 	 * @return 过滤后的 HTML 文本
 	 */
 	public static String htmlFilter(String value) {
@@ -344,16 +330,16 @@ public final class StringUtils {
 			return "&nbsp;";
 		}
 
-		return value.replaceAll("&", "&amp;").replaceAll("\t", "    ").replaceAll(" ", "&nbsp;")
-				.replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\"", "&quot;").replaceAll("\n", "<br/>");
+		return value.replaceAll("&", "&amp;").replaceAll("\t", "    ").replaceAll(" ", "&nbsp;").replaceAll("<", "&lt;")
+				.replaceAll(">", "&gt;").replaceAll("\"", "&quot;").replaceAll("\n", "<br/>");
 	}
 
 	/**
 	 * HTML 文本过滤，如果 value 为 <code>null</code> 或为空串，则返回空串。
-	 *
+	 * <p>
 	 * <p>
 	 * 转换的字符串关系如下：
-	 *
+	 * <p>
 	 * <ul>
 	 * <li>&amp; --> &amp;amp;</li>
 	 * <li>&lt; --> &amp;lt;</li>
@@ -361,11 +347,10 @@ public final class StringUtils {
 	 * <li>&quot; --> &amp;quot;</li>
 	 * <li>\n --> &lt;br/&gt;</li>
 	 * </ul>
-	 *
+	 * <p>
 	 * <strong>此方法适用于在 HTML 页面上的文本框（text、textarea）中显示文本时调用。</strong>
 	 *
-	 * @param value
-	 *            要过滤的文本
+	 * @param value 要过滤的文本
 	 * @return 过滤后的 HTML 文本
 	 */
 	public static String htmlFilterToEmpty(String value) {
@@ -380,8 +365,7 @@ public final class StringUtils {
 	/**
 	 * 忽略值为 <code>null</code> 的字符串
 	 *
-	 * @param str
-	 *            字符串
+	 * @param str 字符串
 	 * @return 如果字符串为 <code>null</code>, 则返回空字符串.
 	 */
 	public static String ignoreNull(String str) {
@@ -405,8 +389,7 @@ public final class StringUtils {
 	/**
 	 * 过滤html的"'"字符(转义为"\'")以及其他特殊字符, 主要用于链接地址的特殊字符过滤.
 	 *
-	 * @param str
-	 *            要过滤的字符串
+	 * @param str 要过滤的字符串
 	 * @return 过滤后的字符串
 	 */
 	public static String linkFilter(String str) {
@@ -549,8 +532,7 @@ public final class StringUtils {
 			startIndex = str.indexOf(rules[i], endIndex) + rules[i].length();
 			if (i + 1 == strs.length && endsWithSeparator) {
 				endIndex = str.length();
-			}
-			else {
+			} else {
 				endIndex = str.indexOf(rules[i + 1], startIndex);
 			}
 
@@ -581,17 +563,13 @@ public final class StringUtils {
 			char c = str.charAt(i);
 			if (c == '[') {
 				sb.append("[[]");
-			}
-			else if (c == ']') {
+			} else if (c == ']') {
 				sb.append("[]]");
-			}
-			else if (c == '%') {
+			} else if (c == '%') {
 				sb.append("[%]");
-			}
-			else if (c == '_') {
+			} else if (c == '_') {
 				sb.append("[_]");
-			}
-			else {
+			} else {
 				sb.append(c);
 			}
 		}
@@ -608,8 +586,7 @@ public final class StringUtils {
 	public static String toCharSet(String str, String charSetName) {
 		try {
 			return new String(str.getBytes(), charSetName);
-		}
-		catch (UnsupportedEncodingException e) {
+		} catch (UnsupportedEncodingException e) {
 			return str;
 		}
 	}
@@ -643,8 +620,7 @@ public final class StringUtils {
 	 * 将以ASCII字符表示的16进制字符串以每两个字符分割转换为16进制表示的byte数组.<br>
 	 * e.g. "e024c854" --> byte[]{0xe0, 0x24, 0xc8, 0x54}
 	 *
-	 * @param str
-	 *            原16进制字符串
+	 * @param str 原16进制字符串
 	 * @return 16进制表示的byte数组
 	 */
 	public static byte[] hexString2Bytes(String str) {
@@ -683,8 +659,7 @@ public final class StringUtils {
 	 * String is empty ("") after the trim or if it is <code>null</code>.
 	 * </p>
 	 *
-	 * @param str
-	 *            the String to be trimmed, may be null
+	 * @param str the String to be trimmed, may be null
 	 * @return the trimmed String, or an empty String if <code>null</code> input
 	 */
 	public static String trimToEmpty(String str) {
@@ -793,10 +768,8 @@ public final class StringUtils {
 	/**
 	 * 根据分割符对字符串进行分割，每个分割后的字符串将被 <tt>trim</tt> 后放到列表中。
 	 *
-	 * @param str
-	 *            将要被分割的字符串
-	 * @param delimiter
-	 *            分隔符
+	 * @param str       将要被分割的字符串
+	 * @param delimiter 分隔符
 	 * @return 分割后的结果列表
 	 */
 	public static final List<String> split(String str, char delimiter) {
@@ -823,9 +796,7 @@ public final class StringUtils {
 	/**
 	 * 判断 value 的值是否表示条件为真。例子：
 	 *
-	 *
-	 * @param value
-	 *            字符串
+	 * @param value 字符串
 	 * @return 如果 value 等于 “1” 或者 “true”（大小写无关） 返回 <code>true</code>，否则返回 <code>false</code>。
 	 */
 	public static boolean isValueTrue(String value) {
@@ -835,8 +806,7 @@ public final class StringUtils {
 	/**
 	 * 判断 value 的值是否表示条件为假。例子：
 	 *
-	 * @param value
-	 *            字符串
+	 * @param value 字符串
 	 * @return 如果 value 等于 “0” 或者 “false”（大小写无关） 返回 <code>true</code>，否则返回 <code>false</code>。
 	 */
 	public static boolean isValueFalse(String value) {
