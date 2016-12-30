@@ -5,7 +5,7 @@
  * @date: 2016/12/29 17:03
  * @Description: 本内容仅限于杭州海康威视数字技术股份有限公司内部使用，禁止转发.
  */
-package com.hikvision.datagenerator;
+package com.hikvision.mdp.datagenerator;
 
 /**
  * <p></p>
@@ -17,4 +17,8 @@ package com.hikvision.datagenerator;
  * @modify by reason:{方法名}:{原因}
  */
 public class DataMain {
+
+	public static void main(String[] args) {
+
+	}
 }

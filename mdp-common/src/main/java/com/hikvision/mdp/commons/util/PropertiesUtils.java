@@ -27,7 +27,7 @@ import java.util.Properties;
  */
 public class PropertiesUtils {
 
-	private static Logger logger = LogManager.getLogger(PropertiesUtils.class);
+	private static final Logger logger = LogManager.getLogger(PropertiesUtils.class);
 
 	/**
 	 * 从系统属性文件中获取相应的值

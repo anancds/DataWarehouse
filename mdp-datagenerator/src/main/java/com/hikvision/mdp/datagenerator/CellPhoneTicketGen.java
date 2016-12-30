@@ -5,7 +5,7 @@
  * @date: 2016/12/29 16:27
  * @Description: 本内容仅限于杭州海康威视数字技术股份有限公司内部使用，禁止转发.
  */
-package com.hikvision.datagenerator;
+package com.hikvision.mdp.datagenerator;
 
 import com.hikvision.mdp.commons.util.In;
 import com.hikvision.mdp.commons.util.JsonUtils;
