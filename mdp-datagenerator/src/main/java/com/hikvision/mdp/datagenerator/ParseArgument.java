@@ -9,6 +9,7 @@ package com.hikvision.mdp.datagenerator;
 
 import org.apache.commons.cli.*;
 
+import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 
@@ -22,6 +23,39 @@ import java.io.PrintWriter;
  * @modify by reason:{方法名}:{原因}
  */
 public class ParseArgument {
+
+	public static void processArgs(String[] args, final PrintStream out) {
+		Options options = buildOptions();
+
+		try {
+			CommandLine cmd = parseCommandLine(options, args);
+			if (cmd.hasOption('h')) {
+				printHelp(out, options);
+			} else if (cmd.hasOption('v')) {
+				out.println(
+						"Data Generator Version: " + "" + " JVM: " + System.getProperty("java.version") + " Vendor: "
+								+ System.getProperty("java.vm.vendor") + " OS: " + System.getProperty("os.name"));
+			} else {
+				if (!process(cmd)){
+					System.exit(1);
+				}
+			}
+		} catch (ParseException e) {
+			out.println("error: " + e.getMessage());
+			printHelp(out, options);
+		}
+//		catch (IOException ioe) {
+//			out.println("error: " + ioe.getMessage());
+//		}
+	}
+
+	private static Options buildOptions() {
+		return new Options();
+	}
+
+	private static boolean process(CommandLine line) {
+		return true;
+	}
 
 	private static void printHelp(PrintStream out, Options options) {
 		HelpFormatter formatter = new HelpFormatter();
