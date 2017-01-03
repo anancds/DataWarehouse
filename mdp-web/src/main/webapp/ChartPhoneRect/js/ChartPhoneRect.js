@@ -2,8 +2,8 @@
  * Created by laiqin on 2016/12/29.
  */
 
-var phonedays=[];//星期几
-var phonedata=[];//通话数据
+var phonedays = [];//星期几
+var phonedata = [];//通话数据
 
 window.onload = function () {
     //myChartInit();
@@ -13,9 +13,9 @@ window.onload = function () {
 //时间选择
 function dateChooseFirst(aInitdate) {
     $('#first').datetimepicker({
-        language:  'zh-CN',
+        language: 'zh-CN',
         weekStart: 1,
-        todayBtn:  1,   //显示今天
+        todayBtn: 1,   //显示今天
         autoclose: 1,   //选择一个日期后自动关闭
         todayHighlight: true,  //高亮当前日期
         startView: 2,   //重日开始选择,3是月份,4是月份,1是小时
@@ -23,11 +23,11 @@ function dateChooseFirst(aInitdate) {
         //maxView:4,    //最高能选择的时间范围
         forceParse: 0   //当选择器关闭的时候，是否强制解析输入框中的值。也就是说，当用户在输入框中输入了不正确的日期，选择器将会尽量解析输入的值，并将解析后的正确值按照给定的格式format设置到输入框中。
         //endDate:'2017-8-30'
-        ,pickerPosition:'bottom-right'   //选择器位置
-        ,format:'yyyy-mm-dd'
-        ,initialDate:aInitdate
+        , pickerPosition: 'bottom-right'   //选择器位置
+        , format: 'yyyy-mm-dd'
+        , initialDate: aInitdate
     });
-    $('#first').datetimepicker().on('changeDate', function(ev){
+    $('#first').datetimepicker().on('changeDate', function (ev) {
         dateChange()
     });
 }
@@ -37,7 +37,7 @@ function myChartInit() {
     var myChart3 = echarts.init(document.getElementById('main'));
 
     var hours = ['0', '1', '2', '3', '4', '5', '6',
-        '7', '8', '9','10','11',
+        '7', '8', '9', '10', '11',
         '12', '13', '14', '15', '16', '17',
         '18', '19', '20', '21', '22', '23'];
     // var phonedays = ['Saturday', 'Friday', 'Thursday',
@@ -60,6 +60,7 @@ function myChartInit() {
             y: '10%'
         },
         xAxis: {
+            name: '',
             type: 'category',
             data: hours,
             splitArea: {
@@ -67,6 +68,10 @@ function myChartInit() {
             }
         },
         yAxis: {
+            name: '星期',
+            nameTextStyle: {
+                fontSize: 18
+            },
             type: 'category',
             data: phonedays,
             splitArea: {
@@ -111,6 +116,7 @@ function myChartInit() {
                 text: '正在努力的读取数据中...'
             });
             var ecConfig = require('echarts/config');
+
             function focus(param) {
                 var data = param.data;
                 var links = option.series[0].links;
@@ -119,14 +125,19 @@ function myChartInit() {
                     data.source !== undefined
                     && data.target !== undefined
                 ) { //点击的是边
-                    var sourceNode = nodes.filter(function (n) {return n.name == data.source})[0];
-                    var targetNode = nodes.filter(function (n) {return n.name == data.target})[0];
+                    var sourceNode = nodes.filter(function (n) {
+                        return n.name == data.source
+                    })[0];
+                    var targetNode = nodes.filter(function (n) {
+                        return n.name == data.target
+                    })[0];
                     console.log("选中了边 " + sourceNode.name + ' -> ' + targetNode.name + ' (' + data.weight + ')');
                 } else { // 点击的是点
                     alert(data)//添加原点点击时间
                     console.log("选中了" + data.name + '(' + data.value + ')');
                 }
             }
+
             myChart3.on(ecConfig.EVENT.CLICK, focus)
 
             myChart3.on(ecConfig.EVENT.FORCE_LAYOUT_END, function () {
@@ -144,44 +155,55 @@ function myChartInit() {
 }
 
 function readData() {
-    var j = 0;
     $.ajax({
-        async:true,
-        type:'GET',
-        url:'./data/phone.json',
-        complete:function(data){
+        async: true,
+        type: 'GET',
+        url: './data/phone.json',
+        complete: function (data) {
             var ojson = data.responseJSON;    //获取返回数据
             var initdate = ojson.data[0].date;
             $("#choosetime").val(initdate);    //默认时间为数据第一天
             dateChooseFirst(initdate);
-            for (var i=0; i<ojson.data.length; i++){
-                var tempday = new Date(ojson.data[i].date).getDay();
-                if(phonedays.indexOf(tempday) == -1){    //加载7天数据
-                    phonedays.push(tempday);
+
+            var nowday = new Date(initdate).getDay();
+            nowday == 0 ? nowday = 7 : nowday;
+            for (var i = 0; i < 7; i++) {   //初始化每个单元格,168个,7*24
+                for (var j = 0; j < 24; j++) {
+                    phonedata.push([i, j, 0]);
                 }
-                if((Date.parse(ojson.data[i].date) - Date.parse(ojson.data[0].date))/(1000*60*60*24) <=6){
-                    var tempdata = [
-                        new Date(ojson.data[i].date).getDay(),   //纵坐标值
+            }
+            for (var i = nowday; i < 8; i++) {   //初始化纵坐标
+                phonedays.push(i);
+            }
+            for (var i = 1; i < nowday; i++) {   //初始化纵坐标
+                phonedays.push(i);
+            }
+            for (var i = 0; i < ojson.data.length; i++) {
+                if ((Date.parse(ojson.data[i].date) - Date.parse(ojson.data[0].date)) / (1000 * 60 * 60 * 24) <= 6) {
+                    var tempday = new Date(ojson.data[i].date).getDay();
+                    tempday == 0 ? tempday = 7 : tempday;
+                    var tempNum = (phonedays.indexOf(tempday)+1) * (ojson.data[i].hours);//   对应单元格的序号
+                    phonedata[tempNum - 1] = [
+                        phonedays.indexOf(tempday),   //纵坐标值
                         ojson.data[i].hours,   //横坐标值
                         parseInt(ojson.data[i].time),    //显示的值
                         ojson.data[i].number,
                         ojson.data[i].date
                     ];
-                    phonedata.push(tempdata);
                 }
             }
-            for(var i=0; i<phonedays.length; i++){
-                if(phonedays[i] == '1')phonedays[i] = '周一';
-                else if(phonedays[i] == '2')phonedays[i] = '周二';
-                else if(phonedays[i] == '3')phonedays[i] = '周三';
-                else if(phonedays[i] == '4')phonedays[i] = '周四';
-                else if(phonedays[i] == '5')phonedays[i] = '周五';
-                else if(phonedays[i] == '6')phonedays[i] = '周六';
-                else if(phonedays[i] == '0')phonedays[i] = '周日';
+            for (var i = 0; i < phonedays.length; i++) {
+                if (phonedays[i] == '1') phonedays[i] = '周一';
+                else if (phonedays[i] == '2') phonedays[i] = '周二';
+                else if (phonedays[i] == '3') phonedays[i] = '周三';
+                else if (phonedays[i] == '4') phonedays[i] = '周四';
+                else if (phonedays[i] == '5') phonedays[i] = '周五';
+                else if (phonedays[i] == '6') phonedays[i] = '周六';
+                else if (phonedays[i] == '7') phonedays[i] = '周日';
             }
             myChartInit();
         },
-        error:function () {
+        error: function () {
             alert('数据获取失败!');
         }
     });
@@ -191,88 +213,56 @@ function dateChange() {//时间改变后,重新加载数据.
     var tempDate;
     var nowDate;
     var timeDiff
-    var nowdate = $("#choosetime").val();//当前文本框时间
-    var nowday =
-    phonedays.splice(0,phonedays.length);
-    phonedata.splice(0,phonedata.length);
-    for(var i=0; i<7; i++){   //初始化每个单元格
-        for(var j=0; j<24; j++){
-            phonedata.push([i,j,0]);
+    var nowdate = $("#choosetime").val();      //当前文本框时间
+    var nowday = new Date(nowdate).getDay();   //获取当前星期几
+    nowday == 0 ? nowday = 7 : nowday;
+    phonedays.splice(0, phonedays.length);
+    phonedata.splice(0, phonedata.length);
+    for (var i = 0; i < 7; i++) {   //初始化每个单元格,168个,7*24
+        for (var j = 0; j < 24; j++) {
+            phonedata.push([i, j, 0]);
         }
     }
-    for(var i=0; i<1; i++){   //初始化纵坐标
-        phonedays.push([])
+    for (var i = nowday; i < 8; i++) {   //初始化纵坐标
+        phonedays.push(i);
+    }
+    for (var i = 1; i < nowday; i++) {   //初始化纵坐标
+        phonedays.push(i);
     }
     $.ajax({
-        async:true,
-        type:'GET',
-        url:'./data/phone.json',
-        complete:function(data) {
+        async: true,
+        type: 'GET',
+        url: './data/phone.json',
+        complete: function (data) {
             var ojson = data.responseJSON;//获取返回数据
-            for (var i=0; i<ojson.data.length; i++){
+            for (var i = 0; i < ojson.data.length; i++) {
                 tempDate = Date.parse(ojson.data[i].date);
-                nowDate = Date.parse(nowdate)-28800000;  //减去默认的八小时
-                timeDiff = (tempDate-nowDate)/86400000;  //计算时间差
-                if(timeDiff <= 6 && timeDiff >= 0){
-                    console.log(new Date(ojson.data[i].date)+ '----------'+ new Date(ojson.data[i].date).getDay())
+                nowDate = Date.parse(nowdate) - 28800000;  //减去默认的八小时
+                timeDiff = (tempDate - nowDate) / 86400000;  //计算时间差
+                if (timeDiff <= 6 && timeDiff >= 0) {
+                    console.log(new Date(ojson.data[i].date) + '----------' + new Date(ojson.data[i].date).getDay())
                     var tempday = new Date(ojson.data[i].date).getDay();
-                    if(phonedays.indexOf(tempday) == -1){//加载7天数据
-                        phonedays.push(tempday);
-                    }
-                    var tempdata = [
-                        new Date(ojson.data[i].date).getDay(),   //纵坐标值
+                    tempday == 0 ? tempday = 7 : tempday;
+                    var tempNum = (phonedays.indexOf(tempday)+1) * (ojson.data[i].hours + 1);//   对应单元格的序号
+                    phonedata[tempNum - 1] = [//   对应单元格赋值
+                        phonedays.indexOf(tempday),   //纵坐标值
                         ojson.data[i].hours,   //横坐标值
                         parseInt(ojson.data[i].time),    //显示的值
                         ojson.data[i].number,
-                        ojson.data[i].date
-                    ];
-                    phonedata.push(tempdata);
+                        ojson.data[i].date];
                 }
             }
-        }
-    });
-    return;
-    $.ajax({
-        async:true,
-        type:'GET',
-        url:'./data/phone.json',
-        complete:function(data) {
-            var ojson = data.responseJSON;//获取返回数据
-            for (var i=0; i<ojson.data.length; i++){
-                tempDate = Date.parse(ojson.data[i].date);
-                nowDate = Date.parse(nowdate)-28800000;  //减去默认的八小时
-                timeDiff = (tempDate-nowDate)/86400000;  //计算时间差
-                if(timeDiff <= 6 && timeDiff >= 0){
-                    console.log(new Date(ojson.data[i].date)+ '----------'+ new Date(ojson.data[i].date).getDay())
-                    var tempday = new Date(ojson.data[i].date).getDay();
-                    if(phonedays.indexOf(tempday) == -1){//加载7天数据
-                        phonedays.push(tempday);
-                    }
-                    var tempdata = [
-                        new Date(ojson.data[i].date).getDay(),   //纵坐标值
-                        ojson.data[i].hours,   //横坐标值
-                        parseInt(ojson.data[i].time),    //显示的值
-                        ojson.data[i].number,
-                        ojson.data[i].date
-                    ];
-                    phonedata.push(tempdata);
-                }
+            for (var i = 0; i < phonedays.length; i++) {
+                if (phonedays[i] == '1') phonedays[i] = '周一';
+                else if (phonedays[i] == '2') phonedays[i] = '周二';
+                else if (phonedays[i] == '3') phonedays[i] = '周三';
+                else if (phonedays[i] == '4') phonedays[i] = '周四';
+                else if (phonedays[i] == '5') phonedays[i] = '周五';
+                else if (phonedays[i] == '6') phonedays[i] = '周六';
+                else if (phonedays[i] == '7') phonedays[i] = '周日';
             }
-            if(phonedays.indexOf('1') == -1){
-                1
-            }
-            // for(var i=0; i<phonedays.length; i++){
-            //     if(phonedays[i] == '1')phonedays[i] = '周一';
-            //     else if(phonedays[i] == '2')phonedays[i] = '周二';
-            //     else if(phonedays[i] == '3')phonedays[i] = '周三';
-            //     else if(phonedays[i] == '4')phonedays[i] = '周四';
-            //     else if(phonedays[i] == '5')phonedays[i] = '周五';
-            //     else if(phonedays[i] == '6')phonedays[i] = '周六';
-            //     else if(phonedays[i] == '0')phonedays[i] = '周日';
-            // }
-            alert(phonedays)
-            debugger
             myChartInit();
         }
     });
+    return;
 }
