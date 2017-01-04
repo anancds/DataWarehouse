@@ -105,6 +105,8 @@
 
         <mdp.version>1.0-SNAPSHOT</mdp.version>
         <spring.data.es>2.0.5.RELEASE</spring.data.es>
+
+        <hbp.version>1.2.3</hbp.version>
     </properties>
 
     <build>
@@ -267,6 +269,38 @@
                 <groupId>org.springframework.data</groupId>
                 <artifactId>spring-data-elasticsearch</artifactId>
                 <version>${spring.data.es}</version>
+            </dependency>
+
+            <!--hbp-->
+            <dependency>
+                <groupId>com.hikvision.bigdata.hbp</groupId>
+                <artifactId>hbp-datacollectors-api</artifactId>
+                <version>${hbp.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.google.code.gson</groupId>
+                        <artifactId>gson</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>com.google.code.gson</groupId>
+                        <artifactId>gson-parent</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>com.hikvision.bigdata.hbp</groupId>
+                <artifactId>hbp-datacollectors-connectors</artifactId>
+                <version>${hbp.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.google.code.gson</groupId>
+                        <artifactId>gson</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>com.google.code.gson</groupId>
+                        <artifactId>gson-parent</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
         </dependencies>
 
