@@ -9,9 +9,11 @@ package com.hikvision.mdp.datagenerator;
 
 import org.apache.commons.cli.*;
 
-import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
+import java.util.List;
+
+import static org.apache.commons.cli.Option.builder;
 
 /**
  * <p>解析命令行参数</p>
@@ -36,7 +38,7 @@ public class ParseArgument {
 						"Data Generator Version: " + "" + " JVM: " + System.getProperty("java.version") + " Vendor: "
 								+ System.getProperty("java.vm.vendor") + " OS: " + System.getProperty("os.name"));
 			} else {
-				if (!process(cmd)){
+				if (!process(cmd)) {
 					System.exit(1);
 				}
 			}
@@ -44,16 +46,31 @@ public class ParseArgument {
 			out.println("error: " + e.getMessage());
 			printHelp(out, options);
 		}
-//		catch (IOException ioe) {
-//			out.println("error: " + ioe.getMessage());
-//		}
 	}
 
 	private static Options buildOptions() {
-		return new Options();
+		return new Options()
+				.addOption(builder("s").hasArg().argName("ServerName").desc("The Server Name of Data Generator").build())
+				.addOption(builder("n").hasArg().argName("NumberOfThread").desc("The Number of Thread to generator data!").build())
+				.addOption(builder("h").hasArg(false).desc("usage information").longOpt("help").build())
+				.addOption(builder("v").hasArg(false).desc("display Data Generator version and jvm version!").build())
+				.addOption(builder("d").hasArg().argName("Destination").desc("The destination of data!\r\n 0:ES 1:Hbase 2: ES and Hbase").build());
 	}
 
 	private static boolean process(CommandLine line) {
+//		List args = line.getArgList();
+
+		if (line.hasOption('s')) {
+			DataGeneratorConstants.SERVER_NAME = line.getOptionValue('s');
+		}
+
+		if (line.hasOption('n')) {
+			DataGeneratorConstants.THREAD_NUM = Integer.valueOf(line.getOptionValue('n'));
+		}
+
+		if (line.hasOption('d')) {
+			DataGeneratorConstants.DESTINATION = Integer.valueOf(line.getOptionValue('d'));
+		}
 		return true;
 	}
 
