@@ -323,12 +323,12 @@
                     </exclusion>
                 </exclusions>
             </dependency>
-            <!--snake yaml-->
-            <dependency>
-                <groupId>org.yaml</groupId>
-                <artifactId>snakeyaml</artifactId>
-                <version>${snake.yaml.version}</version>
-            </dependency>
+            <!--&lt;!&ndash;snake yaml&ndash;&gt;-->
+            <!--<dependency>-->
+                <!--<groupId>org.yaml</groupId>-->
+                <!--<artifactId>snakeyaml</artifactId>-->
+                <!--<version>${snake.yaml.version}</version>-->
+            <!--</dependency>-->
         </dependencies>
 
 
