@@ -76,6 +76,12 @@ public final class JsonUtils {
 		}
 	}
 
+	/**
+	 * 先用put放数据，然后调用这个函数
+	 *
+	 * @return json字符串
+	 * @see #put(String, Object)
+	 */
 	public String toJson() {
 		try {
 			return mapper.writeValueAsString(node);
