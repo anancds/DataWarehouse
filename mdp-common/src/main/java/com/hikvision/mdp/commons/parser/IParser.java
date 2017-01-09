@@ -26,7 +26,7 @@ import java.util.Map;
  */
 public interface IParser {
 
-	public List<Map<String, Object>> deserialize(ConsumerRecord<byte[], byte[]> consumerRecord, Schema schema)
+	public List deserialize(ConsumerRecord<byte[], byte[]> consumerRecord, Schema schema)
 			throws IOException;
 
 	public List<Map<String, Object>> deserialize(ConsumerRecord<byte[], byte[]> consumerRecord, Schema schema,
