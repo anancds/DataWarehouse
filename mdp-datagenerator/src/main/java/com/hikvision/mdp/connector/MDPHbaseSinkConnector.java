@@ -13,7 +13,7 @@ import com.hikvision.bigdata.hbp.datacollectors.api.connector.ConnectorFrom;
 import com.hikvision.bigdata.hbp.datacollectors.api.connector.ConnectorTo;
 import com.hikvision.bigdata.hbp.datacollectors.api.connector.impl.sink.ConnectorToHBase;
 import com.hikvision.bigdata.hbp.datacollectors.api.connector.impl.sink.HBaseSinkConnector;
-import com.hikvision.bigdata.hbp.datacollectors.common.io.DataCollectorPipelineDescriptor;
+import com.hikvision.bigdata.hbp.datacollectors.common.io.descriptors.DataCollectorPipelineDescriptor;
 
 /**
  * <p>消费kafka数据到Hbase</p>

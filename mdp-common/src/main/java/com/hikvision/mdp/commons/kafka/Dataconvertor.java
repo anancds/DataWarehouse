@@ -8,11 +8,11 @@
 package com.hikvision.mdp.commons.kafka;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hikvision.bigdata.hbp.common.data.record.Record;
+import com.hikvision.bigdata.hbp.common.data.schema.Field;
+import com.hikvision.bigdata.hbp.common.data.schema.Schema;
+import com.hikvision.bigdata.hbp.datacollectors.api.connector.builder.ConnectorBuilderV1;
 import com.hikvision.bigdata.hbp.datacollectors.api.connector.impl.source.ClientSourceConnector;
-import com.hikvision.bigdata.hbp.datacollectors.api.utils.PipelineUtils;
-import com.hikvision.bigdata.hbp.datacollectors.common.data.record.Record;
-import com.hikvision.bigdata.hbp.datacollectors.common.data.schema.Field;
-import com.hikvision.bigdata.hbp.datacollectors.common.data.schema.Schema;
 import com.hikvision.bigdata.hbp.datacollectors.common.io.DataCollectorPipelineDetail;
 import com.hikvision.mdp.commons.constants.MDPConstants;
 import com.hikvision.mdp.commons.jackson.MapperType;
@@ -52,8 +52,8 @@ public class Dataconvertor {
 			DataCollectorPipelineDetail pipelineDetail = loadYMLResource(fileName);
 			if (pipelineDetail != null) {
 				pipelineCache.put(fileName, pipelineDetail);
-				Map<String, Schema> schemaMap = PipelineUtils.createSchemas(pipelineDetail.getSchemas());
-				schemas.put(fileName, schemaMap.values().iterator().next());
+//				Map<String, Schema> schemaMap = ConnectorBuilderV1.createSchemas();
+//				schemas.put(fileName, schemaMap.values().iterator().next());
 			}
 		}
 	}
@@ -149,7 +149,8 @@ public class Dataconvertor {
 	 * @return
 	 */
 	public static String getTopic(String key, int topicNo) {
-		return pipelineCache.get(key).getTopics().get(topicNo).getName();
+//		return pipelineCache.get(key).getTopics().get(topicNo).getName();
+		return "";
 	}
 
 	/**

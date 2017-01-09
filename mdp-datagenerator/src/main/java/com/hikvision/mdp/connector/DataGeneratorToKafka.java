@@ -7,11 +7,10 @@
  */
 package com.hikvision.mdp.connector;
 
+import com.hikvision.bigdata.hbp.common.data.record.Record;
 import com.hikvision.bigdata.hbp.datacollectors.api.connector.Callback;
 import com.hikvision.bigdata.hbp.datacollectors.api.connector.ConnectorContext;
 import com.hikvision.bigdata.hbp.datacollectors.api.connector.impl.ConnectorToKafka;
-import com.hikvision.bigdata.hbp.datacollectors.api.utils.PipelineUtils;
-import com.hikvision.bigdata.hbp.datacollectors.common.data.record.Record;
 import com.hikvision.bigdata.hbp.datacollectors.common.data.record.RecordWrap;
 import org.apache.kafka.clients.producer.KafkaProducer;
 
@@ -38,7 +37,7 @@ public class DataGeneratorToKafka extends ConnectorToKafka {
 
 	public DataGeneratorToKafka(ConnectorContext context) {
 		super(context);
-		this.props.putAll(PipelineUtils.createConnectorFromProps(context));
+//		this.props.putAll(PipelineUtils.createConnectorFromProps(context));
 		this.topic = this.props.getProperty("topic");
 		this.callback = getCallBack();
 	}

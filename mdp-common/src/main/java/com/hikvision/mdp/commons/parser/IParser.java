@@ -7,7 +7,7 @@
  */
 package com.hikvision.mdp.commons.parser;
 
-import com.hikvision.bigdata.hbp.datacollectors.common.data.schema.Schema;
+import com.hikvision.bigdata.hbp.common.data.schema.Schema;
 import com.hikvision.mdp.commons.task.CollectorTask;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 

@@ -11,7 +11,7 @@ import com.hikvision.bigdata.hbp.datacollectors.api.connector.Callback;
 import com.hikvision.bigdata.hbp.datacollectors.api.connector.ConnectorContext;
 import com.hikvision.bigdata.hbp.datacollectors.api.connector.ConnectorFrom;
 import com.hikvision.bigdata.hbp.datacollectors.api.connector.impl.sink.ElasticSearchJESTSinkConnector;
-import com.hikvision.bigdata.hbp.datacollectors.common.io.DataCollectorPipelineDescriptor;
+import com.hikvision.bigdata.hbp.datacollectors.common.io.descriptors.DataCollectorPipelineDescriptor;
 
 /**
  * <p>消费kafka数据到ES</p>
