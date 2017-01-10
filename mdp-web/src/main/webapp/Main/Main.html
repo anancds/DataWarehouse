@@ -4,13 +4,36 @@
     <meta charset="UTF-8">
     <title>首页</title>
     <link rel="stylesheet" href="../css/bootstrap.css">
+    <link rel="stylesheet" href="../css/bootstrap-select.css">
+
+    <script src="../js/jquery-3.1.1.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
+    <script src="../js/bootstrap-select.js"></script>
+
+    <script src="../js/echarts2.js"></script>
+    <script src="js/Main.js"></script>
+
+    <style>
+        .chartdiv{
+            height: 400px;
+            width: 600px;
+            float: left;
+            padding:8px;
+            border:1px solid #96c2f1;
+            background:#eff7ff
+        }
+    </style>
 </head>
 <body>
 
-<div class="bs-example bs-example-tabs">
-    <ul id="myTab" class="nav nav-tabs" role="tablist">
-        <li role="presentation" class="active"><a href="#home" id="home-tab" role="tab" data-toggle="tab" aria-controls="home" aria-expanded="true">Home</a></li>
-        <li role="presentation"><a href="#profile" role="tab" id="profile-tab" data-toggle="tab" aria-controls="profile">Profile</a></li>
+<div class="panel-body">
+    <ul id="myTab" class="nav nav-pills" role="tablist">
+        <li role="presentation" class="active">
+            <a href="#home" id="home-tab" role="tab" data-toggle="tab" aria-controls="home" aria-expanded="true">首页</a>
+        </li>
+        <li role="presentation">
+            <a href="#profile" role="tab" id="profile-tab" data-toggle="tab" aria-controls="profile">信息检索</a>
+        </li>
         <li role="presentation" class="dropdown">
             <a href="#" id="myTabDrop1" class="dropdown-toggle" data-toggle="dropdown" aria-controls="myTabDrop1-contents">Dropdown <span class="caret"></span></a>
             <ul class="dropdown-menu" role="menu" aria-labelledby="myTabDrop1" id="myTabDrop1-contents">
@@ -19,12 +42,69 @@
             </ul>
         </li>
     </ul>
+    <hr style="height:1px;border:none;border-top:1px solid #185598;" />
     <div id="myTabContent" class="tab-content">
         <div role="tabpanel" class="tab-pane fade in active" id="home" aria-labelledBy="home-tab">
             <p>Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua, retro synth master cleanse. Mustache cliche tempor, williamsburg carles vegan helvetica. Reprehenderit butcher retro keffiyeh dreamcatcher synth. Cosby sweater eu banh mi, qui irure terry richardson ex squid. Aliquip placeat salvia cillum iphone. Seitan aliquip quis cardigan american apparel, butcher voluptate nisi qui.</p>
         </div>
         <div role="tabpanel" class="tab-pane fade" id="profile" aria-labelledBy="profile-tab">
-            <p>Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan four loko farm-to-table craft beer twee. Qui photo booth letterpress, commodo enim craft beer mlkshk aliquip jean shorts ullamco ad vinyl cillum PBR. Homo nostrud organic, assumenda labore aesthetic magna delectus mollit. Keytar helvetica VHS salvia yr, vero magna velit sapiente labore stumptown. Vegan fanny pack odio cillum wes anderson 8-bit, sustainable jean shorts beard ut DIY ethical culpa terry richardson biodiesel. Art party scenester stumptown, tumblr butcher vero sint qui sapiente accusamus tattooed echo park.</p>
+            <div class="row">
+                <div class="col-lg-6" style="width: 251px;">
+                    <div class="input-group">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" type="button">姓名</button>
+                        </span>
+                        <input type="text" class="form-control" placeholder="请输入姓名">
+                    </div>
+                </div>
+                <div class="col-lg-6" style="width: 251px;">
+                    <div class="input-group">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" type="button">身份证</button>
+                        </span>
+                        <input type="text" class="form-control" placeholder="请输入身份证号">
+                    </div>
+                </div>
+                <div class="col-lg-6" style="width: 251px;">
+                    <div class="input-group">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" type="button">性别</button>
+                        </span>
+                        <div>
+                            <select class="selectpicker" id="selecttest">
+                                <option>男</option>
+                                <option>女</option>
+                                <option selected = "selected">不详</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <ul class="nav nav-tabs">
+                <li role="presentation" class="active">
+                    <a href="#person-draw-detail" role="tab" id="person-draw" data-toggle="tab" aria-controls="person-draw-detail">图像</a>
+                </li>
+                <li role="presentation">
+                    <a href="#person-count-detail" role="tab" id="person-count" data-toggle="tab" aria-controls="person-count-detail">统计</a>
+                </li>
+                <li role="presentation">
+                    <a href="#person-relation-detail" role="tab" id="person-relation" data-toggle="tab" aria-controls="person-relation-detail" onclick="chartInit()">关系图</a>
+                </li>
+            </ul>
+
+            <div id="chartTabContent" class="tab-content">
+                <div role="tabpanel" class="tab-pane fade in active" id="person-draw-detail" aria-labelledby="person-draw">
+                    <div id="1">图像</div>
+                </div>
+                <div role="tabpanel" class="tab-pane fade" id="person-count-detail" aria-labelledby="person-count">
+                    <div id="chartRelation2" class="chartdiv"></div>
+                    <div id="chartRelation3" class="chartdiv"></div>
+                </div>
+                <div role="tabpanel" class="tab-pane fade" id="person-relation-detail" aria-labelledby="person-relation">
+                    <div id="chartRelation" style="height: 800px;"></div>
+                </div>
+            </div>
+
         </div>
         <div role="tabpanel" class="tab-pane fade" id="dropdown1" aria-labelledBy="dropdown1-tab">
             <p>Etsy mixtape wayfarers, ethical wes anderson tofu before they sold out mcsweeney's organic lomo retro fanny pack lo-fi farm-to-table readymade. Messenger bag gentrify pitchfork tattooed craft beer, iphone skateboard locavore carles etsy salvia banksy hoodie helvetica. DIY synth PBR banksy irony. Leggings gentrify squid 8-bit cred pitchfork. Williamsburg banh mi whatever gluten-free, carles pitchfork biodiesel fixie etsy retro mlkshk vice blog. Scenester cred you probably haven't heard of them, vinyl craft beer blog stumptown. Pitchfork sustainable tofu synth chambray yr.</p>
@@ -34,5 +114,6 @@
         </div>
     </div>
 </div>
+
 </body>
 </html>
