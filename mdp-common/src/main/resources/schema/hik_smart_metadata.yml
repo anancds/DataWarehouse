@@ -1,0 +1,1213 @@
+---
+name: hik-smart-metadata-collector
+properties:
+  kafka.bootstrap.servers: 10.17.148.7:9092
+  kafka.zookeeper.connector: 10.17.148.7:2181
+  hbase.zookeeper.quorum: 10.17.148.7
+  hbase.zookeeper.property.clientPort: 2181
+  hbase.table.name: HIK_SMART_METADATA
+  # policeHash: Hash分配, policeAvg: 平均分配
+  hbase.region.strategy: policeAvg
+  rowkey.expression: hashFormatAndInsert(formatTime(timestamp_,'yyyyMM')+formatString(target_type,'%03d')+formatTime(timestamp_,'dd')+'_'+global_id,999,0,'%03d',6)
+  collector.parser: pb
+  db.url: jdbc:postgresql:///vsp
+  db.username: postgres
+  db.password: postgres
+schemas:
+  - name: hik_smart_metadata_schema
+    fields:
+      - name: rowKey
+        group: info
+        index: 0
+        # INT8, INT16, INT32, INT64, FLOAT32, FLOAT64, BOOLEAN, STRING, BYTES, ARRAY
+        type: STRING
+        optional: false
+        parameters:
+          index.type: es
+          index.isStore: true
+          index.isTokenized: false
+      - name: task_id
+        group: info
+        index: 1
+        type: STRING
+        optional: true
+        parameters:
+          index.type: es
+          index.isStore: false
+          index.isTokenized: false
+      - name: task_type
+        group: info
+        index: 2
+        type: INT32
+        optional: true
+        parameters:
+          index.type: es
+          index.isStore: false
+          index.isTokenized: false
+      - name: camera_index_code
+        group: info
+        index: 3
+        type: STRING
+        optional: true
+        parameters:
+          index.type: es
+          index.isStore: false
+          index.isTokenized: false
+      - name: camera_address
+        group: info
+        index: 4
+        type: STRING
+        optional: true
+      - name: longitude
+        group: info
+        index: 5
+        type: FLOAT32
+        optional: true
+      - name: latitude
+        group: info
+        index: 6
+        type: FLOAT32
+        optional: true
+      - name: url_store_type
+        group: info
+        index: 7
+        type: INT32
+        optional: true
+      - name: start_time
+        group: info
+        index: 8
+        type: INT64
+        optional: true
+      - name: stop_time
+        group: info
+        index: 9
+        type: INT64
+        optional: true
+      - name: target_id
+        group: info
+        index: 10
+        type: INT32
+        optional: true
+      - name: timestamp_
+        group: info
+        index: 11
+        type: INT64
+        optional: true
+        parameters:
+          index.type: es
+          index.isStore: true
+          index.isTokenized: false
+      - name: stream_type
+        group: info
+        index: 12
+        type: INT32
+        optional: true
+        parameters:
+          index.type: es
+          index.isStore: false
+          index.isTokenized: false
+      - name: trans_context
+        group: info
+        index: 13
+        type: STRING
+        optional: true
+      - name: reserve
+        group: info
+        index: 14
+        type: STRING
+        optional: true
+      - name: target_pic_url
+        group: info
+        index: 15
+        type: STRING
+        optional: true
+      - name: target_pic_size
+        group: info
+        index: 16
+        type: INT32
+        optional: true
+      - name: target_sub_url
+        group: info
+        index: 17
+        type: STRING
+        optional: true
+      - name: target_rect
+        group: info
+        index: 18
+        type: STRING
+        optional: true
+      - name: target_type_con
+        group: info
+        index: 19
+        type: STRING
+        optional: true
+      - name: target_type
+        group: info
+        index: 20
+        type: INT32
+        optional: true
+        parameters:
+          index.type: es
+          index.isStore: false
+          index.isTokenized: false
+      - name: target_type_t
+        group: info
+        index: 21
+        type: STRING
+        optional: true
+      - name: target_width
+        group: info
+        index: 22
+        type: INT32
+        optional: true
+      - name: target_height
+        group: info
+        index: 23
+        type: INT32
+        optional: true
+      - name: target_size_con
+        group: info
+        index: 24
+        type: STRING
+        optional: true
+      - name: target_size
+        group: info
+        index: 25
+        type: INT32
+        optional: true
+        parameters:
+          index.type: es
+          index.isStore: false
+          index.isTokenized: false
+      - name: target_size_t
+        group: info
+        index: 26
+        type: STRING
+        optional: true
+      - name: target_color_pics
+        group: info
+        index: 27
+        type: STRING
+        optional: true
+      - name: color_con
+        group: info
+        index: 28
+        type: STRING
+        optional: true
+      - name: color
+        group: info
+        index: 29
+        type: INT32
+        optional: true
+        parameters:
+          index.type: es
+          index.isStore: false
+          index.isTokenized: false
+      - name: color_t
+        group: info
+        index: 30
+        type: STRING
+        optional: true
+        parameters:
+          index.type: es
+          index.isStore: false
+          index.isTokenized: false
+      - name: direction_con
+        group: info
+        index: 31
+        type: STRING
+        optional: true
+      - name: direction
+        group: info
+        index: 32
+        type: INT32
+        optional: true
+        parameters:
+          index.type: es
+          index.isStore: false
+          index.isTokenized: false
+      - name: direction_t
+        group: info
+        index: 33
+        type: STRING
+        optional: true
+      - name: speed_con
+        group: info
+        index: 34
+        type: STRING
+        optional: true
+      - name: speed
+        group: info
+        index: 35
+        type: INT32
+        optional: true
+        parameters:
+          index.type: es
+          index.isStore: false
+          index.isTokenized: false
+      - name: speed_t
+        group: info
+        index: 36
+        type: STRING
+        optional: true
+      - name: human_rect
+        group: info
+        index: 37
+        type: STRING
+        optional: true
+      - name: gender_con
+        group: info
+        index: 38
+        type: STRING
+        optional: true
+      - name: gender
+        group: info
+        index: 39
+        type: INT32
+        optional: true
+        parameters:
+          index.type: es
+          index.isStore: false
+          index.isTokenized: false
+      - name: gender_t
+        group: info
+        index: 40
+        type: STRING
+        optional: true
+        parameters:
+          index.type: es
+          index.isStore: false
+          index.isTokenized: false
+      - name: ride_con
+        group: info
+        index: 41
+        type: STRING
+        optional: true
+      - name: ride
+        group: info
+        index: 42
+        type: INT32
+        optional: true
+        parameters:
+          index.type: es
+          index.isStore: false
+          index.isTokenized: false
+      - name: ride_t
+        group: info
+        index: 43
+        type: STRING
+        optional: true
+      - name: bag_con
+        group: info
+        index: 44
+        type: STRING
+        optional: true
+      - name: bag
+        group: info
+        index: 45
+        type: INT32
+        optional: true
+        parameters:
+          index.type: es
+          index.isStore: false
+          index.isTokenized: false
+      - name: bag_t
+        group: info
+        index: 46
+        type: STRING
+        optional: true
+      - name: things_con
+        group: info
+        index: 47
+        type: STRING
+        optional: true
+      - name: things
+        group: info
+        index: 48
+        type: INT32
+        optional: true
+        parameters:
+          index.type: es
+          index.isStore: false
+          index.isTokenized: false
+      - name: things_t
+        group: info
+        index: 49
+        type: STRING
+        optional: true
+      - name: glass_con
+        group: info
+        index: 50
+        type: STRING
+        optional: true
+      - name: glass
+        group: info
+        index: 51
+        type: INT32
+        optional: true
+        parameters:
+          index.type: es
+          index.isStore: false
+          index.isTokenized: false
+      - name: glass_t
+        group: info
+        index: 52
+        type: STRING
+        optional: true
+      - name: age
+        group: info
+        index: 53
+        type: INT32
+        optional: true
+      - name: age_offset
+        group: info
+        index: 54
+        type: INT32
+        optional: true
+      - name: face_pic_url
+        group: info
+        index: 55
+        type: STRING
+        optional: true
+      - name: fm_version
+        group: info
+        index: 56
+        type: STRING
+        optional: true
+      - name: bm_version
+        group: info
+        index: 57
+        type: STRING
+        optional: true
+      - name: jacet_color_con
+        group: info
+        index: 58
+        type: STRING
+        optional: true
+      - name: jacet_color
+        group: info
+        index: 59
+        type: INT32
+        optional: true
+        parameters:
+          index.type: es
+          index.isStore: false
+          index.isTokenized: false
+      - name: jacet_color_t
+        group: info
+        index: 60
+        type: STRING
+        optional: true
+      - name: age_group_con
+        group: info
+        index: 61
+        type: STRING
+        optional: true
+      - name: age_group
+        group: info
+        index: 62
+        type: INT32
+        optional: true
+        parameters:
+          index.type: es
+          index.isStore: false
+          index.isTokenized: false
+      - name: age_group_t
+        group: info
+        index: 63
+        type: STRING
+        optional: true
+      - name: vehicle_speed
+        group: info
+        index: 64
+        type: INT32
+        optional: true
+      - name: plate_rect
+        group: info
+        index: 65
+        type: STRING
+        optional: true
+      - name: plate
+        group: info
+        index: 66
+        type: STRING
+        optional: true
+        parameters:
+          index.type: es
+          index.isStore: false
+          index.isTokenized: false
+      - name: plate_direction_con
+        group: info
+        index: 67
+        type: STRING
+        optional: true
+      - name: plate_direction
+        group: info
+        index: 68
+        type: INT32
+        optional: true
+        parameters:
+          index.type: es
+          index.isStore: false
+          index.isTokenized: false
+      - name: plate_direction_t
+        group: info
+        index: 69
+        type: STRING
+        optional: true
+      - name: plate_len
+        group: info
+        index: 70
+        type: INT32
+        optional: true
+      - name: plate_inclined_angle
+        group: info
+        index: 71
+        type: STRING
+        optional: true
+      - name: plate_type_con
+        group: info
+        index: 72
+        type: STRING
+        optional: true
+      - name: plate_type
+        group: info
+        index: 73
+        type: INT32
+        optional: true
+        parameters:
+          index.type: es
+          index.isStore: false
+          index.isTokenized: false
+      - name: plate_type_t
+        group: info
+        index: 74
+        type: STRING
+        optional: true
+      - name: plate_color_con
+        group: info
+        index: 75
+        type: STRING
+        optional: true
+      - name: plate_color
+        group: info
+        index: 76
+        type: INT32
+        optional: true
+        parameters:
+          index.type: es
+          index.isStore: false
+          index.isTokenized: false
+      - name: plate_color_t
+        group: info
+        index: 77
+        type: STRING
+        optional: true
+      - name: vehicle_color_con
+        group: info
+        index: 78
+        type: STRING
+        optional: true
+      - name: vehicle_color
+        group: info
+        index: 79
+        type: INT32
+        optional: true
+        parameters:
+          index.type: es
+          index.isStore: false
+          index.isTokenized: false
+      - name: vehicle_color_t
+        group: info
+        index: 80
+        type: STRING
+        optional: true
+        parameters:
+          index.type: es
+          index.isStore: false
+          index.isTokenized: false
+      - name: vehicle_category_con
+        group: info
+        index: 81
+        type: STRING
+        optional: true
+      - name: vehicle_category
+        group: info
+        index: 82
+        type: INT32
+        optional: true
+        parameters:
+          index.type: es
+          index.isStore: false
+          index.isTokenized: false
+      - name: vehicle_category_t
+        group: info
+        index: 83
+        type: STRING
+        optional: true
+      - name: brand_con
+        group: info
+        index: 84
+        type: STRING
+        optional: true
+      - name: brand
+        group: info
+        index: 85
+        type: INT32
+        optional: true
+        parameters:
+          index.type: es
+          index.isStore: false
+          index.isTokenized: false
+      - name: brand_t
+        group: info
+        index: 86
+        type: STRING
+        optional: true
+        parameters:
+          index.type: es
+          index.isStore: false
+          index.isTokenized: false
+      - name: sub_brand_con
+        group: info
+        index: 87
+        type: STRING
+        optional: true
+      - name: sub_brand
+        group: info
+        index: 88
+        type: INT32
+        optional: true
+        parameters:
+          index.type: es
+          index.isStore: false
+          index.isTokenized: false
+      - name: sub_brand_t
+        group: info
+        index: 89
+        type: STRING
+        optional: true
+        parameters:
+          index.type: es
+          index.isStore: false
+          index.isTokenized: false
+      - name: yellow_lable_con
+        group: info
+        index: 90
+        type: STRING
+        optional: true
+      - name: yellow_lable
+        group: info
+        index: 91
+        type: INT32
+        optional: true
+        parameters:
+          index.type: es
+          index.isStore: false
+          index.isTokenized: false
+      - name: yellow_lable_t
+        group: info
+        index: 92
+        type: STRING
+        optional: true
+      - name: user_phone_con
+        group: info
+        index: 93
+        type: STRING
+        optional: true
+      - name: user_phone
+        group: info
+        index: 94
+        type: INT32
+        optional: true
+        parameters:
+          index.type: es
+          index.isStore: false
+          index.isTokenized: false
+      - name: user_phone_t
+        group: info
+        index: 95
+        type: STRING
+        optional: true
+      - name: host_sun_board_con
+        group: info
+        index: 96
+        type: STRING
+        optional: true
+      - name: host_sun_board
+        group: info
+        index: 97
+        type: INT32
+        optional: true
+        parameters:
+          index.type: es
+          index.isStore: false
+          index.isTokenized: false
+      - name: host_sun_board_t
+        group: info
+        index: 98
+        type: STRING
+        optional: true
+      - name: vice_sun_board_con
+        group: info
+        index: 99
+        type: STRING
+        optional: true
+      - name: vice_sun_board
+        group: info
+        index: 100
+        type: INT32
+        optional: true
+        parameters:
+          index.type: es
+          index.isStore: false
+          index.isTokenized: false
+      - name: vice_sun_board_t
+        group: info
+        index: 101
+        type: STRING
+        optional: true
+      - name: host_safe_belt_con
+        group: info
+        index: 102
+        type: STRING
+        optional: true
+      - name: host_safe_belt
+        group: info
+        index: 103
+        type: INT32
+        optional: true
+        parameters:
+          index.type: es
+          index.isStore: false
+          index.isTokenized: false
+      - name: host_safe_belt_t
+        group: info
+        index: 104
+        type: STRING
+        optional: true
+      - name: illegal_type
+        group: info
+        index: 105
+        type: INT32
+        optional: true
+      - name: illegal_type_t
+        group: info
+        index: 106
+        type: STRING
+        optional: true
+      - name: pendant_con
+        group: info
+        index: 107
+        type: STRING
+        optional: true
+      - name: pendant
+        group: info
+        index: 108
+        type: INT32
+        optional: true
+        parameters:
+          index.type: es
+          index.isStore: false
+          index.isTokenized: false
+      - name: pendant_t
+        group: info
+        index: 109
+        type: STRING
+        optional: true
+      - name: danger_vehicle_con
+        group: info
+        index: 110
+        type: STRING
+        optional: true
+      - name: danger_vehicle
+        group: info
+        index: 111
+        type: INT32
+        optional: true
+        parameters:
+          index.type: es
+          index.isStore: false
+          index.isTokenized: false
+      - name: danger_vehicle_t
+        group: info
+        index: 112
+        type: STRING
+        optional: true
+      - name: hat_con
+        group: info
+        index: 113
+        type: STRING
+        optional: true
+      - name: hat
+        group: info
+        index: 114
+        type: INT32
+        optional: true
+        parameters:
+          index.type: es
+          index.isStore: false
+          index.isTokenized: false
+      - name: hat_t
+        group: info
+        index: 115
+        type: STRING
+        optional: true
+      - name: jacet_type_con
+        group: info
+        index: 116
+        type: STRING
+        optional: true
+      - name: jacet_type
+        group: info
+        index: 117
+        type: INT32
+        optional: true
+        parameters:
+          index.type: es
+          index.isStore: false
+          index.isTokenized: false
+      - name: jacet_type_t
+        group: info
+        index: 118
+        type: STRING
+        optional: true
+      - name: trousers_type_con
+        group: info
+        index: 119
+        type: STRING
+        optional: true
+      - name: trousers_type
+        group: info
+        index: 120
+        type: INT32
+        optional: true
+        parameters:
+          index.type: es
+          index.isStore: false
+          index.isTokenized: false
+      - name: trousers_type_t
+        group: info
+        index: 121
+        type: STRING
+        optional: true
+      - name: mask_con
+        group: info
+        index: 122
+        type: STRING
+        optional: true
+      - name: mask
+        group: info
+        index: 123
+        type: INT32
+        optional: true
+        parameters:
+          index.type: es
+          index.isStore: false
+          index.isTokenized: false
+      - name: mask_t
+        group: info
+        index: 124
+        type: STRING
+        optional: true
+      - name: hair_style_con
+        group: info
+        index: 125
+        type: STRING
+        optional: true
+      - name: hair_style
+        group: info
+        index: 126
+        type: INT32
+        optional: true
+        parameters:
+          index.type: es
+          index.isStore: false
+          index.isTokenized: false
+      - name: hair_style_t
+        group: info
+        index: 127
+        type: STRING
+        optional: true
+      - name: smile_con
+        group: info
+        index: 128
+        type: STRING
+        optional: true
+      - name: smile
+        group: info
+        index: 129
+        type: INT32
+        optional: true
+      - name: smile_t
+        group: info
+        index: 130
+        type: STRING
+        optional: true
+      - name: high_risk_group_con
+        group: info
+        index: 131
+        type: STRING
+        optional: true
+      - name: high_risk_group
+        group: info
+        index: 132
+        type: INT32
+        optional: true
+      - name: high_risk_group_t
+        group: info
+        index: 133
+        type: STRING
+        optional: true
+      - name: temporary_plate_con
+        group: info
+        index: 134
+        type: STRING
+        optional: true
+      - name: temporary_plate
+        group: info
+        index: 135
+        type: INT32
+        optional: true
+        parameters:
+          index.type: es
+          index.isStore: false
+          index.isTokenized: false
+      - name: temporary_plate_t
+        group: info
+        index: 136
+        type: STRING
+        optional: true
+      - name: scuttle_human_con
+        group: info
+        index: 137
+        type: STRING
+        optional: true
+      - name: scuttle_human
+        group: info
+        index: 138
+        type: INT32
+        optional: true
+        parameters:
+          index.type: es
+          index.isStore: false
+          index.isTokenized: false
+      - name: scuttle_human_t
+        group: info
+        index: 139
+        type: STRING
+        optional: true
+      - name: plate_status_con
+        group: info
+        index: 140
+        type: STRING
+        optional: true
+      - name: plate_status
+        group: info
+        index: 141
+        type: INT32
+        optional: true
+        parameters:
+          index.type: es
+          index.isStore: false
+          index.isTokenized: false
+      - name: plate_status_t
+        group: info
+        index: 142
+        type: STRING
+        optional: true
+      - name: vehicle_shade_con
+        group: info
+        index: 143
+        type: STRING
+        optional: true
+      - name: vehicle_shade
+        group: info
+        index: 144
+        type: INT32
+        optional: true
+        parameters:
+          index.type: es
+          index.isStore: false
+          index.isTokenized: false
+      - name: vehicle_shade_t
+        group: info
+        index: 145
+        type: STRING
+        optional: true
+      - name: vehicle_direction_con
+        group: info
+        index: 146
+        type: STRING
+        optional: true
+      - name: vehicle_direction
+        group: info
+        index: 147
+        type: INT32
+        optional: true
+        parameters:
+          index.type: es
+          index.isStore: false
+          index.isTokenized: false
+      - name: vehicle_direction_t
+        group: info
+        index: 148
+        type: STRING
+        optional: true
+      - name: vehicle_pic_url
+        group: info
+        index: 149
+        type: STRING
+        optional: true
+      - name: plate_url
+        group: info
+        index: 150
+        type: STRING
+        optional: true
+      - name: vm_version
+        group: info
+        index: 151
+        type: STRING
+        optional: true
+      - name: global_id
+        group: info
+        index: 152
+        type: STRING
+        optional: true
+      - name: seg_num
+        group: info
+        index: 153
+        type: INT32
+        optional: true
+      - name: end_flag
+        group: info
+        index: 154
+        type: BOOLEAN
+        optional: true
+      - name: plate_belong
+        group: info
+        index: 155
+        type: STRING
+        optional: true
+        parameters:
+          index.type: es
+          index.isStore: false
+          index.isTokenized: false
+      - name: face_model
+        group: model
+        index: 156
+        type: BYTES
+        optional: true
+      - name: body_model
+        group: model
+        index: 157
+        type: BYTES
+        optional: true
+      - name: vehicle_model
+        group: model
+        index: 158
+        type: BYTES
+        optional: true
+      - name: trace
+        group: trace
+        index: 159
+        type: BYTES
+        optional: true
+      - name: trace_pic_url
+        group: trace
+        index: 160
+        type: STRING
+        optional: true
+      - name: target_type_zxd
+        group: info
+        index: 161
+        type: INT32
+        optional: true
+        parameters:
+          index.type: es
+          index.isStore: false
+          index.isTokenized: false
+      - name: color_zxd
+        group: info
+        index: 162
+        type: INT32
+        optional: true
+        parameters:
+          index.type: es
+          index.isStore: false
+          index.isTokenized: false
+      - name: gender_zxd
+        group: info
+        index: 163
+        type: INT32
+        optional: true
+        parameters:
+          index.type: es
+          index.isStore: false
+          index.isTokenized: false
+      - name: ride_zxd
+        group: info
+        index: 164
+        type: INT32
+        optional: true
+        parameters:
+          index.type: es
+          index.isStore: false
+          index.isTokenized: false
+      - name: bag_zxd
+        group: info
+        index: 165
+        type: INT32
+        optional: true
+        parameters:
+          index.type: es
+          index.isStore: false
+          index.isTokenized: false
+      - name: things_zxd
+        group: info
+        index: 166
+        type: INT32
+        optional: true
+        parameters:
+          index.type: es
+          index.isStore: false
+          index.isTokenized: false
+      - name: glass_zxd
+        group: info
+        index: 167
+        type: INT32
+        optional: true
+        parameters:
+          index.type: es
+          index.isStore: false
+          index.isTokenized: false
+      - name: jacet_color_zxd
+        group: info
+        index: 168
+        type: INT32
+        optional: true
+        parameters:
+          index.type: es
+          index.isStore: false
+          index.isTokenized: false
+      - name: age_group_zxd
+        group: info
+        index: 169
+        type: INT32
+        optional: true
+        parameters:
+          index.type: es
+          index.isStore: false
+          index.isTokenized: false
+      - name: hat_zxd
+        group: info
+        index: 170
+        type: INT32
+        optional: true
+        parameters:
+          index.type: es
+          index.isStore: false
+          index.isTokenized: false
+      - name: jacet_type_zxd
+        group: info
+        index: 171
+        type: INT32
+        optional: true
+        parameters:
+          index.type: es
+          index.isStore: false
+          index.isTokenized: false
+      - name: trousers_type_zxd
+        group: info
+        index: 172
+        type: INT32
+        optional: true
+        parameters:
+          index.type: es
+          index.isStore: false
+          index.isTokenized: false
+      - name: mask_zxd
+        group: info
+        index: 173
+        type: INT32
+        optional: true
+        parameters:
+          index.type: es
+          index.isStore: false
+          index.isTokenized: false
+      - name: hair_style_zxd
+        group: info
+        index: 174
+        type: INT32
+        optional: true
+        parameters:
+          index.type: es
+          index.isStore: false
+          index.isTokenized: false
+topics:
+  - name: HIK_SMART_METADATA_TOPIC
+    partitions: 10
+    replicas: 1
+    schema: hik_smart_metadata_schema
+  - name: INCREMENT_SMART_METADATA_TOPIC
+    partitions: 10
+    replicas: 1
+    schema: hik_smart_metadata_schema
+  - name: HIK_SMART_METADATA
+    partitions: 10
+    replicas: 1
+    schema: hik_smart_metadata_schema
+connectors:
+  # 批量写HBase和Kafka
+  - name: vsp-batch-hbase-connector
+    className: com.hikvision.vsp.hbp.collector.connector.smartmetadata.SmartMetadataHBaseSinkKafkaConnector
+    properties:
+      connector.resources.cores: 1
+      connector.resources.memory.mb: 1536
+    parals: 1
+    from:
+      topic: HIK_SMART_METADATA_TOPIC
+      collector.parser: pb
+    to:
+      topic: INCREMENT_SMART_METADATA_TOPIC
+      convertor: com.hikvision.vsp.hbp.collector.connector.HBPCommonConvertor
+      table: HIK_SMART_METADATA
+      hbase.zookeeper.quorum: vsp002:2181
+      retry.times: 30
+  - name: vsp-batch-es-connector
+    className: com.hikvision.vsp.hbp.collector.connector.HBPElasticSearchSinkConnector
+    properties:
+      connector.resources.cores: 1
+      connector.resources.memory.mb: 1536
+    parals: 1
+    from:
+      topic: INCREMENT_SMART_METADATA_TOPIC
+      collector.parser: json
+    to:
+      index: hik_smart_metadata
+      type: hiksmartmetadatatype
+      router: DATE_FIELD
+      router.field: timestamp_
+      router.rules: day:7
+      router.rules.locale: zh-cn
+      router.rules.timezone: GMT
+      router.rules.initialdate: 2016-01-01 00:00:00
+      es.rest.addresses: vsp002:9200
+      retry.times: 30
+  # 单条数据采集
+  - name: vsp-single-connector
+    className: com.hikvision.bigdata.hbp.datacollectors.api.connector.impl.sink.HBaseSinkKafkaConnector
+    properties:
+      connector.resources.cores: 1
+      connector.resources.memory.mb: 1024
+    parals: 1
+    from:
+      topic: HIK_SMART_METADATA
+    to:
+      topic: INCREMENT_SMART_METADATA_TOPIC
+      convertor: com.hikvision.vsp.hbp.collector.connector.HBPCommonConvertor
+      table: HIK_SMART_METADATA
+      hbase.zookeeper.quorum: vsp002:2181
+      retry.times: 30
+    processor:
+      className: com.hikvision.vsp.hbp.collector.processor.DefaultProcessor

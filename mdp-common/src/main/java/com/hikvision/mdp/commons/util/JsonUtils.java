@@ -76,6 +76,12 @@ public final class JsonUtils {
 		}
 	}
 
+	/**
+	 * 先用put放数据，然后调用这个函数
+	 *
+	 * @return json字符串
+	 * @see #put(String, Object)
+	 */
 	public String toJson() {
 		try {
 			return mapper.writeValueAsString(node);
@@ -158,7 +164,7 @@ public final class JsonUtils {
 	}
 
 	/**
-	 * 輸出JSONP格式數據.
+	 * 输出json格式数据
 	 */
 	public String toJsonP(String functionName, Object object) {
 		return toJson(new JSONPObject(functionName, object));
