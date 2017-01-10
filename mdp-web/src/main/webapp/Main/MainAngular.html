@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="mMain">
+<head>
+    <meta charset="UTF-8">
+    <title>angular主页</title>
+    <link rel="stylesheet" href="../css/bootstrap.css">
+
+    <script src="../js/jquery-3.1.1.js"></script>
+    <script src="../js/angular.js"></script>
+    <script src="../js/angular-route.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
+    <script src="js/MainAngular.js"></script>
+</head>
+<body>
+
+<ul id="myTab" class="nav nav-tabs" role="tablist">
+    <li role="presentation" class="active">
+        <a href="#one" role="tab" data-toggle="tab" aria-controls="home" aria-expanded="true">Home</a>
+    </li>
+    <li role="presentation">
+        <a href="#two" role="tab" data-toggle="tab" aria-controls="profile">Profile</a>
+    </li>
+    <li role="presentation" class="dropdown">
+        <a href="#" id="myTabDrop1" class="dropdown-toggle" data-toggle="dropdown" aria-controls="myTabDrop1-contents">Dropdown <span class="caret"></span></a>
+        <ul class="dropdown-menu" role="menu" aria-labelledby="myTabDrop1" id="myTabDrop1-contents">
+            <li><a href="#dropdown1" tabindex="-1" role="tab" data-toggle="tab" aria-controls="dropdown1">@fat</a></li>
+            <li><a href="#dropdown2" tabindex="-1" role="tab" data-toggle="tab" aria-controls="dropdown2">@mdo</a></li>
+        </ul>
+    </li>
+</ul>
+
+<div ng-view=""></div>
+
+</body>
+</html>
