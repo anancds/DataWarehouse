@@ -23,7 +23,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * <b>function:</b>Jackson 将java对象转换成JSON字符串，也可以将JSON字符串转换成java对象
@@ -80,8 +85,8 @@ public class JavaToJsonTest{
 	@Before
 	public void init() {
 		bean = new JavaObject();
-		bean.setAddress("CHINA_hangzhou");
-		bean.setEmail("111111111@gmail.com");
+		bean.setAddress("HZ");
+		bean.setEmail("111@gmail.com");
 		bean.setId(1);
 		bean.setName("xiaowei1");
 
@@ -111,6 +116,11 @@ public class JavaToJsonTest{
 		}
 	}
 
+	/**
+	 * <b>function:</b>将java对象转换成json字符串
+	 * @author zhangsiwei6
+	 * @createDate 2017/1/10 下午15:01
+	 */
 	@Test
 	public void writeEntityJSON() {
 		try {
@@ -122,6 +132,70 @@ public class JavaToJsonTest{
 			System.out.println("ObjectMapper");
 			//writeValue具有和writeObject相同的功能
 			objectMapper.writeValue(System.out, bean);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * <b>function:</b>将map转换成json字符串
+	 * @author zhangsiwei6
+	 * @createDate 2017/1/10 下午15:20
+	 */
+	@Test
+	public void writeMapJSON() {
+		try {
+			Map<String, Object> map = new HashMap<>();
+			map.put(bean.getName(), bean);
+
+			bean = new JavaObject();
+			bean.setId(2);
+			bean.setName("xiaowei2");
+			bean.setAddress("BJ");
+			bean.setEmail("222@qq.com");
+			map.put(bean.getName(), bean);
+
+			System.out.println("jsonGenerator");
+			jsonGenerator.writeObject(map);
+			System.out.println();
+
+			System.out.println("objectMapper");
+			objectMapper.writeValue(System.out, map);
+			System.out.println();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * <b>function:</b>将list集合转换成json字符串
+	 * @author zhangsiwei6
+	 * @createDate 2017/1/10 下午15:45
+	 */
+	@Test
+	public void writeListJSON() {
+		try {
+			List<JavaObject> list = new ArrayList<>();
+			list.add(bean);
+
+			bean = new JavaObject();
+			bean.setId(2);
+			bean.setAddress("BJ");
+			bean.setEmail("222@gmail.com");
+			bean.setName("xiaowei2");
+			list.add(bean);
+
+			System.out.println("jsonGenerator");
+			//list转换成JSON字符串
+			jsonGenerator.writeObject(list);
+			System.out.println();
+
+			System.out.println("ObjectMapper");
+			//用objectMapper直接返回list转换成的JSON字符串
+			System.out.println("1###" + objectMapper.writeValueAsString(list));
+			System.out.print("2###");
+			//objectMapper list转换成JSON字符串
+			objectMapper.writeValue(System.out, list);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
