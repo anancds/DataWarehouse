@@ -22,7 +22,7 @@
                     </descriptors>
                     <archive>
                         <manifest>
-                            <mainClass>com.hikvision.mdp.datagenerator.DataMain</mainClass>
+                            <mainClass>com.hikvision.mdp.datagenerator.DataGeneratorMain</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

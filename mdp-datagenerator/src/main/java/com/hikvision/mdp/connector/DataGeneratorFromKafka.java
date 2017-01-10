@@ -7,9 +7,9 @@
  */
 package com.hikvision.mdp.connector;
 
+import com.hikvision.bigdata.hbp.common.data.schema.Schema;
 import com.hikvision.bigdata.hbp.datacollectors.api.connector.ConnectorContext;
 import com.hikvision.bigdata.hbp.datacollectors.api.connector.impl.ConnectorFromKafka;
-import com.hikvision.bigdata.hbp.datacollectors.common.data.schema.Schema;
 import com.hikvision.mdp.commons.parser.IParser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

@@ -8,7 +8,7 @@
 package com.hikvision.mdp.commons.parser;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hikvision.bigdata.hbp.datacollectors.common.data.schema.Schema;
+import com.hikvision.bigdata.hbp.common.data.schema.Schema;
 import com.hikvision.mdp.commons.jackson.MapperType;
 import com.hikvision.mdp.commons.jackson.ObjectMapperFactory;
 import com.hikvision.mdp.commons.task.CollectorTask;
@@ -30,7 +30,8 @@ import java.util.Map;
  */
 public class JSONParser implements IParser {
 
-	@Override public List<Map<String, Object>> deserialize(ConsumerRecord<byte[], byte[]> consumerRecord, Schema schema)
+	@Override
+	 public List<Map<String, Object>> deserialize(ConsumerRecord<byte[], byte[]> consumerRecord, Schema schema)
 			throws IOException {
 		byte[] value = consumerRecord.value();
 		ObjectMapper mapper = ObjectMapperFactory.getObjectMapper(MapperType.JSON);
@@ -38,7 +39,8 @@ public class JSONParser implements IParser {
 		return mapper.readValue(value, List.class);
 	}
 
-	@Override public List<Map<String, Object>> deserialize(ConsumerRecord<byte[], byte[]> consumerRecord, Schema schema,
+	@Override
+	public List<Map<String, Object>> deserialize(ConsumerRecord<byte[], byte[]> consumerRecord, Schema schema,
 			CollectorTask collectorTask) throws IOException {
 		throw new NotImplementedException("Method not implemented.");
 	}

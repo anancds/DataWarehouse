@@ -12,7 +12,7 @@ import com.hikvision.bigdata.hbp.datacollectors.api.connector.ConnectorContext;
 import com.hikvision.bigdata.hbp.datacollectors.api.connector.ConnectorFrom;
 import com.hikvision.bigdata.hbp.datacollectors.api.connector.ConnectorTo;
 import com.hikvision.bigdata.hbp.datacollectors.api.connector.impl.linked.LinkedConnector;
-import com.hikvision.bigdata.hbp.datacollectors.common.io.DataCollectorPipelineDescriptor;
+import com.hikvision.bigdata.hbp.datacollectors.common.io.descriptors.DataCollectorPipelineDescriptor;
 
 /**
  * <p>创建kafka连接</p>

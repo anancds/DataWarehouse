@@ -7,10 +7,9 @@
  */
 package com.hikvision.mdp.connector;
 
+import com.hikvision.bigdata.hbp.common.data.record.Record;
 import com.hikvision.bigdata.hbp.datacollectors.api.connector.ConnectorContext;
 import com.hikvision.bigdata.hbp.datacollectors.api.connector.ConvertorBase;
-import com.hikvision.bigdata.hbp.datacollectors.api.utils.PipelineUtils;
-import com.hikvision.bigdata.hbp.datacollectors.common.data.record.Record;
 import com.hikvision.mdp.commons.kafka.Dataconvertor;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.util.SerializationUtils;
@@ -37,7 +36,7 @@ public class CommonConvertor extends ConvertorBase {
 
 	public CommonConvertor(ConnectorContext context) {
 		super(context);
-		this.props.putAll(PipelineUtils.createConnectorFromProps(context));
+//		this.props.putAll(PipelineUtils.createConnectorFromProps(context));
 		this.topicFrom = this.props.getProperty("topic");
 	}
 
