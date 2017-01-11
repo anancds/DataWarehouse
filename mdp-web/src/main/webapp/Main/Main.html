@@ -5,12 +5,16 @@
     <title>首页</title>
     <link rel="stylesheet" href="../css/bootstrap.css">
     <link rel="stylesheet" href="../css/bootstrap-select.css">
+    <link rel="stylesheet" href="../css/jquery-confirm.min.css">
 
     <script src="../js/jquery-3.1.1.js"></script>
+    <script src="../js/jquery-confirm.min.js"></script>
     <script src="../js/bootstrap.min.js"></script>
     <script src="../js/bootstrap-select.js"></script>
-
     <script src="../js/echarts2.js"></script>
+    <script src="../js/echarts_more.js"></script>
+    <script src="../js/util.js"></script>
+
     <script src="js/Main.js"></script>
 
     <style>
@@ -21,6 +25,9 @@
             padding:8px;
             border:1px solid #96c2f1;
             background:#eff7ff
+        }
+        .bootstrap-select:not([class*="col-"]):not([class*="form-control"]):not(.input-group-btn) {
+            width: 220px;
         }
     </style>
 </head>
@@ -80,29 +87,81 @@
                     </div>
                 </div>
             </div>
-            <ul class="nav nav-tabs">
+            <ul id="chartTabs" class="nav nav-tabs">
                 <li role="presentation" class="active">
-                    <a href="#person-draw-detail" role="tab" id="person-draw" data-toggle="tab" aria-controls="person-draw-detail">图像</a>
+                    <a href="#person-list-detail" role="tab" id="person-list" data-toggle="tab" aria-controls="person-list-detail">列表</a>
                 </li>
                 <li role="presentation">
-                    <a href="#person-count-detail" role="tab" id="person-count" data-toggle="tab" aria-controls="person-count-detail">统计</a>
+                    <a href="#person-draw-detail" role="tab" id="person-draw" data-toggle="tab" aria-controls="person-draw-detail">画像</a>
                 </li>
                 <li role="presentation">
-                    <a href="#person-relation-detail" role="tab" id="person-relation" data-toggle="tab" aria-controls="person-relation-detail" onclick="chartInit()">关系图</a>
+                    <a href="#person-all-detail" role="tab" id="person-all" data-toggle="tab" aria-controls="person-all-detail">全量</a>
+                </li>
+                <li role="presentation">
+                    <a href="#person-count-detail" role="tab" id="person-count" data-toggle="tab" aria-controls="person-count-detail">关联</a>
+                </li>
+                <li role="presentation">
+                    <a href="#person-relation-detail" role="tab" id="person-relation" data-toggle="tab" aria-controls="person-relation-detail">地图</a>
                 </li>
             </ul>
 
             <div id="chartTabContent" class="tab-content">
-                <div role="tabpanel" class="tab-pane fade in active" id="person-draw-detail" aria-labelledby="person-draw">
-                    <div id="1">图像</div>
+                <div role="tabpanel" class="tab-pane fade in active" id="person-list-detail" aria-labelledby="person-list">    <!--列表-->
+                    <div id="0">
+                        <table class="table" style="table-layout: fixed">
+                            <thead>
+                                <tr>
+                                    <th style="width: 150px">姓名</th>
+                                    <th>身份证</th>
+                                    <th>手机</th>
+                                    <th>性别</th>
+                                    <th>年龄</th>
+                                    <th>户籍</th>
+                                    <th style="width: 150px">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>张三</td>
+                                <td>333333333333333333</td>
+                                <td>1388888888</td>
+                                <td>男</td>
+                                <td>36</td>
+                                <td>新疆</td>
+                                <td>
+                                    <button class="btn btn-success">选择</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>李四</td>
+                                <td>44444444444444444</td>
+                                <td>1399999999</td>
+                                <td>男</td>
+                                <td>45</td>
+                                <td>重庆</td>
+                                <td>
+                                    <button class="btn btn-success">选择</button>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-                <div role="tabpanel" class="tab-pane fade" id="person-count-detail" aria-labelledby="person-count">
+                <div role="tabpanel" class="tab-pane fade" id="person-draw-detail" aria-labelledby="person-draw">    <!--画像-->
+                    <div id="1">画像</div>
+                </div>
+                <div role="tabpanel" class="tab-pane fade" id="person-count-detail" aria-labelledby="person-count">    <!--关联-->
                     <div id="chartRelation2" class="chartdiv"></div>
                     <div id="chartRelation3" class="chartdiv"></div>
                 </div>
-                <div role="tabpanel" class="tab-pane fade" id="person-relation-detail" aria-labelledby="person-relation">
-                    <div id="chartRelation" style="height: 800px;"></div>
+                <div role="tabpanel" class="tab-pane fade" id="person-relation-detail" aria-labelledby="person-relation">    <!--地图-->
+                    <div id="chartRelation" style="height: 700px;"></div>
                 </div>
+                <div role="tabpanel" class="tab-pane fade" id="person-all-detail" aria-labelledby="person-all">    <!--全量-->
+                    <div id="chartAllData" style="height: 750px;width: 80%;float: left;border:1px solid #96c2f1;"></div>
+                    <div style="height: 750px;width: 20%;float: left;border:1px solid #96c2f1;"></div>
+                </div>
+
             </div>
 
         </div>
@@ -114,6 +173,8 @@
         </div>
     </div>
 </div>
+
+
 
 </body>
 </html>
