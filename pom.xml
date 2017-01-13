@@ -31,6 +31,14 @@
     </distributionManagement>
     <repositories>
         <repository>
+            <id>fsdmdept-3rd</id>
+            <url>http://maven.hikvision.com.cn/nexus/content/repositories/fsdmdept-3rd/</url>
+            <name>Hikvision fsdmdept-3rd Repository</name>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <repository>
             <id>public</id>
             <url>http://maven.hikvision.com.cn/nexus/content/groups/public/</url>
             <name>Hikvision Repository</name>
