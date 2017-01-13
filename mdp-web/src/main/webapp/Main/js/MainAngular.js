@@ -2,21 +2,17 @@
  * Created by laiqin on 2017/1/9.
  */
 
-var app = angular.module('mMain',['ngRoute']);
-app.config(['$routeProvider', function($routeProvider){
+var appMain = angular.module('mMain', ['ng', 'ngRoute']);
+
+appMain.config(function ($routeProvider) {
     $routeProvider
-        .when('/',{
-            controller: 'HomeController',
-            contrllerAs: 'home',
-            templateUrl: 'MainPartOne.html'
-        }).when('/one',{
-        controller: 'HomeController',
-        contrllerAs: 'home',
-        templateUrl: 'MainPartOne.html'
-    })
-        .when('/two',{
-            controller: 'HomeController',
-            contrllerAs: 'home',
-            templateUrl: 'MainPartTwo.html'
-        });
-}])
+        .when('home', {
+            templateUrl: 'Home.html'
+        })
+        .when('home', {
+            templateUrl: ''
+        })
+        .otherwise({
+            redirectTo: 'Home.html'
+        })
+})

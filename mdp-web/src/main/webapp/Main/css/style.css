@@ -1,0 +1,11 @@
+.chartdiv{
+    height: 400px;
+    width: 600px;
+    float: left;
+    padding:8px;
+    border:1px solid #96c2f1;
+    background:#eff7ff
+}
+.bootstrap-select:not([class*="col-"]):not([class*="form-control"]):not(.input-group-btn) {
+    width: 100px;
+}

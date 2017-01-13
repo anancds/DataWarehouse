@@ -113,7 +113,7 @@
 </body>
 <script >
     function load() {
-        location.href="ChartMain/ChartMain.html";
+        location.href="Main/Main.html";
     }
 </script>
 </html>

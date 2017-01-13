@@ -1,11 +1,6 @@
 /**
- * Created by laiqin on 2017/1/9.
+ * Created by laiqin on 2017/1/13.
  */
-
-/*$(function () {
-    $('#myTab li:eq(1) a').tab('show')
-    $('#chartTabs li:eq(1) a').tab('show')
-})*/   // 按序号来选择active窗口
 
 var xTime = [];     //横坐标时间   移动语音业务
 var yTime = [];     //纵坐标时间
@@ -14,40 +9,13 @@ var zTime = [];     //通话时间
 var xTimeGPRS = [];     //横坐标时间   GPRS业务
 var yTimeGPRS = [];     //纵坐标时间
 var zTimeGPRS = [];     //通话时间
+
 window.onload = function () {
-    formResize()
-    $(function(){
-        $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-            // 获取已激活的标签页的名称
-            var activeTab = $(e.target).text();
-            // 获取前一个激活的标签页的名称
-            var previousTab = $(e.relatedTarget).text();
-            // switch (activeTab){
-            //     case '全量':
-            //         chartAllData();
-            // }
-        });
-    });
+
 }
 
 function formResize() {
-    $("#mainalladta").height($(window).height()-200);
-}
 
-function showData() {
-    $.confirm({
-        title: '数据筛选!',
-        content: '点击确定查看详情!',
-        autoClose: '取消|3000',
-        buttons: {
-            确定: function () {
-                $('#chartTabs li:eq(3) a').tab('show');
-            },
-            取消: function () {
-
-            }
-        }
-    });
 }
 
 //全量数据获取
@@ -86,7 +54,7 @@ function chartAllData() {
 
 //绘制chart
 function chartAllDataInit() {
-    var myChart1 = echarts.init(document.getElementById('chartAllData'));
+    var myChart1 = echarts.init(document.getElementById('chartinit'));
 
     var option1 = {
         title : {
@@ -123,16 +91,16 @@ function chartAllDataInit() {
         legend : {
             data : ['移动语音业务','GPRS业务']
         }/*,
-        dataRange: {
-            min: 0,
-            max: 500,
-            orient: 'horizontal',
-            y: 30,
-            x: 'center',
-            //text:['高','低'],           // 文本，默认为数值文本
-            color:['#FF3333','#FFAA33','#FFFF33','#99FF33','#33FFAA','#33FFFF','#5599FF'],
-            splitNumber: 10
-        }*/,
+         dataRange: {
+         min: 0,
+         max: 500,
+         orient: 'horizontal',
+         y: 30,
+         x: 'center',
+         //text:['高','低'],           // 文本，默认为数值文本
+         color:['#FF3333','#FFAA33','#FFFF33','#99FF33','#33FFAA','#33FFFF','#5599FF'],
+         splitNumber: 10
+         }*/,
         grid: {
             y2: 80
         },
@@ -285,7 +253,7 @@ function chartAllDataInit() {
             });
             myChart1.on(ecConfig.EVENT.DATA_ZOOM, function (e) {
                 if(e.zoom.start != 0 && e.zoom.end != 100){
-                    showData()
+                    //showData()   弹出窗口
                 }
                 debugger
             });
@@ -299,7 +267,8 @@ function chartAllDataInit() {
     );
 }
 
-function dataSearch() {
-    //alert('--+--+--+-+-+-+-+')
-    allData.window.getParent()
+function getParent() {
+    alert('fudiaozi')
+    return
+    window.parent.dataSearch()
 }

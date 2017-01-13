@@ -15,21 +15,9 @@
     <script src="../js/echarts_more.js"></script>
     <script src="../js/util.js"></script>
 
+    <link rel="stylesheet" href="css/style.css">
     <script src="js/Main.js"></script>
 
-    <style>
-        .chartdiv{
-            height: 400px;
-            width: 600px;
-            float: left;
-            padding:8px;
-            border:1px solid #96c2f1;
-            background:#eff7ff
-        }
-        .bootstrap-select:not([class*="col-"]):not([class*="form-control"]):not(.input-group-btn) {
-            width: 220px;
-        }
-    </style>
 </head>
 <body>
 
@@ -86,6 +74,9 @@
                         </div>
                     </div>
                 </div>
+                <div class="col-lg-6" style="width: 251px;float: right;text-align: center">
+                    <button class="btn btn-info" onclick="dataSearch()">搜索</button>
+                </div>
             </div>
             <ul id="chartTabs" class="nav nav-tabs">
                 <li role="presentation" class="active">
@@ -102,6 +93,9 @@
                 </li>
                 <li role="presentation">
                     <a href="#person-relation-detail" role="tab" id="person-relation" data-toggle="tab" aria-controls="person-relation-detail">地图</a>
+                </li>
+                <li role="presentation">
+                    <a href="#person-rule-detail" role="tab" id="person-rule" data-toggle="tab" aria-controls="person-rule-detail">规律</a>
                 </li>
             </ul>
 
@@ -150,18 +144,28 @@
                 <div role="tabpanel" class="tab-pane fade" id="person-draw-detail" aria-labelledby="person-draw">    <!--画像-->
                     <div id="1">画像</div>
                 </div>
+                <div role="tabpanel" class="tab-pane fade" id="person-all-detail" aria-labelledby="person-all">    <!--全量-->
+                    <!--<div id="chartAllData" style="height: 750px;width: 80%;float: left;border:1px solid #96c2f1;"></div>
+                    <div style="height: 750px;width: 20%;float: left;border:1px solid #96c2f1;font-size: 50px;">操作 <br> 数据筛选
+                        <br> 详细信息
+                    </div>-->
+                        <iframe id="mainalladta" name="allData" src="MainAllData.html" frameborder="0" style="width: 100%;"></iframe>
+                </div>
                 <div role="tabpanel" class="tab-pane fade" id="person-count-detail" aria-labelledby="person-count">    <!--关联-->
-                    <div id="chartRelation2" class="chartdiv"></div>
-                    <div id="chartRelation3" class="chartdiv"></div>
+                    <div id="chartCountData" style="height: 750px;width: 80%;float: left;border:1px solid #96c2f1;"></div>
+                    <div style="height: 750px;width: 20%;float: left;border:1px solid #96c2f1;font-size: 50px;">操作 <br> 数据筛选
+                        <br> 详细信息</div>
                 </div>
                 <div role="tabpanel" class="tab-pane fade" id="person-relation-detail" aria-labelledby="person-relation">    <!--地图-->
-                    <div id="chartRelation" style="height: 700px;"></div>
+                    <div id="chartRelationData" style="height: 750px;width: 80%;float: left;border:1px solid #96c2f1;"></div>
+                    <div style="height: 750px;width: 20%;float: left;border:1px solid #96c2f1;font-size: 50px;">操作 <br> 数据筛选
+                        <br> 详细信息</div>
                 </div>
-                <div role="tabpanel" class="tab-pane fade" id="person-all-detail" aria-labelledby="person-all">    <!--全量-->
-                    <div id="chartAllData" style="height: 750px;width: 80%;float: left;border:1px solid #96c2f1;"></div>
-                    <div style="height: 750px;width: 20%;float: left;border:1px solid #96c2f1;"></div>
+                <div role="tabpanel" class="tab-pane fade" id="person-rule-detail" aria-labelledby="person-rule">    <!--规律-->
+                    <div id="chartRuleData" style="height: 750px;width: 80%;float: left;border:1px solid #96c2f1;"></div>
+                    <div style="height: 750px;width: 20%;float: left;border:1px solid #96c2f1;font-size: 50px;">操作 <br> 数据筛选
+                        <br> 详细信息</div>
                 </div>
-
             </div>
 
         </div>
