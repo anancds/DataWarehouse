@@ -7,11 +7,13 @@
  */
 package com.hikvision.mdp.datagenerator;
 
+import com.hikvision.mdp.commons.util.DateUtils;
 import com.hikvision.mdp.commons.util.In;
 import com.hikvision.mdp.commons.util.JsonUtils;
 import com.hikvision.mdp.commons.util.RandomUtils;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -27,6 +29,7 @@ public class CellPhoneTicketGen {
 
 	//为了避免Unchecked assignment warning，所以用<?, ?>
 	private static Map<?, ?> map;
+	private static SimpleDateFormat sdf = new SimpleDateFormat(DateUtils.DEFAULT_DATE_All_FORMAT);
 
 	static {
 		In in = new In(
@@ -59,6 +62,17 @@ public class CellPhoneTicketGen {
 	public static String getYWLX() {
 		List<String> data = cast(map.get("业务类型"));
 		return data.get(RandomUtils.uniform(data.size()));
+	}
+
+	/**
+	 * 获取起始时间
+	 *
+	 * @return 起始时间
+	 */
+	public static String getQSSJ() {
+		long times = System.currentTimeMillis();
+		Date date = new Date(times);
+		return sdf.format(date);
 	}
 
 	/**

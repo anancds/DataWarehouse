@@ -8,6 +8,7 @@
 package com.hikvision.mdp.datagenerator;
 
 import com.hikvision.mdp.commons.constants.BusinessType;
+import com.hikvision.mdp.datagenerator.impl.CellPhoneTicketToKafka;
 
 /**
  * <p>数据生成的工厂类</p>
@@ -20,13 +21,13 @@ import com.hikvision.mdp.commons.constants.BusinessType;
  */
 public class DataGeneratorFactory {
 
-	public DataGenerator getDataGenerator(BusinessType type) {
+	public DataToKafka getDataGenerator(BusinessType type) {
 		if (null == type) {
 			return null;
 		}
 
 		if (type.equals(BusinessType.HIGHWAY_VEHICLE)) {
-			return new TelephoneBillGen();
+			return new CellPhoneTicketToKafka();
 		}
 
 		return null;

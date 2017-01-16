@@ -83,7 +83,7 @@ public class ConnectorPool {
 	 *
 	 * @return key-value类型的配置
 	 */
-	public static Map<String, String> initKafkaConfig(String kafkaAddr) {
+	private static Map<String, String> initKafkaConfig(String kafkaAddr) {
 
 		Map<String, String> kafkaConfig = new HashMap<>();
 		kafkaConfig.put("acks", "all");

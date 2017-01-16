@@ -26,4 +26,10 @@ public class DataGeneratorConstants {
 
 	//数据的终点，0表示ES，1表示Hbase，2表示ES和Hbase，默认值是2。
 	public static int DESTINATION = 2;
+
+	//发送数据总条数
+	public static int TOTAL_NUM = 0;
+
+	//一次发送数据条数
+	public static int NUM_ONE_TIME = 0;
 }
