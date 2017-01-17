@@ -17,4 +17,10 @@ package com.hikvision.mdp.commons.kafka;
  * @modify by reason:{方法名}:{原因}
  */
 public class KafkaProperties {
+
+	//yml配置文件中的kafka.bootstrap.servers属性
+	public static final String KAFKA_SERVER = "kafka.bootstrap.servers";
+
+	//yml配置文件中的kafka.zookeeper.connector属性
+	public static final String KAFKA_ZOOKEEPER = "kafka.zookeeper.connector";
 }

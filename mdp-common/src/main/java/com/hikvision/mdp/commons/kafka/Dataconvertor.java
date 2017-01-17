@@ -7,22 +7,15 @@
  */
 package com.hikvision.mdp.commons.kafka;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hikvision.bigdata.hbp.common.data.record.Record;
 import com.hikvision.bigdata.hbp.common.data.schema.Field;
 import com.hikvision.bigdata.hbp.common.data.schema.Schema;
-import com.hikvision.bigdata.hbp.datacollectors.api.connector.builder.ConnectorBuilderV1;
 import com.hikvision.bigdata.hbp.datacollectors.api.connector.impl.source.ClientSourceConnector;
-import com.hikvision.bigdata.hbp.datacollectors.common.io.DataCollectorPipelineDetail;
-import com.hikvision.mdp.commons.constants.MDPConstants;
-import com.hikvision.mdp.commons.jackson.MapperType;
-import com.hikvision.mdp.commons.jackson.ObjectMapperFactory;
+import com.hikvision.mdp.commons.parser.YmlParse;
 import org.apache.hadoop.hbase.util.Base64;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.math.BigDecimal;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -42,21 +35,6 @@ import java.util.Map;
 public class Dataconvertor {
 
 	private static final Logger LOG = LogManager.getLogger(Dataconvertor.class);
-	private static final String[] YMLFiles = new String[] { MDPConstants.Collector.PIPELINE_INFO_HIK_SMART_METADATA };
-	private static Map<String, DataCollectorPipelineDetail> pipelineCache = new HashMap<>();
-	private static Map<String, Schema> schemas = new HashMap<>();
-
-	static {
-		// 加载YML采集流水线配置
-		for (String fileName : YMLFiles) {
-			DataCollectorPipelineDetail pipelineDetail = loadYMLResource(fileName);
-			if (pipelineDetail != null) {
-				pipelineCache.put(fileName, pipelineDetail);
-//				Map<String, Schema> schemaMap = ConnectorBuilderV1.createSchemas();
-//				schemas.put(fileName, schemaMap.values().iterator().next());
-			}
-		}
-	}
 
 	/**
 	 * 数据采集接口
@@ -71,8 +49,8 @@ public class Dataconvertor {
 		}
 
 		// 消息Schema
-		Schema schema = getSchema(dataType);
-		String topicName = getTopic(dataType, topicNo);
+		Schema schema = YmlParse.getSchema(dataType);
+		String topicName = YmlParse.getTopic(dataType, topicNo);
 
 		List<Record> records = new ArrayList<>();
 		// Get Connector
@@ -96,8 +74,8 @@ public class Dataconvertor {
 		}
 
 		// 消息Schema
-		Schema schema = getSchema(dataType);
-		String topicName = getTopic(dataType, topicNo);
+		Schema schema = YmlParse.getSchema(dataType);
+		String topicName = YmlParse.getTopic(dataType, topicNo);
 
 		List<Record> records = new ArrayList<>();
 		// Get Connector
@@ -107,50 +85,6 @@ public class Dataconvertor {
 			records.add(record);
 		}
 		connector.send(records);
-	}
-
-	/**
-	 * 从YML加载数据采集配置
-	 *
-	 * @param ymlFile yml文件名
-	 * @return DataCollectorPipelineDetail
-	 */
-	public static DataCollectorPipelineDetail loadYMLResource(String ymlFile) {
-		LOG.info("Loading collector config from {} ...", ymlFile);
-		// 解析Pipeline描述文件
-		try {
-			InputStream is = Dataconvertor.class.getClassLoader().getResourceAsStream("schema/" + ymlFile);
-			if (is != null) {
-				ObjectMapper mapper = ObjectMapperFactory.getObjectMapper(MapperType.YAML);
-				return mapper.readValue(is, DataCollectorPipelineDetail.class);
-			} else {
-				LOG.warn("Could not find YML file:{}", ymlFile);
-			}
-		} catch (IOException e) {
-			LOG.error("IO Error while read YML file.", e);
-		}
-		return null;
-	}
-
-	/**
-	 * 获取数据解析Schema
-	 *
-	 * @param key
-	 * @return
-	 */
-	public static Schema getSchema(String key) {
-		return schemas.get(key);
-	}
-
-	/**
-	 * 获取数据发送的Kafka topic
-	 *
-	 * @param key
-	 * @return
-	 */
-	public static String getTopic(String key, int topicNo) {
-//		return pipelineCache.get(key).getTopics().get(topicNo).getName();
-		return "";
 	}
 
 	/**
@@ -287,5 +221,4 @@ public class Dataconvertor {
 		}
 		return map;
 	}
-
 }
