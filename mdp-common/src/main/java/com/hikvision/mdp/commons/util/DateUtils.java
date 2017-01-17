@@ -7,6 +7,9 @@
  */
 package com.hikvision.mdp.commons.util;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -23,7 +26,237 @@ import java.util.GregorianCalendar;
  * @modify by reason:{方法名}:{原因}
  */
 public class DateUtils {
+
+	private static final Logger LOG = LogManager.getLogger(DateUtils.class);
+
+	public static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd";
+	public static final String DEFAULT_DATE_All_FORMAT = "yyyy-MM-dd HH:mm:ss";
+	public static final String DATE_FORMAT_append = "yyyyMMdd";
+	public static final String DATE_FORMAT = "yyyy-MM";
+	public static final int DEFAULT_STR_NUMBER = 2;
 	private static final int[] DAY_OF_MONTH = new int[] { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+
+	/**
+	 * 对于时间的年、月、日、时、分、秒、毫秒位补
+	 *
+	 * @param coverNumber
+	 * @param strSourse
+	 * @return
+	 */
+	public static String coverString(int coverNumber, String strSourse) {
+		int templength = coverNumber - strSourse.length();
+		for (int i = 0; i < templength; i++) {
+			strSourse = "0" + strSourse;
+		}
+		return strSourse;
+	}
+
+	/**
+	 * 解析时间为字符串
+	 *
+	 * @param date
+	 * @param pattern 字符串格式
+	 * @return
+	 */
+	public static String formatDate(Date date, String pattern) {
+		if (null == date) {
+			return null;
+		}
+		SimpleDateFormat sdf = new SimpleDateFormat(pattern);
+		return sdf.format(date);
+	}
+
+	/**
+	 * 字符串时间转成long类型时间
+	 *
+	 * @param dateStr
+	 * @param pattern
+	 * @return
+	 */
+	public static long transStr2long(String dateStr, String pattern) {
+		if (StringUtils.hasText(dateStr)) {
+			return 0;
+		}
+		SimpleDateFormat sdf = new SimpleDateFormat(pattern);
+		Date date = null;
+		try {
+			date = sdf.parse(dateStr);
+		} catch (ParseException e) {
+		}
+
+		return date == null ? 0 : date.getTime();
+	}
+
+	/**
+	 * 向前推多少个日、月
+	 *
+	 * @param endDate
+	 * @param num
+	 * @param type
+	 * @return
+	 */
+	public static String getStartData(Date endDate, int num, int type) {
+		String startDate = null;
+
+		if (null == endDate || num <= 0 || type <= 0) {
+			return startDate;
+		}
+
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(endDate);
+
+		if (type == 1) { // 日
+			calendar.add(Calendar.DATE, -num);
+		} else if (type == 2) { // 月
+			calendar.add(Calendar.MONTH, -num);
+		} else if (type == 3) { // 年
+			calendar.add(Calendar.YEAR, -num);
+		}
+
+		return new SimpleDateFormat(DATE_FORMAT).format(calendar.getTime());
+	}
+
+	/**
+	 * 验证时间合法性
+	 *
+	 * @param date
+	 * @param pattern
+	 * @return
+	 */
+	public static boolean isValidDate(String date, String pattern) {
+		boolean convertSuccess = true;
+		if (StringUtils.hasText(date) || StringUtils.hasText(pattern)) {
+			convertSuccess = false;
+		}
+
+		SimpleDateFormat format = new SimpleDateFormat(pattern);
+		try {
+			// 设置lenient为false.
+			// 否则SimpleDateFormat会比较宽松地验证日期，比如2007/02/29会被接受，并转换成2007/03/01
+			format.setLenient(false);
+			format.parse(date);
+		} catch (ParseException e) {
+			convertSuccess = false;
+		}
+
+		return convertSuccess;
+	}
+
+	/**
+	 * 加减时间 second>0,加秒 second<0,减秒
+	 *
+	 * @param dateStr 时间（yyyy-MM-dd HH:mm:ss）
+	 * @return long
+	 */
+	public static long addOrMinusSecond(String dateStr, int millSecond) {
+
+		SimpleDateFormat sdf = new SimpleDateFormat(DEFAULT_DATE_FORMAT);
+		Date date = null;
+		Calendar cal = null;
+		try {
+			date = sdf.parse(dateStr);
+			cal = Calendar.getInstance();
+			cal.setTime(date);
+			cal.add(Calendar.MILLISECOND, millSecond);
+		} catch (ParseException e) {
+			LOG.error("时间转换异常 =>addOrMinusSecond", e);
+			e.printStackTrace();
+		}
+		return cal.getTime().getTime();
+	}
+
+	/**
+	 * 把毫秒转化成日期
+	 *
+	 * @param millSec(毫秒数)
+	 * @return
+	 */
+
+	public static String transferLongToDate(long millSec) {
+		SimpleDateFormat sdf = new SimpleDateFormat(DEFAULT_DATE_FORMAT);
+		Date date = new Date(millSec);
+		return sdf.format(date);
+
+	}
+
+	/**
+	 * 字符串时间转成Date类型时间
+	 *
+	 * @param dateStr
+	 * @param pattern
+	 * @return date
+	 */
+	public static Date strToDate(String dateStr, String pattern) {
+		if (StringUtils.hasText(dateStr)) {
+			return null;
+		}
+		SimpleDateFormat sdf = new SimpleDateFormat(pattern);
+		Date date = null;
+		try {
+			date = sdf.parse(dateStr);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return date;
+	}
+
+	/**
+	 * 日期相减/数据量=每条数据递增的毫秒数
+	 *
+	 * @param a
+	 * @param b
+	 * @return long
+	 */
+	public static long DatePare(String a, String b, long num) {
+		Date a1 = strToDate(a, "yyyy-MM-dd HH:mm:ss");
+		Date b1 = strToDate(b, "yyyy-MM-dd HH:mm:ss");
+		long diff = a1.getTime() - b1.getTime();//这样得到的差值是微秒级别
+		return diff / num;
+	}
+
+	public static void main(String[] args) {
+
+		//    	Date a1=strToDate("2016-10-08 14:45:58", "yyyy-MM-dd HH:mm:ss");
+		//  		Date b1=strToDate("2016-10-08 13:52:26", "yyyy-MM-dd HH:mm:ss");
+		//  		long diff = (a1.getTime() - b1.getTime())/1000;//这样得到的差值是微秒级别
+		//  		System.out.println((67393137-33304921)/diff);
+		//
+		//    	SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd/HH:mm:ss.SSS");
+		//    	long a = System.currentTimeMillis();
+		//    	System.out.println("a="+a);
+		//		Date date = new Date(a);
+		//		//获取时间区域
+		//		System.out.println(sdf.getTimeZone().getDisplayName());
+		//		System.out.println(sdf.format(date));
+		//		try {
+		//			System.out.println(sdf.parse(sdf.format(date)).getTime()+"");
+		//		} catch (ParseException e) {
+		//			// TODO Auto-generated catch block
+		//			e.printStackTrace();
+		//		}
+		//		System.out.println("-----------------------------------");
+		//		//重设时间区域
+		//		sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
+		//		//获取时间区域
+		//		System.out.println(sdf.getTimeZone().getDisplayName());
+		//		System.out.println(sdf.format(date));
+		//		try {
+		//			System.out.println(sdf.parse(sdf.format(date)).getTime()+"");
+		//		} catch (ParseException e) {
+		//			// TODO Auto-generated catch block
+		//			e.printStackTrace();
+		//		}
+		//    	long a=addOrMinusSecond("2016-01-01 00:00:00", 5);
+		//    	System.out.println(a);
+		//    	long b=addOrMinusSecond("2016-01-01 00:00:00", 10);
+		//    	System.out.println(b);
+
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd/HH:mm:ss.SSS");
+		long startTime = DateUtils.transStr2long("2016-09-01 00:00:00", DateUtils.DEFAULT_DATE_All_FORMAT);
+		System.out.println(startTime);
+		Date aa = new Date(startTime);
+		System.out.println(sdf.format(aa));
+	}
 
 	/**
 	 * 取得指定天数后的时间

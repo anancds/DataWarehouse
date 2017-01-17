@@ -16,7 +16,7 @@ package com.hikvision.mdp.datagenerator;
  * @modify by user: chendongsheng5 2017/1/9 16:00
  * @modify by reason:{方法名}:{原因}
  */
-public interface DataGenerator {
+public interface DataToKafka {
 
-	public void generatorRandomData();
+	public void sendData();
 }

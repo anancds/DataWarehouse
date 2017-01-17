@@ -83,7 +83,7 @@ public class ConnectorPool {
 	 *
 	 * @return key-value类型的配置
 	 */
-	public static Map<String, String> initKafkaConfig(String kafkaAddr) {
+	private static Map<String, String> initKafkaConfig(String kafkaAddr) {
 
 		Map<String, String> kafkaConfig = new HashMap<>();
 		kafkaConfig.put("acks", "all");
@@ -105,5 +105,19 @@ public class ConnectorPool {
 
 	private static String getKey(String kafkaAddr, String topic) {
 		return kafkaAddr + MDPConstants.Collector.UNDERLINE + topic;
+	}
+
+	public static synchronized void close(String kafkaAddr, String topicName) {
+		String key = getKey(kafkaAddr, topicName);
+		ClientSourceConnector connector;
+		if (null != pool.get(key)) {
+			connector = pool.get(key);
+			try {
+				connector.disconnect();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			pool.remove(key);
+		}
 	}
 }
