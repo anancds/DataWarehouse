@@ -45,7 +45,6 @@ public class CellPhoneTicketToKafka implements DataToKafka, Closeable {
 
 	private ExecutorService executorService = Executors.newFixedThreadPool(DataGeneratorConstants.THREAD_NUM);
 
-
 	@Override public void sendData() {
 
 		LOG.info("Begin to send CellPhone data to kafka!");
@@ -56,44 +55,51 @@ public class CellPhoneTicketToKafka implements DataToKafka, Closeable {
 				.getConnector(YmlParse.getKafkaAddress(MDPConstants.Collector.PIPELINE_INFO_HIK_MDP_DATA),
 						YmlParse.getTopic(MDPConstants.Collector.PIPELINE_INFO_HIK_MDP_DATA, 0));
 
+		//发送次数 = 发送总数/每次发送数/线程数
+		int sendTimes = DataGeneratorConstants.TOTAL_NUM / DataGeneratorConstants.NUM_ONE_TIME
+				/ DataGeneratorConstants.THREAD_NUM;
 
-		executorService.submit(() -> {
+		for (int num = 0; num < DataGeneratorConstants.THREAD_NUM; num++) {
+			executorService.submit(() -> {
+				Map<String, Schema> schemas = YmlParse.getSchemas();
+				List<Record> records = new ArrayList<>();
 
-		});
+				Schema schema = schemas.get("hik_mdp_cellphone_schema");
 
-		Map<String, Schema> schemas = YmlParse.getSchemas();
-		List<Record> records = new ArrayList<>();
+				for (int i = 0; i < sendTimes; i++) {
+					for (int j = 0; j < DataGeneratorConstants.NUM_ONE_TIME; j++) {
+						long startTime = DateUtils
+								.transStr2long(CellPhoneTicketGen.getQSSJ(), DateUtils.DEFAULT_DATE_All_FORMAT);
 
-		Schema schema = schemas.get("hik_mdp_cellphone_schema");
-		String rowKey = "";
-
-		int sendTimes = DataGeneratorConstants.TOTAL_NUM / DataGeneratorConstants.NUM_ONE_TIME;
-
-		for (int i = 0; i < sendTimes; i++) {
-			for (int j = 0; j < DataGeneratorConstants.NUM_ONE_TIME; j++) {
-				long startTime = DateUtils
-						.transStr2long(CellPhoneTicketGen.getQSSJ(), DateUtils.DEFAULT_DATE_All_FORMAT);
-				Record record = new Record(Bytes.toBytes(rowKey), schema).field("YYS", CellPhoneTicketGen.getYYS())
-						.field("YWLX", CellPhoneTicketGen.getYWLX()).field("QSSJ", CellPhoneTicketGen.getQSSJ())
-						.field("FWHM", CellPhoneTicketGen.getFWHM()).field("KH", CellPhoneTicketGen.getKH())
-						.field("SBHM", CellPhoneTicketGen.getSBHM()).field("DFHM", CellPhoneTicketGen.getDFHM())
-						.field("DFHMGSD", CellPhoneTicketGen.getDFHMGSD()).field("THSC", CellPhoneTicketGen.getTHSC())
-						.field("HJLX", CellPhoneTicketGen.getHJLX()).field("LAC", CellPhoneTicketGen.getLAC())
-						.field("CID", CellPhoneTicketGen.getLAC()).field("FWHMJZ", CellPhoneTicketGen.getFWHMJZ())
-						.field("MSC", CellPhoneTicketGen.getMSC()).field("CS", CellPhoneTicketGen.getCS())
-						.field("DSFHM", CellPhoneTicketGen.getDSFHM())
-						.field("DSFHMGSD", CellPhoneTicketGen.getDFHMGSD());
-				record.setTs(startTime);
-				records.add(record);
-			}
-			CellPhoneClient.send(records);
-			records.clear();
+						// TODO: 这个rowKey是为了测试用的，具体怎么设计还需要讨论
+						String rowKey = startTime + "_" + i + "_" + j;
+						Record record = new Record(Bytes.toBytes(rowKey), schema)
+								.field("YYS", CellPhoneTicketGen.getYYS()).field("YWLX", CellPhoneTicketGen.getYWLX())
+								.field("QSSJ", CellPhoneTicketGen.getQSSJ()).field("FWHM", CellPhoneTicketGen.getFWHM())
+								.field("KH", CellPhoneTicketGen.getKH()).field("SBHM", CellPhoneTicketGen.getSBHM())
+								.field("DFHM", CellPhoneTicketGen.getDFHM())
+								.field("DFHMGSD", CellPhoneTicketGen.getDFHMGSD())
+								.field("THSC", CellPhoneTicketGen.getTHSC()).field("HJLX", CellPhoneTicketGen.getHJLX())
+								.field("LAC", CellPhoneTicketGen.getLAC()).field("CID", CellPhoneTicketGen.getLAC())
+								.field("FWHMJZ", CellPhoneTicketGen.getFWHMJZ())
+								.field("MSC", CellPhoneTicketGen.getMSC()).field("CS", CellPhoneTicketGen.getCS())
+								.field("DSFHM", CellPhoneTicketGen.getDSFHM())
+								.field("DSFHMGSD", CellPhoneTicketGen.getDFHMGSD());
+						// TODO: 确定这个Ts是什么意思
+						record.setTs(startTime);
+						records.add(record);
+					}
+					CellPhoneClient.send(records);
+					records.clear();
+				}
+			});
 		}
 
 		ConnectorPool.close(YmlParse.getKafkaAddress(MDPConstants.Collector.PIPELINE_INFO_HIK_MDP_DATA),
 				YmlParse.getTopic(MDPConstants.Collector.PIPELINE_INFO_HIK_MDP_DATA, 0));
 
-		LOG.info("Send data to Kafka finished! Cost {} seconds!", stopwatch.elapsedTime());
+		LOG.info("Send data to Kafka finished, The total number is: {}! Cost {} seconds!", ConnectorPool.succeeds,
+				stopwatch.elapsedTime());
 	}
 
 	@Override public void close() throws IOException {

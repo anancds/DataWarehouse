@@ -32,6 +32,8 @@ public class ConnectorPool {
 
 	private static Map<String, ClientSourceConnector> pool = new HashMap<>();
 
+	public static long succeeds = 0;
+
 	/**
 	 * create kafaka consumer connector
 	 * 需要同步该方法，相当于一个单例模式
@@ -57,6 +59,7 @@ public class ConnectorPool {
 			 * @param record data
 			 */
 			@Override public void onSucceeded(Object record) {
+				succeeds++;
 			}
 
 			/**
