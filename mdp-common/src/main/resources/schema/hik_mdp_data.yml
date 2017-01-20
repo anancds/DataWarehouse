@@ -5,7 +5,7 @@ properties:
   kafka.zookeeper.connector: 10.17.139.66:2181
   hbase.zookeeper.quorum: 10.17.139.66
   hbase.zookeeper.property.clientPort: 2181
-  hbase.table.name: HIK_MDP_CELLPHONE
+  hbase.table.name: hik_mdp_cellphone
   # policeHash: Hash分配, policeAvg: 平均分配
   hbase.region.strategy: policeAvg
   rowkey.expression: hashFormatAndInsert(formatTime(timestamp_,'yyyyMM')+formatString(target_type,'%03d')+formatTime(timestamp_,'dd')+'_'+global_id,999,0,'%03d',6)
@@ -205,24 +205,20 @@ connectors:
             topic: hik_mdp_cellphone_topic
             schema: hik_mdp_cellphone_schema
             max.commit.retries: 60000
-    #        consumer.properties:
-    #          bootstrap.servers: hdh249:9092
-    #          zookeeper.connector: hdh249:2181
-    #          group.id: hik_mac_info_lin_test2
-        to:
+    to:
           processors:
             - name: sendtohbase
               className: com.hikvision.bigdata.hbp.datacollectors.connector.v2.dag.impl.SendToHBaseProcessor
               properties:
-                metrics.prefix: sendtoHikMacInfo
+                metrics.prefix: sendtoHikMdpInfo
                 table: hik_mdp_cellphone
                 hbase.conf:
                   hbase.zookeeper.quorum: lark001:2181
             - name: sendtohbasesi
               className: com.hikvision.bigdata.hbp.datacollectors.connector.v2.dag.impl.SendToHBaseProcessor
               properties:
-                metrics.prefix: sendtoHikMacIndexInfo
-                table: ssdTable:hik_mac_index_info
+                metrics.prefix: sendtoHikMdpIndexInfo
+                table: ssdTable:hik_mdp_index_info
                 hbase.conf:
                   hbase.zookeeper.quorum: lark001:2181
                 converter: com.hikvision.bigdata.hbp.datacollectors.connector.v2.converter.impl.HBaseSecondaryIndexConverterImpl
@@ -231,10 +227,10 @@ connectors:
             - name: sendtoes
               className: com.hikvision.bigdata.hbp.datacollectors.connector.v2.dag.impl.SendToElasticSearchWithJestProcessor
               properties:
-                index: hik_mac_index_info
-                type: hikmacindexinfotype
+                index: hik_mdp_index_info
+                type: hikmdpindexinfotype
                 router: DATE_FIELD
-                router.field: collect_time
+                router.field: qssj
                 router.rules: day:1
                 router.rules.locale: zh-cn
                 router.rules.timezone: GMT

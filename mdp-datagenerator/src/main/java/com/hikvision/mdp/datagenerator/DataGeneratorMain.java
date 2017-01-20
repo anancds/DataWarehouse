@@ -7,6 +7,10 @@
  */
 package com.hikvision.mdp.datagenerator;
 
+import com.hikvision.mdp.commons.constants.BusinessType;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  * <p>模拟数据生成入口类</p>
  *
@@ -18,10 +22,19 @@ package com.hikvision.mdp.datagenerator;
  */
 public class DataGeneratorMain {
 
+	private static final Logger LOG = LogManager.getLogger(DataGeneratorMain.class);
+
 	public static void main(String[] args) {
 
 		ParseArgument.processArgs(args, System.out);
 
+		DataGeneratorFactory factory = new DataGeneratorFactory();
+		DataToKafka dataToKafka = factory.getDataGenerator(BusinessType.values()[Integer.valueOf(DataGeneratorConstants.BUSINESS_TYPE)]);
+		if (null == dataToKafka) {
+			LOG.error("The Business Type is Wrong! Please input again!");
+		} else {
+			dataToKafka.sendData();
+		}
 
 	}
 }

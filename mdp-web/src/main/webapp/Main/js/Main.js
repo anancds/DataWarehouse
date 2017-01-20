@@ -14,6 +14,21 @@ var zTime = [];     //通话时间
 var xTimeGPRS = [];     //横坐标时间   GPRS业务
 var yTimeGPRS = [];     //纵坐标时间
 var zTimeGPRS = [];     //通话时间
+
+function aa() {
+    // $("#test").fadeIn(200, function () {
+    // });
+    //$("#test").show()
+    $("#test").animate({width:'10%'},'slow');
+}
+
+function bb() {
+    // $("#test").fadeOut(200,function () {
+    //
+    // });
+    $("#test").hide()
+}
+
 window.onload = function () {
     formResize()
     $(function(){
@@ -32,6 +47,10 @@ window.onload = function () {
 
 function formResize() {
     $("#mainalladta").height($(window).height()-200);
+}
+
+function searchDialog() {
+    $('#myModal').modal('show')
 }
 
 function showData() {

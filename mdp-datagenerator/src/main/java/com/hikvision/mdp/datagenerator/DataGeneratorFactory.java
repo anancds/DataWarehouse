@@ -26,10 +26,17 @@ public class DataGeneratorFactory {
 			return null;
 		}
 
-		if (type.equals(BusinessType.HIGHWAY_VEHICLE)) {
-			return new CellPhoneTicketToKafka();
+		DataToKafka res = null;
+
+		// TODO: 当业务多的话，这个switch语句太长了，能否优化
+		switch (type) {
+		case CELL_PHONE:
+			res = new CellPhoneTicketToKafka();
+			break;
+		case HIGHWAY_VEHICLE:
+			break;
 		}
 
-		return null;
+		return res;
 	}
 }

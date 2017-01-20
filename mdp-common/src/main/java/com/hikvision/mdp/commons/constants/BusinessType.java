@@ -18,5 +18,11 @@ package com.hikvision.mdp.commons.constants;
  */
 public enum BusinessType {
 
-	HIGHWAY_VEHICLE, RAILWAY_SECURITY_CHECK, TEMPORARY_RESIDENT
+	HIGHWAY_VEHICLE(0), RAILWAY_SECURITY_CHECK(1), TEMPORARY_RESIDENT(2), CELL_PHONE(3);
+
+	public int code;
+
+	BusinessType(int code) {
+		this.code = code;
+	}
 }
