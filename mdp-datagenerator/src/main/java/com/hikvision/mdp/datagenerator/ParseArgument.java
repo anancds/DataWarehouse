@@ -61,7 +61,7 @@ public class ParseArgument {
 //		List args = line.getArgList();
 
 		if (line.hasOption('b')) {
-			DataGeneratorConstants.SERVER_NAME = line.getOptionValue('b');
+			DataGeneratorConstants.BUSINESS_TYPE = line.getOptionValue('b');
 		}
 
 		if (line.hasOption('n')) {
