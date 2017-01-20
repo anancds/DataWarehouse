@@ -14,6 +14,7 @@
         <module>mdp-common</module>
         <module>mdp-datagenerator</module>
         <module>mdp-web</module>
+        <module>mdp-etl</module>
     </modules>
 
 
