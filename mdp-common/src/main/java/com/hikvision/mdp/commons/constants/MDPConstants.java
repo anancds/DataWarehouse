@@ -120,7 +120,8 @@ public class MDPConstants {
 		private Collector() {
 		}
 
-		public static final String PIPELINE_INFO_HIK_SMART_METADATA = "hik_smart_metadata.yml";
+
+		public static final String PIPELINE_INFO_HIK_MDP_DATA = "hik_mdp_data.yml";
 
 		public static final String UNDERLINE = "_";
 

@@ -37,7 +37,7 @@ public class YmlParse {
 	private static final Logger LOG = LogManager.getLogger(YmlParse.class);
 
 	// TODO: fileUrl应该自动去获取
-	private static String fileUrl = MDPConstants.Collector.PIPELINE_INFO_HIK_SMART_METADATA;
+	private static String fileUrl = MDPConstants.Collector.PIPELINE_INFO_HIK_MDP_DATA;
 
 	private static final String[] YMLFiles = new String[] { fileUrl };
 
@@ -121,7 +121,7 @@ public class YmlParse {
 	public static void main(String[] args) {
 
 		System.out.println(getSchema("hik_smart_metadata_schema"));
-		System.out.println(getTopic(MDPConstants.Collector.PIPELINE_INFO_HIK_SMART_METADATA, 0));
-		System.out.println(getKafkaAddress(MDPConstants.Collector.PIPELINE_INFO_HIK_SMART_METADATA));
+		System.out.println(getTopic(MDPConstants.Collector.PIPELINE_INFO_HIK_MDP_DATA, 0));
+		System.out.println(getKafkaAddress(MDPConstants.Collector.PIPELINE_INFO_HIK_MDP_DATA));
 	}
 }

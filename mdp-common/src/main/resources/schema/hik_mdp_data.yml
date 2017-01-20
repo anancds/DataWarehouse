@@ -1,9 +1,9 @@
 ---
 name: hik-mdp-data-collector
 properties:
-  kafka.bootstrap.servers: 10.17.148.7:9092
-  kafka.zookeeper.connector: 10.17.148.7:2181
-  hbase.zookeeper.quorum: 10.17.148.7
+  kafka.bootstrap.servers: 10.17.139.66:9092
+  kafka.zookeeper.connector: 10.17.139.66:2181
+  hbase.zookeeper.quorum: 10.17.139.66
   hbase.zookeeper.property.clientPort: 2181
   hbase.table.name: HIK_MDP_CELLPHONE
   # policeHash: Hash分配, policeAvg: 平均分配
@@ -133,6 +133,12 @@ topics:
     schema: hik_mdp_cellphone_schema
     properties:
           cleanup.policy: delete
+  - name: hik_mdp_cellphone
+      partitions: 10
+      replicas: 1
+      schema: hik_mdp_cellphone_schema
+      properties:
+            cleanup.policy: delete
   - name: test
     partitions: 10
     replicas: 1
