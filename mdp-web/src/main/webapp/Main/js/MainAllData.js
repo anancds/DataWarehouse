@@ -68,28 +68,28 @@ function chartAllData() {
             // xTime.splice(0, xTime.length);
             // yTime.splice(0, yTime.length);
             // zTime.splice(0, zTime.length);
+            $("#info-name").html(ojson.name);
             for (var i = 0; i < ojson.data.length; i++) {
-                debugger
                 if (ojson.data[i].type == 1) {
-                    xTime[0][i] = ojson.data[i].date;
+                    xTime[0][xTime[0].length] = ojson.data[i].date.substring(0, ojson.data[i].date.indexOf(' '));
                     var tempHour = ojson.data[i].date.substring(ojson.data[i].date.indexOf(' ') + 1, ojson.data[i].date.indexOf(':'));
                     var tempMin = ojson.data[i].date.substring(ojson.data[i].date.indexOf(':') + 1)
-                    yTime[0][i] = parseFloat((tempMin / 60).toFixed(2)) + parseInt(tempHour);
-                    zTime[0][i] = ojson.data[i].hours;
+                    yTime[0][xTime[0].length] = parseFloat((tempMin / 60).toFixed(2)) + parseInt(tempHour);
+                    zTime[0][xTime[0].length] = ojson.data[i].hours;
                 } else if (ojson.data[i].type == 2) {
-                    xTime[1][i] = ojson.data[i].date;
+                    xTime[1][xTime[1].length] = ojson.data[i].date.substring(0, ojson.data[i].date.indexOf(' '));
                     var tempHour = ojson.data[i].date.substring(ojson.data[i].date.indexOf(' ') + 1, ojson.data[i].date.indexOf(':'));
                     var tempMin = ojson.data[i].date.substring(ojson.data[i].date.indexOf(':') + 1)
-                    yTime[1][i] = parseFloat((tempMin / 60).toFixed(2)) + parseInt(tempHour);
-                    zTime[1][i] = ojson.data[i].hours;
+                    yTime[1][xTime[1].length] = parseFloat((tempMin / 60).toFixed(2)) + parseInt(tempHour);
+                    zTime[1][xTime[1].length] = ojson.data[i].hours;
                 } else if (ojson.data[i].type == 3) {
-                    xTime[2][i] = ojson.data[i].date;
-                    yTime[2][i] = ojson.data[i].hours;
-                    zTime[2][i] = ojson.data[i].hours;
+                    xTime[2][xTime[2].length] = ojson.data[i].date;
+                    yTime[2][xTime[2].length] = ojson.data[i].hours;
+                    zTime[2][xTime[2].length] = ojson.data[i].hours;
                 }
             }
-            ;
             debugger
+            ;
             chartAllDataInit();
         },
         error: function () {
@@ -322,7 +322,7 @@ function chartTimeInit() {
             feature: {
                 mark: {show: true},
                 dataView: {readOnly: false},
-                magicType: {show: true, type: ['line', 'bar', 'stack', 'tiled']},
+                magicType: {show: true, type: ['stack', 'tiled']},
                 restore: {show: true},
                 saveAsImage: {show: true}
             }
@@ -471,14 +471,14 @@ function chartTimeInit() {
             });
 
             myChartOne.connect([myChartTwo]);
-            myChartTwo.connect([myChartOne]);
+            //myChartTwo.connect([myChartOne]);
 
             setTimeout(function () {
                 window.onresize = function () {
                     myChartOne.resize();
                     myChartTwo.resize();
                 }
-            }, 200)
+            }, 200);
         }
     );
 }
@@ -489,4 +489,29 @@ function divResize() {
         myChartOne.resize;
         myChartTwo.resize;
     })
+}
+
+function changeTab(tabnum) {
+    if(tabnum == 1){
+        $("#tab-one").slideDown(500, function () {
+        });
+        $("#tab-two").slideUp(1000, function () {
+        });
+        $("#tab-three").slideUp(1000, function () {
+        });
+    }else if (tabnum == 2){
+        $("#tab-one").slideUp(500, function () {
+        });
+        $("#tab-two").slideDown(1000, function () {
+        });
+        $("#tab-three").slideUp(1000, function () {
+        });
+    }else if (tabnum == 3){
+        $("#tab-one").slideUp(500, function () {
+        });
+        $("#tab-two").slideUp(1000, function () {
+        });
+        $("#tab-three").slideDown(1000, function () {
+        });
+    }
 }
