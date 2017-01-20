@@ -1,9 +1,11 @@
 .bootstrap-select:not([class*="col-"]):not([class*="form-control"]):not(.input-group-btn) {
-    width: auto ;
+    width: auto;
 }
 
-.right-hr{
-    height:1px;border:none;border-top:1px solid #5bc0de;
+.right-hr {
+    height: 1px;
+    border: none;
+    border-top: 1px solid #5bc0de;
 }
 
 .table thead > tr > th,
@@ -16,4 +18,18 @@
     line-height: 1.428571429;
     vertical-align: top;
     border: 1px solid #5bc0de;
+}
+
+.div-hr {
+    border: 1px solid #96c2f1;
+    margin-top: 5px;
+    margin-left: 5px;
+    margin-right: 10px;
+}
+
+.colordiff {
+    background: -webkit-linear-gradient(#fff, #F0FFFF); /* Safari 5.1 - 6.0 */
+    background: -o-linear-gradient(#fff, #F0FFFF); /* Opera 11.1 - 12.0 */
+    background: -moz-linear-gradient(#fff, #F0FFFF); /* Firefox 3.6 - 15 */
+    background: linear-gradient(#fff, #F0FFFF); /* 标准的语法（必须放在最后） */
 }
