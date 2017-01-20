@@ -15,17 +15,21 @@ properties:
   db.password: postgres
 schemas:
   - name: hik_mdp_cellphone_schema
+  #TODO 确定哪些字段是必须的 (optional = true)
+  #parameters -> 有检索需求的就加
     fields:
+      #运营商
       - name: yys
         group: info
         index: 0
         # INT8, INT16, INT32, INT64, FLOAT32, FLOAT64, BOOLEAN, STRING, BYTES, ARRAY
         type: STRING
-        optional: false
+        optional: true
         parameters:
           index.type: es
           index.isStore: false
           index.isTokenized: false
+      #业务类型
       - name: ywlx
         group: info
         index: 1
@@ -35,6 +39,7 @@ schemas:
           index.type: es
           index.isStore: false
           index.isTokenized: false
+      #起始时间
       - name: qssj
         group: info
         index: 2
@@ -44,6 +49,7 @@ schemas:
           index.type: es
           index.isStore: false
           index.isTokenized: false
+      #服务号码
       - name: fwhm
         group: info
         index: 3
@@ -53,41 +59,65 @@ schemas:
           index.type: es
           index.isStore: false
           index.isTokenized: false
+      #卡号
       - name: kh
         group: info
         index: 4
         type: STRING
         optional: true
+      #设备号码
       - name: sbhm
         group: info
         index: 5
         type: FLOAT32
         optional: true
+      #对方号码
       - name: dfhm
         group: info
         index: 6
         type: FLOAT32
         optional: true
+        parameters:
+          index.type: es
+          index.isStore: false
+          index.isTokenized: false
+      #对方号码归属地
       - name: dfhmgsd
         group: info
         index: 7
         type: INT32
         optional: true
+        parameters:
+          index.type: es
+          index.isStore: false
+          index.isTokenized: false
+      #通话时长
       - name: thsc
         group: info
         index: 8
         type: INT64
         optional: true
+        parameters:
+          index.type: es
+          index.isStore: false
+          index.isTokenized: false
+      #呼叫类型
       - name: hjlx
         group: info
         index: 9
         type: INT64
         optional: true
+      #LAC
       - name: lac
         group: info
         index: 10
         type: INT32
         optional: true
+        parameters:
+          index.type: es
+          index.isStore: false
+          index.isTokenized: false
+      #CID
       - name: cid
         group: info
         index: 11
@@ -97,6 +127,7 @@ schemas:
           index.type: es
           index.isStore: true
           index.isTokenized: false
+      #服务号码基站
       - name: fwhmjz
         group: info
         index: 12
@@ -106,21 +137,29 @@ schemas:
           index.type: es
           index.isStore: false
           index.isTokenized: false
+      #MSC
       - name: msc
         group: info
         index: 13
         type: STRING
         optional: true
+      #城市
       - name: cs
         group: info
         index: 14
         type: STRING
         optional: true
+        parameters:
+          index.type: es
+          index.isStore: false
+          index.isTokenized: false
+      #第三方号码
       - name: dsfhm
         group: info
         index: 15
         type: STRING
         optional: true
+      #第三方号码归属地
       - name: dsfhmgsd
         group: info
         index: 16
