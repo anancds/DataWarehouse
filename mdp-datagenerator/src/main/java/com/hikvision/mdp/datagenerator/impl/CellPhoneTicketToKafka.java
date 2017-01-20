@@ -22,9 +22,13 @@ import com.hikvision.mdp.datagenerator.DataToKafka;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * <p>话单数据发送到kafka</p>
@@ -35,23 +39,32 @@ import java.util.Map;
  * @modify by user: chendongsheng5 2017/1/9 16:17
  * @modify by reason:{方法名}:{原因}
  */
-public class CellPhoneTicketToKafka implements DataToKafka {
+public class CellPhoneTicketToKafka implements DataToKafka, Closeable {
 
 	private static final Logger LOG = LogManager.getLogger(CellPhoneTicketToKafka.class);
+
+	private ExecutorService executorService = Executors.newFixedThreadPool(DataGeneratorConstants.THREAD_NUM);
+
 
 	@Override public void sendData() {
 
 		LOG.info("Begin to send CellPhone data to kafka!");
+
 		Stopwatch stopwatch = new Stopwatch();
 
 		ClientSourceConnector CellPhoneClient = ConnectorPool
 				.getConnector(YmlParse.getKafkaAddress(MDPConstants.Collector.PIPELINE_INFO_HIK_SMART_METADATA),
 						YmlParse.getTopic(MDPConstants.Collector.PIPELINE_INFO_HIK_SMART_METADATA, 0));
 
+
+		executorService.submit(() -> {
+
+		});
+
 		Map<String, Schema> schemas = YmlParse.getSchemas();
 		List<Record> records = new ArrayList<>();
 
-		Schema schema = schemas.get("hik_mac_info");
+		Schema schema = schemas.get("hik_mdp_cellphone_schema");
 		String rowKey = "";
 
 		int sendTimes = DataGeneratorConstants.TOTAL_NUM / DataGeneratorConstants.NUM_ONE_TIME;
@@ -83,4 +96,11 @@ public class CellPhoneTicketToKafka implements DataToKafka {
 		LOG.info("Send data to Kafka finished! Cost {} seconds!", stopwatch.elapsedTime());
 	}
 
+	@Override public void close() throws IOException {
+		LOG.info("Close Data Generator.");
+
+		if (null != executorService) {
+			executorService.shutdown();
+		}
+	}
 }

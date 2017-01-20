@@ -50,7 +50,7 @@ public class ParseArgument {
 
 	private static Options buildOptions() {
 		return new Options()
-				.addOption(builder("s").hasArg().argName("ServerName").desc("The Server Name of Data Generator").build())
+				.addOption(builder("s").hasArg().argName("BusinessType").desc("The Business Type of Data Generator").build())
 				.addOption(builder("n").hasArg().argName("NumberOfThread").desc("The Number of Thread to generator data!").build())
 				.addOption(builder("h").hasArg(false).desc("usage information").longOpt("help").build())
 				.addOption(builder("v").hasArg(false).desc("display Data Generator version and jvm version!").build())
@@ -60,8 +60,8 @@ public class ParseArgument {
 	private static boolean process(CommandLine line) {
 //		List args = line.getArgList();
 
-		if (line.hasOption('s')) {
-			DataGeneratorConstants.SERVER_NAME = line.getOptionValue('s');
+		if (line.hasOption('b')) {
+			DataGeneratorConstants.SERVER_NAME = line.getOptionValue('b');
 		}
 
 		if (line.hasOption('n')) {
