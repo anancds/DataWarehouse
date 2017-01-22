@@ -5,7 +5,7 @@
  * @date: 2016/12/27 20:15
  * @Description: 本内容仅限于杭州海康威视数字技术股份有限公司内部使用，禁止转发.
  */
-package com.hikvision.mdp.commons.constants;
+package com.hikvision.mdp.commons.constants.business;
 
 /**
  * <p>高速公路车辆出入口信息表</p>
