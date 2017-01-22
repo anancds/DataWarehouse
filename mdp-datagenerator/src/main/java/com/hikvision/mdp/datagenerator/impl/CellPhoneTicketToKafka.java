@@ -80,11 +80,11 @@ public class CellPhoneTicketToKafka implements DataToKafka, Closeable {
 								.field("DFHM", CellPhoneTicketGen.getDFHM())
 								.field("DFHMGSD", CellPhoneTicketGen.getDFHMGSD())
 								.field("THSC", CellPhoneTicketGen.getTHSC()).field("HJLX", CellPhoneTicketGen.getHJLX())
-								.field("LAC", CellPhoneTicketGen.getLAC()).field("CID", CellPhoneTicketGen.getLAC())
+								.field("LAC", CellPhoneTicketGen.getLAC()).field("CID", CellPhoneTicketGen.getCID())
 								.field("FWHMJZ", CellPhoneTicketGen.getFWHMJZ())
 								.field("MSC", CellPhoneTicketGen.getMSC()).field("CS", CellPhoneTicketGen.getCS())
 								.field("DSFHM", CellPhoneTicketGen.getDSFHM())
-								.field("DSFHMGSD", CellPhoneTicketGen.getDFHMGSD());
+								.field("DSFHMGSD", CellPhoneTicketGen.getDSFHMGSD());
 						// TODO: 确定这个Ts是什么意思
 						record.setTs(startTime);
 						records.add(record);
