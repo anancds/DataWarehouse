@@ -50,7 +50,7 @@ public class ParseArgument {
 
 	private static Options buildOptions() {
 		return new Options()
-				.addOption(builder("s").hasArg().argName("BusinessType").desc("The Business Type of Data Generator").build())
+				.addOption(builder("b").hasArg().argName("BusinessType").desc("The Business Type of Data Generator").build())
 				.addOption(builder("n").hasArg().argName("NumberOfThread").desc("The Number of Thread to generator data!").build())
 				.addOption(builder("h").hasArg(false).desc("usage information").longOpt("help").build())
 				.addOption(builder("v").hasArg(false).desc("display Data Generator version and jvm version!").build())

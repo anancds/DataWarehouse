@@ -29,12 +29,12 @@ public class DataGeneratorMain {
 		ParseArgument.processArgs(args, System.out);
 
 		DataGeneratorFactory factory = new DataGeneratorFactory();
-		DataToKafka dataToKafka = factory.getDataGenerator(BusinessType.values()[Integer.valueOf(DataGeneratorConstants.BUSINESS_TYPE)]);
-		if (null == dataToKafka) {
-			LOG.error("The Business Type is Wrong! Please input again!");
-		} else {
-			dataToKafka.sendData();
-		}
+//		DataToKafka dataToKafka = factory.getDataGenerator(BusinessType.values()[Integer.valueOf(DataGeneratorConstants.BUSINESS_TYPE)]);
+//		if (null == dataToKafka) {
+//			LOG.error("The Business Type is Wrong! Please input again!");
+//		} else {
+//			dataToKafka.sendData();
+//		}
 
 	}
 }
