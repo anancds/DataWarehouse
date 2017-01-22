@@ -7,7 +7,7 @@
  */
 package com.hikvision.mdp.datagenerator;
 
-import com.hikvision.mdp.commons.constants.BusinessType;
+import com.hikvision.mdp.commons.constants.business.BusinessType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
