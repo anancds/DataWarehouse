@@ -173,10 +173,10 @@ topics:
     properties:
           cleanup.policy: delete
   - name: hik_mdp_cellphone
-      partitions: 10
-      replicas: 1
-      schema: hik_mdp_cellphone_schema
-      properties:
+    partitions: 10
+    replicas: 1
+    schema: hik_mdp_cellphone_schema
+    properties:
             cleanup.policy: delete
   - name: test
     partitions: 10
@@ -199,41 +199,41 @@ connectors:
       properties:
         max.idle.time.ms: 60000
     from:
-          className: com.hikvision.bigdata.hbp.datacollectors.connector.v2.dag.impl.KafkaPoller
-          properties:
-            converter: com.hikvision.bigdata.hbp.datacollectors.connector.v2.converter.impl.DefaultKafkaConverterImpl
-            topic: hik_mdp_cellphone_topic
-            schema: hik_mdp_cellphone_schema
-            max.commit.retries: 60000
+      className: com.hikvision.bigdata.hbp.datacollectors.connector.v2.dag.impl.KafkaPoller
+      properties:
+        converter: com.hikvision.bigdata.hbp.datacollectors.connector.v2.converter.impl.DefaultKafkaConverterImpl
+        topic: hik_mdp_cellphone_topic
+        schema: hik_mdp_cellphone_schema
+        max.commit.retries: 60000
     to:
-          processors:
-            - name: sendtohbase
-              className: com.hikvision.bigdata.hbp.datacollectors.connector.v2.dag.impl.SendToHBaseProcessor
-              properties:
-                metrics.prefix: sendtoHikMdpInfo
-                table: hik_mdp_cellphone
-                hbase.conf:
-                  hbase.zookeeper.quorum: lark001:2181
-            - name: sendtohbasesi
-              className: com.hikvision.bigdata.hbp.datacollectors.connector.v2.dag.impl.SendToHBaseProcessor
-              properties:
-                metrics.prefix: sendtoHikMdpIndexInfo
-                table: ssdTable:hik_mdp_index_info
-                hbase.conf:
-                  hbase.zookeeper.quorum: lark001:2181
-                converter: com.hikvision.bigdata.hbp.datacollectors.connector.v2.converter.impl.HBaseSecondaryIndexConverterImpl
-              waitFor:
-                - sendtohbase
-            - name: sendtoes
-              className: com.hikvision.bigdata.hbp.datacollectors.connector.v2.dag.impl.SendToElasticSearchWithJestProcessor
-              properties:
-                index: hik_mdp_index_info
-                type: hikmdpindexinfotype
-                router: DATE_FIELD
-                router.field: qssj
-                router.rules: day:1
-                router.rules.locale: zh-cn
-                router.rules.timezone: GMT
-                es.rest.addresses: lark001:9200
-              waitFor:
-                - sendtohbasesi
+      processors:
+        - name: sendtohbase
+          className: com.hikvision.bigdata.hbp.datacollectors.connector.v2.dag.impl.SendToHBaseProcessor
+          properties:
+            metrics.prefix: sendtoHikMdpInfo
+            table: hik_mdp_cellphone
+            hbase.conf:
+              hbase.zookeeper.quorum: lark001:2181
+        - name: sendtohbasesi
+          className: com.hikvision.bigdata.hbp.datacollectors.connector.v2.dag.impl.SendToHBaseProcessor
+          properties:
+            metrics.prefix: sendtoHikMdpIndexInfo
+            table: ssdTable:hik_mdp_index_info
+            hbase.conf:
+              hbase.zookeeper.quorum: lark001:2181
+            converter: com.hikvision.bigdata.hbp.datacollectors.connector.v2.converter.impl.HBaseSecondaryIndexConverterImpl
+          waitFor:
+            - sendtohbase
+        - name: sendtoes
+          className: com.hikvision.bigdata.hbp.datacollectors.connector.v2.dag.impl.SendToElasticSearchWithJestProcessor
+          properties:
+            index: hik_mdp_index_info
+            type: hikmdpindexinfotype
+            router: DATE_FIELD
+            router.field: qssj
+            router.rules: day:1
+            router.rules.locale: zh-cn
+            router.rules.timezone: GMT
+            es.rest.addresses: lark001:9200
+          waitFor:
+            - sendtohbasesi

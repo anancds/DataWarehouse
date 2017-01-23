@@ -51,6 +51,8 @@ public class CellPhoneTicketToKafka implements DataToKafka, Closeable {
 
 		Stopwatch stopwatch = new Stopwatch();
 
+		YmlParse.getKafkaAddress(MDPConstants.Collector.PIPELINE_INFO_HIK_MDP_DATA);
+
 		ClientSourceConnector CellPhoneClient = ConnectorPool
 				.getConnector(YmlParse.getKafkaAddress(MDPConstants.Collector.PIPELINE_INFO_HIK_MDP_DATA),
 						YmlParse.getTopic(MDPConstants.Collector.PIPELINE_INFO_HIK_MDP_DATA, 0));
