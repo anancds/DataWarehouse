@@ -80,10 +80,9 @@ public class CellPhoneTicketGen {
 	 *
 	 * @return 服务号码
 	 */
-	// TODO: 数值类型是long好，还是String好，need to be checked!
-	public static long getFWHM() {
+	public static String getFWHM() {
 		List<String> data = cast(map.get("服务号码"));
-		return Long.valueOf(data.get(RandomUtils.uniform(data.size())));
+		return data.get(RandomUtils.uniform(data.size()));
 	}
 
 	/**
@@ -91,9 +90,9 @@ public class CellPhoneTicketGen {
 	 *
 	 * @return 卡号
 	 */
-	public static long getKH() {
+	public static String getKH() {
 		List<String> data = cast(map.get("卡号"));
-		return Long.valueOf(data.get(RandomUtils.uniform(data.size())));
+		return data.get(RandomUtils.uniform(data.size()));
 	}
 
 	/**
@@ -111,9 +110,9 @@ public class CellPhoneTicketGen {
 	 *
 	 * @return 对方号码
 	 */
-	public static long getDFHM() {
+	public static String getDFHM() {
 		List<String> data = cast(map.get("对方号码"));
-		return Long.valueOf(data.get(RandomUtils.uniform(data.size())));
+		return data.get(RandomUtils.uniform(data.size()));
 	}
 
 	/**
@@ -201,9 +200,9 @@ public class CellPhoneTicketGen {
 	 *
 	 * @return 第三方号码
 	 */
-	public static long getDSFHM() {
+	public static String getDSFHM() {
 		List<String> data = cast(map.get("第三方号码"));
-		return Long.valueOf(data.get(RandomUtils.uniform(data.size())));
+		return data.get(RandomUtils.uniform(data.size()));
 	}
 
 	/**

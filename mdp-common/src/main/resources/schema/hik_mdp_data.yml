@@ -3,20 +3,19 @@ name: hik-mdp-data-collector
 properties:
   kafka.bootstrap.servers: 10.17.139.66:9092
   kafka.zookeeper.connector: 10.17.139.66:2181
-  hbase.zookeeper.quorum: 10.17.139.66
-  hbase.zookeeper.property.clientPort: 2181
-  hbase.table.name: hik_mdp_cellphone
-  # policeHash: Hash分配, policeAvg: 平均分配
-  hbase.region.strategy: policeAvg
-  rowkey.expression: hashFormatAndInsert(formatTime(timestamp_,'yyyyMM')+formatString(target_type,'%03d')+formatTime(timestamp_,'dd')+'_'+global_id,999,0,'%03d',6)
-  collector.parser: pb
-  db.url: jdbc:postgresql:///mdp
-  db.username: postgres
-  db.password: postgres
+#  hbase.zookeeper.quorum: 10.17.139.66
+#  hbase.zookeeper.property.clientPort: 2181
+#  hbase.table.name: hik_mdp_cellphone
+#  policeHash: Hash分配, policeAvg: 平均分配
+#  hbase.region.strategy: policeAvg
+#  rowkey.expression: hashFormatAndInsert(formatTime(timestamp_,'yyyyMM')+formatString(target_type,'%03d')+formatTime(timestamp_,'dd')+'_'+global_id,999,0,'%03d',6)
+  collector.parser: json
 schemas:
   - name: hik_mdp_cellphone_schema
-  #TODO 确定哪些字段是必须的 (optional = true)
-  #parameters -> 有检索需求的就加
+    params:
+      skip.index: true
+    #TODO 确定哪些字段是必须的 (optional = true)
+    #parameters -> 有检索需求的就加
     fields:
       #运营商
       - name: yys
@@ -69,13 +68,13 @@ schemas:
       - name: sbhm
         group: info
         index: 5
-        type: FLOAT32
+        type: STRING
         optional: true
       #对方号码
       - name: dfhm
         group: info
         index: 6
-        type: FLOAT32
+        type: STRING
         optional: true
         parameters:
           index.type: es
@@ -85,7 +84,7 @@ schemas:
       - name: dfhmgsd
         group: info
         index: 7
-        type: INT32
+        type: STRING
         optional: true
         parameters:
           index.type: es
@@ -105,13 +104,13 @@ schemas:
       - name: hjlx
         group: info
         index: 9
-        type: INT64
+        type: STRING
         optional: true
       #LAC
       - name: lac
         group: info
         index: 10
-        type: INT32
+        type: STRING
         optional: true
         parameters:
           index.type: es
@@ -121,7 +120,7 @@ schemas:
       - name: cid
         group: info
         index: 11
-        type: INT64
+        type: STRING
         optional: true
         parameters:
           index.type: es
@@ -131,7 +130,7 @@ schemas:
       - name: fwhmjz
         group: info
         index: 12
-        type: INT32
+        type: STRING
         optional: true
         parameters:
           index.type: es
@@ -163,7 +162,7 @@ schemas:
       - name: dsfhmgsd
         group: info
         index: 16
-        type: INT32
+        type: STRING
         optional: true
 topics:
   - name: hik_mdp_cellphone_topic
@@ -171,19 +170,13 @@ topics:
     replicas: 1
     schema: hik_mdp_cellphone_schema
     properties:
-          cleanup.policy: delete
+      cleanup.policy: delete
   - name: hik_mdp_cellphone
     partitions: 10
     replicas: 1
     schema: hik_mdp_cellphone_schema
     properties:
-          cleanup.policy: delete
-  - name: test
-    partitions: 10
-    replicas: 1
-    schema: test
-    properties:
-          cleanup.policy: delete
+      cleanup.policy: delete
 connectors:
   # 批量写HBase和Kafka
   - name: hik_mdp_cellphone_connector
@@ -192,47 +185,18 @@ connectors:
     properties:
       connector.resources.cores: 1
       connector.resources.memory.mb: 1024
-      max.record.buffer.size: 2000
-    dispatcher:
-      className: com.hikvision.bigdata.hbp.datacollectors.connector.v2.dag.impl.DAGDispatcherImpl
-      properties:
-        max.idle.time.ms: 60000
     from:
-      className: com.hikvision.bigdata.hbp.datacollectors.connector.v2.dag.impl.KafkaPoller
-      properties:
-        converter: com.hikvision.bigdata.hbp.datacollectors.connector.v2.converter.impl.DefaultKafkaConverterImpl
-        topic: hik_mdp_cellphone_topic
-        schema: hik_mdp_cellphone_schema
-        max.commit.retries: 60000
+      topic: hik_mdp_cellphone_topic
     to:
-      processors:
-        - name: sendtohbase
-          className: com.hikvision.bigdata.hbp.datacollectors.connector.v2.dag.impl.SendToHBaseProcessor
-          properties:
-            metrics.prefix: sendtoHikMdpInfo
-            table: hik_mdp_cellphone
-            hbase.conf:
-              hbase.zookeeper.quorum: 10.17.139.66:2181
-        - name: sendtohbasesi
-          className: com.hikvision.bigdata.hbp.datacollectors.connector.v2.dag.impl.SendToHBaseProcessor
-          properties:
-            metrics.prefix: sendtoHikMdpIndexInfo
-            table: ssdTable:hik_mdp_index_info
-            hbase.conf:
-              hbase.zookeeper.quorum: 10.17.139.66:2181
-            converter: com.hikvision.bigdata.hbp.datacollectors.connector.v2.converter.impl.HBaseSecondaryIndexConverterImpl
-          waitFor:
-            - sendtohbase
-        - name: sendtoes
-          className: com.hikvision.bigdata.hbp.datacollectors.connector.v2.dag.impl.SendToElasticSearchWithJestProcessor
-          properties:
-            index: hik_mdp_index_info
-            type: hikmdpindexinfotype
-            router: DATE_FIELD
-            router.field: qssj
-            router.rules: day:1
-            router.rules.locale: zh-cn
-            router.rules.timezone: GMT
-            es.rest.addresses: 10.17.139.66:9200
-          waitFor:
-            - sendtohbasesi
+      table: hik_mdp_cellphone_schema
+      hbase.zookeeper.quorum: 10.17.139.66:2181
+      index: hik_mdp_cellphone_schema
+      type: hikmacinfotype
+      router: DATE_FIELD
+      router.field: collect_time
+      router.rules: day:1
+      router.rules.locale: zh-cn
+      router.rules.timezone: GMT
+      es.rest.addresses: 10.17.139.66:9200
+      queue.length: 10
+      package: true

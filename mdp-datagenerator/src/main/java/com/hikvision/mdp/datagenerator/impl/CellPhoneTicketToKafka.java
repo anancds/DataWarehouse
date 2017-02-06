@@ -85,7 +85,6 @@ public class CellPhoneTicketToKafka implements DataToKafka, Closeable {
 								.field("msc", CellPhoneTicketGen.getMSC()).field("cs", CellPhoneTicketGen.getCS())
 								.field("dsfhm", CellPhoneTicketGen.getDSFHM())
 								.field("dsfhmgsd", CellPhoneTicketGen.getDSFHMGSD());
-						// TODO: 确定这个Ts是什么意思
 						record.setTs(startTime);
 						records.add(record);
 					}
@@ -97,7 +96,6 @@ public class CellPhoneTicketToKafka implements DataToKafka, Closeable {
 
 		ConnectorPool.close(YmlParse.getKafkaAddress(MDPConstants.Collector.PIPELINE_INFO_HIK_MDP_DATA),
 				YmlParse.getTopic(MDPConstants.Collector.PIPELINE_INFO_HIK_MDP_DATA, 0));
-
 		LOG.info("Send data to Kafka finished, The total number is: {}! Cost {} seconds!", ConnectorPool.succeeds,
 				stopwatch.elapsedTime());
 	}
