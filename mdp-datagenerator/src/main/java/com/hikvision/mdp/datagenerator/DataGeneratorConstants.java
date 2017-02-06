@@ -31,5 +31,5 @@ public class DataGeneratorConstants {
 	public static int TOTAL_NUM = 0;
 
 	//一次发送数据条数
-	public static int NUM_ONE_TIME = 0;
+	public static int ONE_TIME_NUM = 0;
 }

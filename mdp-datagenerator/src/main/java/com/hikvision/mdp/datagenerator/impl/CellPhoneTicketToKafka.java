@@ -51,14 +51,14 @@ public class CellPhoneTicketToKafka implements DataToKafka, Closeable {
 
 		Stopwatch stopwatch = new Stopwatch();
 
-		YmlParse.getKafkaAddress(MDPConstants.Collector.PIPELINE_INFO_HIK_MDP_DATA);
+
 
 		ClientSourceConnector CellPhoneClient = ConnectorPool
 				.getConnector(YmlParse.getKafkaAddress(MDPConstants.Collector.PIPELINE_INFO_HIK_MDP_DATA),
 						YmlParse.getTopic(MDPConstants.Collector.PIPELINE_INFO_HIK_MDP_DATA, 0));
 
 		//发送次数 = 发送总数/每次发送数/线程数
-		int sendTimes = DataGeneratorConstants.TOTAL_NUM / DataGeneratorConstants.NUM_ONE_TIME
+		int sendTimes = DataGeneratorConstants.TOTAL_NUM / DataGeneratorConstants.ONE_TIME_NUM
 				/ DataGeneratorConstants.THREAD_NUM;
 
 		for (int num = 0; num < DataGeneratorConstants.THREAD_NUM; num++) {
@@ -69,29 +69,29 @@ public class CellPhoneTicketToKafka implements DataToKafka, Closeable {
 				Schema schema = schemas.get("hik_mdp_cellphone_schema");
 
 				for (int i = 0; i < sendTimes; i++) {
-					for (int j = 0; j < DataGeneratorConstants.NUM_ONE_TIME; j++) {
+					for (int j = 0; j < DataGeneratorConstants.ONE_TIME_NUM; j++) {
 						long startTime = DateUtils
 								.transStr2long(CellPhoneTicketGen.getQSSJ(), DateUtils.DEFAULT_DATE_All_FORMAT);
 
 						// TODO: 这个rowKey是为了测试用的，具体怎么设计还需要讨论
 						String rowKey = startTime + "_" + i + "_" + j;
 						Record record = new Record(Bytes.toBytes(rowKey), schema)
-								.field("YYS", CellPhoneTicketGen.getYYS()).field("YWLX", CellPhoneTicketGen.getYWLX())
-								.field("QSSJ", CellPhoneTicketGen.getQSSJ()).field("FWHM", CellPhoneTicketGen.getFWHM())
-								.field("KH", CellPhoneTicketGen.getKH()).field("SBHM", CellPhoneTicketGen.getSBHM())
-								.field("DFHM", CellPhoneTicketGen.getDFHM())
-								.field("DFHMGSD", CellPhoneTicketGen.getDFHMGSD())
-								.field("THSC", CellPhoneTicketGen.getTHSC()).field("HJLX", CellPhoneTicketGen.getHJLX())
-								.field("LAC", CellPhoneTicketGen.getLAC()).field("CID", CellPhoneTicketGen.getCID())
-								.field("FWHMJZ", CellPhoneTicketGen.getFWHMJZ())
-								.field("MSC", CellPhoneTicketGen.getMSC()).field("CS", CellPhoneTicketGen.getCS())
-								.field("DSFHM", CellPhoneTicketGen.getDSFHM())
-								.field("DSFHMGSD", CellPhoneTicketGen.getDSFHMGSD());
+								.field("yys", CellPhoneTicketGen.getYYS()).field("ywlx", CellPhoneTicketGen.getYWLX())
+								.field("qssj", CellPhoneTicketGen.getQSSJ()).field("fwhm", CellPhoneTicketGen.getFWHM())
+								.field("kh", CellPhoneTicketGen.getKH()).field("sbhm", CellPhoneTicketGen.getSBHM())
+								.field("dfhm", CellPhoneTicketGen.getDFHM())
+								.field("dfhmgsd", CellPhoneTicketGen.getDFHMGSD())
+								.field("thsc", CellPhoneTicketGen.getTHSC()).field("hjlx", CellPhoneTicketGen.getHJLX())
+								.field("lac", CellPhoneTicketGen.getLAC()).field("cid", CellPhoneTicketGen.getCID())
+								.field("fwhmjz", CellPhoneTicketGen.getFWHMJZ())
+								.field("msc", CellPhoneTicketGen.getMSC()).field("cs", CellPhoneTicketGen.getCS())
+								.field("dsfhm", CellPhoneTicketGen.getDSFHM())
+								.field("dsfhmgsd", CellPhoneTicketGen.getDSFHMGSD());
 						// TODO: 确定这个Ts是什么意思
 						record.setTs(startTime);
 						records.add(record);
 					}
-					CellPhoneClient.send(records);
+					CellPhoneClient.send(records);//kafka
 					records.clear();
 				}
 			});

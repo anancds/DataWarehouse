@@ -5,7 +5,7 @@ properties:
   kafka.zookeeper.connector: 10.17.139.66:2181
   hbase.zookeeper.quorum: 10.17.139.66
   hbase.zookeeper.property.clientPort: 2181
-  hbase.table.name: hik_mdp_cellphone
+  hbase.table.name: HIK_MDP_CELLPHONE
   # policeHash: Hash分配, policeAvg: 平均分配
   hbase.region.strategy: policeAvg
   rowkey.expression: hashFormatAndInsert(formatTime(timestamp_,'yyyyMM')+formatString(target_type,'%03d')+formatTime(timestamp_,'dd')+'_'+global_id,999,0,'%03d',6)
@@ -177,7 +177,7 @@ topics:
     replicas: 1
     schema: hik_mdp_cellphone_schema
     properties:
-            cleanup.policy: delete
+          cleanup.policy: delete
   - name: test
     partitions: 10
     replicas: 1

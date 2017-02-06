@@ -51,6 +51,8 @@ public class ParseArgument {
 	private static Options buildOptions() {
 		return new Options()
 				.addOption(builder("b").hasArg().argName("BusinessType").desc("The Business Type of Data Generator").build())
+				.addOption(builder("t").hasArg().argName("TotalNumberOfData").desc("The Total Number of Data Pieces").build())
+				.addOption(builder("o").hasArg().argName("OneTimeNumberOfData").desc("The One Time Number of Data Pieces").build())
 				.addOption(builder("n").hasArg().argName("NumberOfThread").desc("The Number of Thread to generator data!").build())
 				.addOption(builder("h").hasArg(false).desc("usage information").longOpt("help").build())
 				.addOption(builder("v").hasArg(false).desc("display Data Generator version and jvm version!").build())
@@ -62,6 +64,14 @@ public class ParseArgument {
 
 		if (line.hasOption('b')) {
 			DataGeneratorConstants.BUSINESS_TYPE = line.getOptionValue('b');
+		}
+
+		if (line.hasOption('t')) {
+			DataGeneratorConstants.TOTAL_NUM = Integer.valueOf(line.getOptionValue('t'));
+		}
+
+		if (line.hasOption('o')) {
+			DataGeneratorConstants.ONE_TIME_NUM = Integer.valueOf(line.getOptionValue('o'));
 		}
 
 		if (line.hasOption('n')) {
