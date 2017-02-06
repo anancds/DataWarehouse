@@ -5,7 +5,7 @@ properties:
   kafka.zookeeper.connector: 10.17.139.66:2181
   hbase.zookeeper.quorum: 10.17.139.66
   hbase.zookeeper.property.clientPort: 2181
-  hbase.table.name: HIK_MDP_CELLPHONE
+  hbase.table.name: hik_mdp_cellphone
   # policeHash: Hash分配, policeAvg: 平均分配
   hbase.region.strategy: policeAvg
   rowkey.expression: hashFormatAndInsert(formatTime(timestamp_,'yyyyMM')+formatString(target_type,'%03d')+formatTime(timestamp_,'dd')+'_'+global_id,999,0,'%03d',6)
@@ -184,15 +184,14 @@ topics:
     schema: test
     properties:
           cleanup.policy: delete
-
 connectors:
   # 批量写HBase和Kafka
-  - name: hik_mdp_cellphone_topic
+  - name: hik_mdp_cellphone_connector
     className: com.hikvision.bigdata.hbp.datacollectors.connector.v2.dag.impl.DAGConnectorImpl
     parals: 1
     properties:
       connector.resources.cores: 1
-      connector.resources.memory.mb: 2048
+      connector.resources.memory.mb: 1024
       max.record.buffer.size: 2000
     dispatcher:
       className: com.hikvision.bigdata.hbp.datacollectors.connector.v2.dag.impl.DAGDispatcherImpl
@@ -213,14 +212,14 @@ connectors:
             metrics.prefix: sendtoHikMdpInfo
             table: hik_mdp_cellphone
             hbase.conf:
-              hbase.zookeeper.quorum: lark001:2181
+              hbase.zookeeper.quorum: 10.17.139.66:2181
         - name: sendtohbasesi
           className: com.hikvision.bigdata.hbp.datacollectors.connector.v2.dag.impl.SendToHBaseProcessor
           properties:
             metrics.prefix: sendtoHikMdpIndexInfo
             table: ssdTable:hik_mdp_index_info
             hbase.conf:
-              hbase.zookeeper.quorum: lark001:2181
+              hbase.zookeeper.quorum: 10.17.139.66:2181
             converter: com.hikvision.bigdata.hbp.datacollectors.connector.v2.converter.impl.HBaseSecondaryIndexConverterImpl
           waitFor:
             - sendtohbase
@@ -234,6 +233,6 @@ connectors:
             router.rules: day:1
             router.rules.locale: zh-cn
             router.rules.timezone: GMT
-            es.rest.addresses: lark001:9200
+            es.rest.addresses: 10.17.139.66:9200
           waitFor:
             - sendtohbasesi
