@@ -15,6 +15,7 @@
         <module>mdp-datagenerator</module>
         <module>mdp-web</module>
         <module>mdp-etl</module>
+        <module>mdp-checkstyle</module>
     </modules>
 
 
@@ -78,6 +79,8 @@
         <dependency.plugin.version>2.8</dependency.plugin.version>
         <assembly.plugin.version>2.4</assembly.plugin.version>
         <source-plugin.version>2.4</source-plugin.version>
+        <checkstyle.plugin.version>2.17</checkstyle.plugin.version>
+        <checkstyle.tool.version>6.11.2</checkstyle.tool.version>
         <jetty.version>9.2.11.v20150529</jetty.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
@@ -120,6 +123,42 @@
     </properties>
 
     <build>
+        <!--<plugins>-->
+            <!--<plugin>-->
+                <!--<groupId>org.apache.maven.plugins</groupId>-->
+                <!--<artifactId>maven-checkstyle-plugin</artifactId>-->
+                <!--<version>${checkstyle.plugin.version}</version>-->
+                <!--<dependencies>-->
+                    <!--<dependency>-->
+                        <!--<groupId>com.hikvision.sky</groupId>-->
+                        <!--<artifactId>mdp-checkstyle</artifactId>-->
+                        <!--<version>${project.version}</version>-->
+                    <!--</dependency>-->
+                    <!--&lt;!&ndash;<dependency>&ndash;&gt;-->
+                        <!--&lt;!&ndash;<groupId>com.puppycrawl.tools</groupId>&ndash;&gt;-->
+                        <!--&lt;!&ndash;<artifactId>checkstyle</artifactId>&ndash;&gt;-->
+                        <!--&lt;!&ndash;<version>${checkstyle.tool.version}</version>&ndash;&gt;-->
+                    <!--&lt;!&ndash;</dependency>&ndash;&gt;-->
+                <!--</dependencies>-->
+                <!--<executions>-->
+                    <!--<execution>-->
+                        <!--<id>verify</id>-->
+                        <!--<phase>verify</phase>-->
+                        <!--<configuration>-->
+                            <!--<configLocation>mdp-checkstyle\src\main\resources\checkstyle.xml</configLocation>-->
+                            <!--&lt;!&ndash;<suppressionsLocation>checkstyle-suppressions.xml</suppressionsLocation>&ndash;&gt;-->
+                            <!--&lt;!&ndash;<suppressionsFileExpression>checkstyle.suppressions.file</suppressionsFileExpression>&ndash;&gt;-->
+                            <!--<encoding>UTF-8</encoding>-->
+                            <!--<includeTestSourceDirectory>true</includeTestSourceDirectory>-->
+                            <!--<linkXRef>false</linkXRef>-->
+                        <!--</configuration>-->
+                        <!--<goals>-->
+                            <!--<goal>check</goal>-->
+                        <!--</goals>-->
+                    <!--</execution>-->
+                <!--</executions>-->
+            <!--</plugin>-->
+        <!--</plugins>-->
         <pluginManagement>
             <plugins>
                 <plugin>

@@ -28,70 +28,71 @@ import java.util.Properties;
  */
 public class MdpConfig {
 
-	private static final Logger LOG = LogManager.getLogger(MdpConfig.class);
+  private static final Logger LOG = LogManager.getLogger(MdpConfig.class);
 
-	private static Properties mdpConfig = new Properties();
+  private static Properties mdpConfig = new Properties();
 
-	static {
-		getMdpPropConfig();
-	}
+  static {
+    getMdpPropConfig();
+  }
 
-	private static Properties getMdpPropConfig() {
-		try {
-			URL url = MdpConfig.class.getClassLoader().getResource(MDPConstants.CONFIG.CONFIG_MDP_NAME);
-			if (null != url && null != url.toURI().getPath()) {
-				mdpConfig = PropertiesUtils.getProperties(url.toURI().getPath(), true);
-			} else {
-				mdpConfig = PropertiesUtils.getProperties(MDPConstants.CONFIG.CONFIG_MDP_NAME, false);
-			}
-		} catch (URISyntaxException e) {
-			LOG.error("MDP: load file {} failed so load jar file.", MDPConstants.CONFIG.CONFIG_MDP_NAME, e);
-		}
-		return mdpConfig;
-	}
+  private static Properties getMdpPropConfig() {
+    try {
+      URL url = MdpConfig.class.getClassLoader().getResource(MDPConstants.CONFIG.CONFIG_MDP_NAME);
+      if (null != url && null != url.toURI().getPath()) {
+        mdpConfig = PropertiesUtils.getProperties(url.toURI().getPath(), true);
+      } else {
+        mdpConfig = PropertiesUtils.getProperties(MDPConstants.CONFIG.CONFIG_MDP_NAME, false);
+      }
+    } catch (URISyntaxException e) {
+      LOG.error("MDP: load file {} failed so load jar file.", MDPConstants.CONFIG.CONFIG_MDP_NAME,
+          e);
+    }
+    return mdpConfig;
+  }
 
-	/**
-	 * 获取mdp properties的配置项
-	 *
-	 * @param key 配置属性
-	 * @return 属性值
-	 */
-	public static String getPropConfigValue(String key) {
-		String value = mdpConfig.getProperty(key);
-		return StringUtils.hasText(value) ? value.trim() : null;
-	}
+  /**
+   * 获取mdp properties的配置项
+   *
+   * @param key 配置属性
+   * @return 属性值
+   */
+  public static String getPropConfigValue(String key) {
+    String value = mdpConfig.getProperty(key);
+    return StringUtils.hasText(value) ? value.trim() : null;
+  }
 
-	/**
-	 * 获取配置项值，如果不存在，那么赋默认值
-	 *
-	 * @param key          配置属性
-	 * @param defaultValue 默认值
-	 * @return 如果属性值存在，那么返回，否则返回默认值
-	 */
-	public static String getPropConfigWithDefault(String key, String defaultValue) {
-		String value = getPropConfigValue(key);
-		return StringUtils.hasText(value) ? value : defaultValue;
-	}
+  /**
+   * 获取配置项值，如果不存在，那么赋默认值
+   *
+   * @param key 配置属性
+   * @param defaultValue 默认值
+   * @return 如果属性值存在，那么返回，否则返回默认值
+   */
+  public static String getPropConfigWithDefault(String key, String defaultValue) {
+    String value = getPropConfigValue(key);
+    return StringUtils.hasText(value) ? value : defaultValue;
+  }
 
-	/**
-	 * Integer 配置项
-	 *
-	 * @param key          属性
-	 * @param defaultValue 默认值
-	 * @return int值
-	 */
-	public static int getPropConfigIntValue(String key, int defaultValue) {
-		int res = defaultValue;
-		try {
-			String strValue = getPropConfigValue(key);
-			if (StringUtils.hasText(strValue)) {
-				res = Integer.parseInt(strValue);
-			}
-		} catch (Exception e) {
-			LOG.error("Parse Integer to String failed.", e);
-		}
+  /**
+   * Integer 配置项
+   *
+   * @param key 属性
+   * @param defaultValue 默认值
+   * @return int值
+   */
+  public static int getPropConfigIntValue(String key, int defaultValue) {
+    int res = defaultValue;
+    try {
+      String strValue = getPropConfigValue(key);
+      if (StringUtils.hasText(strValue)) {
+        res = Integer.parseInt(strValue);
+      }
+    } catch (Exception e) {
+      LOG.error("Parse Integer to String failed.", e);
+    }
 
-		return res;
-	}
+    return res;
+  }
 
 }
