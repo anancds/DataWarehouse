@@ -39,109 +39,8 @@ public class ObjectMapperFactoryTest {
 	private JavaObject bean = null;
 	private ListToStrings listToStrings = null;
 
-	class JavaObject {
-		private int id;
-		private String name;
-		private String email;
-		private String address;
-
-		public int getId() {
-			return id;
-		}
-
-		public String getName() {
-			return name;
-		}
-
-		public String getEmail() {
-			return email;
-		}
-
-		public String getAddress() {
-			return address;
-		}
-
-		private void setId(int id) {
-			this.id = id;
-		}
-
-		private void setName(String name) {
-			this.name = name;
-		}
-
-		private void setEmail(String email) {
-			this.email = email;
-		}
-
-		private void setAddress(String address) {
-			this.address = address;
-		}
-
-		@Override public String toString() {
-			return this.name + "#" + this.id + "#" + this.address + "#" + this.email;
-		}
-	}
-
-	class ListToStrings {
-
-		private static final String SEP1 = "{";
-		private static final String SEP2 = "}";
-		private static final String SEP3 = "[";
-		private static final String SEP4 = "]";
-		private static final String SEP5 = ":";
-		private static final String SEP6 = ",";
-
-		private String ListToString(List<?> list) {
-			StringBuilder sb = new StringBuilder();
-			sb.append(SEP3);
-			if (null != list && list.size() > 0) {
-				for(Object obj: list){
-					if (null == obj || obj == "" || obj.equals("")) {
-						continue;
-					}
-					// 如果值是list类型则调用自己
-					if (obj instanceof List) {
-						sb.append(ListToString((List<?>) obj));
-					} else if (obj instanceof Map) {
-						sb.append(SEP1+MapToString((Map<?, ?>) obj)+SEP2);
-					} else {
-						sb.append(obj);
-					}
-				}
-			}
-			sb.append(SEP4);
-			return sb.toString();
-		}
-
-
-		private String MapToString(Map<?, ?> map) {
-			StringBuilder sb = new StringBuilder();
-			// 遍历map
-			for (Object key : map.keySet()) {
-				if (null == key) {
-					continue;
-				}
-				Object value = map.get(key);
-				if (value instanceof List<?>) {
-					sb.append(key.toString() + ListToString((List<?>) value));
-				} else if (value instanceof Map<?, ?>) {
-					sb.append(key.toString()
-							+ MapToString((Map<?, ?>) value));
-				} else if (value instanceof String[]){
-					sb.append(key.toString()+SEP5);
-					for(String str: (String[])value){
-						sb.append(str);
-					}
-					sb.append(SEP6);
-				} else{
-					sb.append(key.toString() + value.toString());
-				}
-			}
-			return sb.toString();
-		}
-	}
-
-	@Before public void init() {
+	@Before
+	public void init() {
 		bean = new JavaObject();
 		bean.setAddress("HZ");
 		bean.setEmail("111@gmail.com");
@@ -156,7 +55,8 @@ public class ObjectMapperFactoryTest {
 		}
 	}
 
-	@After public void destory() {
+	@After
+	public void destory() {
 		try {
 			if (jsonGenerator != null) {
 				jsonGenerator.flush();
@@ -170,7 +70,8 @@ public class ObjectMapperFactoryTest {
 		}
 	}
 
-	@Test public void test() {
+	@Test
+	public void test() {
 		assertThat("abc").isEqualTo("abc");
 	}
 
@@ -180,11 +81,13 @@ public class ObjectMapperFactoryTest {
 	 * @author zhangsiwei6
 	 * @createDate 2017/1/10 下午15:01
 	 */
-	@Test public void writeEntityJSON() {
+	@Test
+	public void writeEntityJSON() {
 		try {
 			//writeValue具有和writeObject相同的功能
 			String result = objectMapper.writeValueAsString(bean);
-			assertThat(result).isEqualTo("{\"id\":1,\"name\":\"xiaowei1\",\"email\":\"111@gmail.com\",\"address\":\"HZ\"}");
+			assertThat(result)
+					.isEqualTo("{\"id\":1,\"name\":\"xiaowei1\",\"email\":\"111@gmail.com\",\"address\":\"HZ\"}");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -196,7 +99,8 @@ public class ObjectMapperFactoryTest {
 	 * @author zhangsiwei6
 	 * @createDate 2017/1/10 下午15:20
 	 */
-	@Test public void writeMapJSON() {
+	@Test
+	public void writeMapJSON() {
 		try {
 			Map<String, Object> map = new HashMap<>();
 			map.put(bean.getName(), bean);
@@ -210,7 +114,8 @@ public class ObjectMapperFactoryTest {
 
 			String result = objectMapper.writeValueAsString(map);
 			assertThat(result).isEqualTo(
-					"{\"xiaowei1\":{\"id\":1,\"name\":\"xiaowei1\",\"email\":\"111@gmail.com\",\"address\":\"HZ\"}," + "\"xiaowei2\":{\"id\":2,\"name\":\"xiaowei2\",\"email\":\"222@qq.com\",\"address\":\"BJ\"}}");
+					"{\"xiaowei1\":{\"id\":1,\"name\":\"xiaowei1\",\"email\":\"111@gmail.com\",\"address\":\"HZ\"},"
+							+ "\"xiaowei2\":{\"id\":2,\"name\":\"xiaowei2\",\"email\":\"222@qq.com\",\"address\":\"BJ\"}}");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -222,7 +127,8 @@ public class ObjectMapperFactoryTest {
 	 * @author zhangsiwei6
 	 * @createDate 2017/1/10 下午15:45
 	 */
-	@Test public void writeListJSON() {
+	@Test
+	public void writeListJSON() {
 		try {
 			List<JavaObject> list = new ArrayList<>();
 			list.add(bean);
@@ -237,13 +143,15 @@ public class ObjectMapperFactoryTest {
 			//用objectMapper直接返回list转换成的JSON字符串
 			String result = objectMapper.writeValueAsString(list);
 			assertThat(result).isEqualTo(
-					"[{\"id\":1,\"name\":\"xiaowei1\",\"email\":\"111@gmail.com\",\"address\":\"HZ\"}," + "{\"id\":2,\"name\":\"xiaowei2\",\"email\":\"222@gmail.com\",\"address\":\"BJ\"}]");
+					"[{\"id\":1,\"name\":\"xiaowei1\",\"email\":\"111@gmail.com\",\"address\":\"HZ\"},"
+							+ "{\"id\":2,\"name\":\"xiaowei2\",\"email\":\"222@gmail.com\",\"address\":\"BJ\"}]");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
-	@Test public void writeListMap() {
+	@Test
+	public void writeListMap() {
 		try {
 			List<Map<String, Object>> testList = new ArrayList<>();
 			Map<String, Object> map = new HashMap<>();
@@ -261,7 +169,8 @@ public class ObjectMapperFactoryTest {
 		}
 	}
 
-	@Test public void genListMap() {
+	@Test
+	public void genListMap() {
 		try {
 			List<Map<String, Object>> testList = new ArrayList<>();
 			Map<String, Object> map1 = new HashMap<>();
@@ -296,7 +205,8 @@ public class ObjectMapperFactoryTest {
 						assertThat(testMap.get(key)).isEqualTo(resultMap.get(key));
 					} else {
 						for (int i = 0; i < (((String[]) testMap.get(key)).length); i++) {
-							assertThat(((String[]) testMap.get(key))[i]).isEqualTo(((ArrayList) resultMap.get(key)).get(i));
+							assertThat(((String[]) testMap.get(key))[i])
+									.isEqualTo(((ArrayList) resultMap.get(key)).get(i));
 						}
 					}
 				}
@@ -310,7 +220,8 @@ public class ObjectMapperFactoryTest {
 	/**
 	 * JSON TO JAVA
 	 */
-	@Test public void readJsonToListMap() {
+	@Test
+	public void readJsonToListMap() {
 		String json = "{\"address\":\"address\",\"name\":\"haha\",\"id\":1,\"email\":\"email\"}";
 		try {
 			Map<?, ?> bean = objectMapper.readValue(json, Map.class);
@@ -325,6 +236,107 @@ public class ObjectMapperFactoryTest {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
+		}
+	}
+
+	class JavaObject {
+		private int id;
+		private String name;
+		private String email;
+		private String address;
+
+		public int getId() {
+			return id;
+		}
+
+		private void setId(int id) {
+			this.id = id;
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		private void setName(String name) {
+			this.name = name;
+		}
+
+		public String getEmail() {
+			return email;
+		}
+
+		private void setEmail(String email) {
+			this.email = email;
+		}
+
+		public String getAddress() {
+			return address;
+		}
+
+		private void setAddress(String address) {
+			this.address = address;
+		}
+
+		@Override
+		public String toString() {
+			return this.name + "#" + this.id + "#" + this.address + "#" + this.email;
+		}
+	}
+
+	class ListToStrings {
+
+		private static final String SEP1 = "{";
+		private static final String SEP2 = "}";
+		private static final String SEP3 = "[";
+		private static final String SEP4 = "]";
+		private static final String SEP5 = ":";
+		private static final String SEP6 = ",";
+
+		private String ListToString(List<?> list) {
+			StringBuilder sb = new StringBuilder();
+			sb.append(SEP3);
+			if (null != list && list.size() > 0) {
+				for (Object obj : list) {
+					if (null == obj || obj == "" || obj.equals("")) {
+						continue;
+					}
+					// 如果值是list类型则调用自己
+					if (obj instanceof List) {
+						sb.append(ListToString((List<?>) obj));
+					} else if (obj instanceof Map) {
+						sb.append(SEP1 + MapToString((Map<?, ?>) obj) + SEP2);
+					} else {
+						sb.append(obj);
+					}
+				}
+			}
+			sb.append(SEP4);
+			return sb.toString();
+		}
+
+		private String MapToString(Map<?, ?> map) {
+			StringBuilder sb = new StringBuilder();
+			// 遍历map
+			for (Object key : map.keySet()) {
+				if (null == key) {
+					continue;
+				}
+				Object value = map.get(key);
+				if (value instanceof List<?>) {
+					sb.append(key.toString() + ListToString((List<?>) value));
+				} else if (value instanceof Map<?, ?>) {
+					sb.append(key.toString() + MapToString((Map<?, ?>) value));
+				} else if (value instanceof String[]) {
+					sb.append(key.toString() + SEP5);
+					for (String str : (String[]) value) {
+						sb.append(str);
+					}
+					sb.append(SEP6);
+				} else {
+					sb.append(key.toString() + value.toString());
+				}
+			}
+			return sb.toString();
 		}
 	}
 }
