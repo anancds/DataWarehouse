@@ -100,107 +100,89 @@
                 </div>
             </div>
             <ul id="chartTabs" class="nav nav-tabs">
-                <li role="presentation" class="active">
-                    <a href="#person-list-detail" role="tab" id="person-list" data-toggle="tab" aria-controls="person-list-detail" onclick="changeTab(1)">列表</a>
+                <li role="presentation">
+                    <a href="#person-list-detail" role="tab" id="person-list" data-toggle="tab" aria-controls="person-list-detail">列表</a>
                 </li>
                 <li role="presentation">
-                    <a href="#person-all-detail" role="tab" id="person-all" data-toggle="tab" aria-controls="person-all-detail" onclick="changeTab(2)">全量</a>
+                    <a href="#person-all-detail" role="tab" id="person-all" data-toggle="tab" aria-controls="person-all-detail">全量</a>
                 </li>
                 <li role="presentation">
-                    <a href="#person-count-detail" role="tab" id="person-count" data-toggle="tab" aria-controls="person-count-detail" onclick="changeTab(3)">关联</a>
+                    <a href="#person-count-detail" role="tab" id="person-count" data-toggle="tab" aria-controls="person-count-detail">关联</a>
                 </li>
                 <li role="presentation">
-                    <a href="#person-relation-detail" role="tab" id="person-relation" data-toggle="tab" aria-controls="person-relation-detail" onclick="changeTab(4)">地图</a>
+                    <a href="#person-relation-detail" role="tab" id="person-relation" data-toggle="tab" aria-controls="person-relation-detail">地图</a>
                 </li>
                 <li role="presentation">
-                    <a href="#person-rule-detail" role="tab" id="person-rule" data-toggle="tab" aria-controls="person-rule-detail" onclick="changeTab(5)">规律</a>
+                    <a href="#person-rule-detail" role="tab" id="person-rule" data-toggle="tab" aria-controls="person-rule-detail">规律</a>
                 </li>
             </ul>
 
-                <div id="childTabOne">
-                <div id="0">
-                    <table class="table table-hover" style="table-layout: fixed">
-                        <thead>
-                        <tr>
-                            <th style="width: 150px">姓名</th>
-                            <th>身份证</th>
-                            <th>手机</th>
-                            <th>性别</th>
-                            <th>年龄</th>
-                            <th>户籍</th>
-                            <th style="width: 150px">操作</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td>张三</td>
-                            <td>333333333333333333</td>
-                            <td>1388888888</td>
-                            <td>男</td>
-                            <td>36</td>
-                            <td>新疆</td>
-                            <td>
-                                <button class="btn btn-success">选择</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>李四</td>
-                            <td>44444444444444444</td>
-                            <td>1399999999</td>
-                            <td>男</td>
-                            <td>45</td>
-                            <td>重庆</td>
-                            <td>
-                                <button class="btn btn-success">选择</button>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
+            <div id="chartTabContent" class="tab-content">
+                <div role="tabpanel" class="tab-pane fade in active" id="person-list-detail" aria-labelledby="person-list">    <!--列表-->
+                    <div id="0">
+                        <table class="table table-hover" style="table-layout: fixed">
+                            <thead>
+                                <tr>
+                                    <th style="width: 150px">姓名</th>
+                                    <th>身份证</th>
+                                    <th>手机</th>
+                                    <th>性别</th>
+                                    <th>年龄</th>
+                                    <th>户籍</th>
+                                    <th style="width: 150px">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>张三</td>
+                                <td>333333333333333333</td>
+                                <td>1388888888</td>
+                                <td>男</td>
+                                <td>36</td>
+                                <td>新疆</td>
+                                <td>
+                                    <button class="btn btn-success">选择</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>李四</td>
+                                <td>44444444444444444</td>
+                                <td>1399999999</td>
+                                <td>男</td>
+                                <td>45</td>
+                                <td>重庆</td>
+                                <td>
+                                    <button class="btn btn-success">选择</button>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-            </div>          <!--列表-->
-
-            <div id="childTabTwo" style="display: none">    <!--全量-->
-                <iframe id="mainalladta" name="alldata" src="MainAllData.html" frameborder="0" style="width: 100%;"></iframe>
-            </div>
-
-            <div id="childTabThree" style="display: none">    <!--关联-->
-                <iframe id="relationdata" name="relationdata" src="RelationData.html" frameborder="0" style="width: 100%"></iframe>
-            </div>
-
-            <div id="childTabFour" style="display: none">    <!--地图-->
-                <div id="chartRelationData" style="height: 750px;width: 80%;float: left;border:1px solid #96c2f1;"></div>
-                <div style="height: 750px;width: 20%;float: left;border:1px solid #96c2f1;font-size: 50px;">操作 <br> 数据筛选
-                    <br> 详细信息</div>
-            </div>
-
-            <div id="childTabFive" style="display: none">    <!--规律-->
-                <div id="chartRuleData" style="height: 750px;width: 80%;float: left;border:1px solid #96c2f1;"></div>
-                <div style="height: 750px;width: 20%;float: left;border:1px solid #96c2f1;font-size: 50px;">操作 <br> 数据筛选
-                    <br> 详细信息</div>
-            </div>
-
-            <!--<div id="chartTabContent" class="tab-content">
-                <div role="tabpanel" class="tab-pane fade in active" id="person-list-detail" aria-labelledby="person-list">    &lt;!&ndash;列表&ndash;&gt;
-
-                </div>
-                <div role="tabpanel" class="tab-pane fade" id="person-all-detail" aria-labelledby="person-all">    &lt;!&ndash;全量&ndash;&gt;
-                    &lt;!&ndash;<div id="chartAllData" style="height: 750px;width: 80%;float: left;border:1px solid #96c2f1;"></div>
+                <div role="tabpanel" class="tab-pane fade" id="person-all-detail" aria-labelledby="person-all">    <!--全量-->
+                    <!--<div id="chartAllData" style="height: 750px;width: 80%;float: left;border:1px solid #96c2f1;"></div>
                     <div style="height: 750px;width: 20%;float: left;border:1px solid #96c2f1;font-size: 50px;">操作 <br> 数据筛选
                         <br> 详细信息
-                    </div>&ndash;&gt;
+                    </div>-->
+                        <iframe id="mainalladta" name="alldata" src="MainAllData.html" frameborder="0" style="width: 100%;"></iframe>
                 </div>
-                <div role="tabpanel" class="tab-pane fade" id="person-count-detail" aria-labelledby="person-count">    &lt;!&ndash;关联&ndash;&gt;
-                    &lt;!&ndash;<div id="chartCountData" style="height: 750px;width: 80%;float: left;border:1px solid #96c2f1;"></div>&ndash;&gt;
-                    &lt;!&ndash;<div style="height: 750px;width: 20%;float: left;border:1px solid #96c2f1;font-size: 50px;">操作 <br> 数据筛选&ndash;&gt;
-                        &lt;!&ndash;<br> 详细信息</div>&ndash;&gt;
+                <div role="tabpanel" class="tab-pane fade" id="person-count-detail" aria-labelledby="person-count">    <!--关联-->
+                    <!--<div id="chartCountData" style="height: 750px;width: 80%;float: left;border:1px solid #96c2f1;"></div>-->
+                    <!--<div style="height: 750px;width: 20%;float: left;border:1px solid #96c2f1;font-size: 50px;">操作 <br> 数据筛选-->
+                        <!--<br> 详细信息</div>-->
+                    <iframe id="relationdata" name="relationdata" src="RelationData.html" frameborder="0" style="width: 100%"></iframe>
                 </div>
-                <div role="tabpanel" class="tab-pane fade" id="person-relation-detail" aria-labelledby="person-relation">    &lt;!&ndash;地图&ndash;&gt;
-
+                <div role="tabpanel" class="tab-pane fade" id="person-relation-detail" aria-labelledby="person-relation">    <!--地图-->
+                    <div id="chartRelationData" style="height: 750px;width: 80%;float: left;border:1px solid #96c2f1;"></div>
+                    <div style="height: 750px;width: 20%;float: left;border:1px solid #96c2f1;font-size: 50px;">操作 <br> 数据筛选
+                        <br> 详细信息</div>
                 </div>
-                <div role="tabpanel" class="tab-pane fade" id="person-rule-detail" aria-labelledby="person-rule">    &lt;!&ndash;规律&ndash;&gt;
-
+                <div role="tabpanel" class="tab-pane fade" id="person-rule-detail" aria-labelledby="person-rule">    <!--规律-->
+                    <div id="chartRuleData" style="height: 750px;width: 80%;float: left;border:1px solid #96c2f1;"></div>
+                    <div style="height: 750px;width: 20%;float: left;border:1px solid #96c2f1;font-size: 50px;">操作 <br> 数据筛选
+                        <br> 详细信息</div>
                 </div>
-            </div>-->
+            </div>
 
         </div>
         <div role="tabpanel" class="tab-pane fade" id="dropdown1" aria-labelledBy="dropdown1-tab">

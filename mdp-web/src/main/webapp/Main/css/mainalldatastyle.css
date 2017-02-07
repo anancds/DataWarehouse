@@ -8,7 +8,7 @@
     border-top: 1px solid #5bc0de;
 }
 
-.table thead > tr > th,
+/*.table thead > tr > th,
 .table tbody > tr > th,
 .table tfoot > tr > th,
 .table thead > tr > td,
@@ -18,6 +18,16 @@
     line-height: 1.428571429;
     vertical-align: top;
     border: 1px solid #5bc0de;
+}*/
+
+.table thead > tr > th,
+.table tbody > tr > th,
+.table tfoot > tr > th,
+.table thead > tr > td,
+.table tbody > tr > td,
+.table tfoot > tr > td {
+    text-align: center;
+    vertical-align: middle;
 }
 
 .div-hr {
@@ -32,4 +42,8 @@
     background: -o-linear-gradient(#fff, #F0FFFF); /* Opera 11.1 - 12.0 */
     background: -moz-linear-gradient(#fff, #F0FFFF); /* Firefox 3.6 - 15 */
     background: linear-gradient(#fff, #F0FFFF); /* 标准的语法（必须放在最后） */
+}
+
+.body {
+    background-color: rgba(135,206,235,0.1);
 }

@@ -12,6 +12,11 @@ var myChartOne;     //容器初始化
 var myChartTwo;
 
 window.onload = function () {
+    dataControl();
+}
+
+//日期选择初始化
+function dataControl() {
     $('#first').datetimepicker({
         language: 'zh-CN',
         weekStart: 1,
@@ -59,6 +64,25 @@ function formResize() {
 
 //全量数据获取
 function chartAllData() {
+    // var xhrurl = 'http://10.16.128.107:8100/service/info/phone-commuication';
+    // $.ajax(
+    //     {
+    //         type:'get',
+    //         url : xhrurl,
+    //         dataType : 'jsonp',
+    //         success  : function(data) {
+    //             var ojson = data;
+    //             debugger
+    //         },
+    //         error : function() {
+    //             alert('fail');
+    //         },
+    //         complete : function () {
+    //
+    //         }
+    //     }
+    // );
+    // return;
     $.ajax({
         async: true,
         type: 'GET',
@@ -74,13 +98,15 @@ function chartAllData() {
                     xTime[0][xTime[0].length] = ojson.data[i].date.substring(0, ojson.data[i].date.indexOf(' '));
                     var tempHour = ojson.data[i].date.substring(ojson.data[i].date.indexOf(' ') + 1, ojson.data[i].date.indexOf(':'));
                     var tempMin = ojson.data[i].date.substring(ojson.data[i].date.indexOf(':') + 1)
-                    yTime[0][xTime[0].length] = parseFloat((tempMin / 60).toFixed(2)) + parseInt(tempHour);
+                    //yTime[0][xTime[0].length] = parseFloat((tempMin / 60).toFixed(2)) + parseInt(tempHour);
+                    yTime[0][xTime[0].length] = parseInt(tempMin) + parseInt(tempHour*60);
                     zTime[0][xTime[0].length] = ojson.data[i].hours;
                 } else if (ojson.data[i].type == 2) {
                     xTime[1][xTime[1].length] = ojson.data[i].date.substring(0, ojson.data[i].date.indexOf(' '));
                     var tempHour = ojson.data[i].date.substring(ojson.data[i].date.indexOf(' ') + 1, ojson.data[i].date.indexOf(':'));
                     var tempMin = ojson.data[i].date.substring(ojson.data[i].date.indexOf(':') + 1)
-                    yTime[1][xTime[1].length] = parseFloat((tempMin / 60).toFixed(2)) + parseInt(tempHour);
+                    //yTime[1][xTime[1].length] = parseFloat((tempMin / 60).toFixed(2)) + parseInt(tempHour);
+                    yTime[1][xTime[1].length] = parseInt(tempMin) + parseInt(tempHour*60);
                     zTime[1][xTime[1].length] = ojson.data[i].hours;
                 } else if (ojson.data[i].type == 3) {
                     xTime[2][xTime[2].length] = ojson.data[i].date;
@@ -88,9 +114,8 @@ function chartAllData() {
                     zTime[2][xTime[2].length] = ojson.data[i].hours;
                 }
             }
-            debugger
             ;
-            chartAllDataInit();
+            chartInit();
         },
         error: function () {
             alert('数据获取失败!');
@@ -99,13 +124,13 @@ function chartAllData() {
 }
 
 //绘制chart
-function chartAllDataInit() {
+function chartInit() {
     myChartOne = echarts.init(document.getElementById('chartinit'));
     divResize()
     var option1 = {
         title: {
-            text: '时间坐标散点图',
-            subtext: 'dataZoom支持'
+            text: '全量明细数据',
+            subtext: ''
         },
         tooltip: {
             trigger: 'item',
@@ -159,7 +184,14 @@ function chartAllDataInit() {
         yAxis: [
             {
                 type: 'values',
-                splitNumber: 12
+                splitNumber: 15,
+                axisLabel : {
+                    formatter: function (value) {
+                        var d;
+                        d = parseInt(value/60);
+                        return d;
+                    }
+                }
             }
         ],
         animation: false,
@@ -180,7 +212,8 @@ function chartAllDataInit() {
                             + date.getMinutes()
                             + '）<br/>'
                             + params.value[1] + ', '
-                            + params.value[2];
+                            + params.value[2]
+                            + params.value[3];
                     },
                     axisPointer: {
                         type: 'shadow',
@@ -191,12 +224,12 @@ function chartAllDataInit() {
                     }
                 },
                 symbolSize: function (value) {
-                    return 7;    //设置圆大小
+                    return 6;    //设置圆大小
                 },
                 data: (function () {
                     var d = [];
                     for (var i = 0; i < xTime[0].length; i++) {
-                        d.push([new Date(xTime[0][i]), parseInt(yTime[0][i]), zTime[0][i]])
+                        d.push([new Date(xTime[0][i]), parseInt(yTime[0][i]), zTime[0][i], i])
                     }
                     return d;
                 })()
@@ -216,7 +249,8 @@ function chartAllDataInit() {
                             + date.getMinutes()
                             + '）<br/>'
                             + params.value[1] + ', '
-                            + params.value[2];
+                            + params.value[2]
+                            + params.value[3];
                     },
                     axisPointer: {
                         type: 'shadow',
@@ -227,12 +261,12 @@ function chartAllDataInit() {
                     }
                 },
                 symbolSize: function (value) {
-                    return 7;    //设置圆大小
+                    return 4;    //设置圆大小
                 },
                 data: (function () {
                     var d = [];
                     for (var i = 0; i < xTime[1].length; i++) {
-                        d.push([new Date(xTime[1][i]), parseInt(yTime[1][i]), zTime[1][i]])
+                        d.push([new Date(xTime[1][i]), parseInt(yTime[1][i]), zTime[1][i], i])
                     }
                     return d;
                 })()
@@ -251,16 +285,12 @@ function chartAllDataInit() {
             myChartOne.showLoading({
                 text: '正在努力的读取数据中...'
             });
-            var ecConfig = require('echarts/config');
 
             function focus(param) {
                 var data = param.data;
                 var links = option1.series[0].links;
                 var nodes = option1.series[0].nodes;
-                if (
-                    data.source !== undefined
-                    && data.target !== undefined
-                ) { //点击的是边
+                if ( data.source !== undefined && data.target !== undefined ) { //点击的是边
                     var sourceNode = nodes.filter(function (n) {
                         return n.name == data.source
                     })[0];
@@ -269,6 +299,7 @@ function chartAllDataInit() {
                     })[0];
                     console.log("选中了边 " + sourceNode.name + ' -> ' + targetNode.name + ' (' + data.weight + ')');
                 } else { // 点击的是点
+                    showMenu();                // 左键点击弹窗
                     //sendData()//添加原点点击时间
                     console.log("选中了" + data.name + '(' + data.value + ')');
                 }
@@ -284,9 +315,20 @@ function chartAllDataInit() {
                     //showData()   弹出窗口
                 }
             });
+
+            myChartOne.on(ecConfig.EVENT.HOVER, function (e) {
+
+            });
+
+            //双击事件
+            myChartOne.on(ecConfig.EVENT.DBLCLICK, function () {
+                getParentTabs(1);
+            });
+
             // 为echarts对象加载数据
             myChartOne.setOption(option1);
 
+            //初始化chart根据窗口大小来同步改变大小
             window.onresize = myChartOne.resize;
 
             myChartOne.hideLoading({
@@ -297,10 +339,21 @@ function chartAllDataInit() {
     );
 }
 
-function getParent() {
-    alert('fudiaozi')
-    return
-    window.parent.dataSearch()
+
+function menuHide() {
+    menu.style.display = "none";
+}
+//点击图标显示菜单
+function showMenu() {
+    var e = event || window.event;
+    //单击显示div
+    menu.style.display = "block";
+    //设置定义
+    //判断鼠标坐标是否大于视口宽度-块本身宽度
+    var cakLeft = (e.clientX > document.documentElement.clientWidth - menu.offsetWidth)?(document.documentElement.clientWidth - menu.offsetWidth):e.clientX;
+    var cakTop = (e.clientY > document.documentElement.clientHeight - menu.offsetHeight)?(document.documentElement.clientHeight - menu.offsetHeight):e.clientY;
+    menu.style.left = cakLeft + "px";
+    menu.style.top = cakTop + "px";
 }
 
 //获取数据
@@ -432,7 +485,6 @@ function chartTimeInit() {
             myChartTwo.showLoading({
                 text: '正在努力的读取数据中...'
             });
-            var ecConfig = require('echarts/config');
 
             function focus(param) {
                 var data = param.data;
@@ -471,7 +523,7 @@ function chartTimeInit() {
             });
 
             myChartOne.connect([myChartTwo]);
-            //myChartTwo.connect([myChartOne]);
+            myChartTwo.connect([myChartOne]);
 
             setTimeout(function () {
                 window.onresize = function () {
@@ -483,7 +535,7 @@ function chartTimeInit() {
     );
 }
 
-//chart动态改变
+//chart动态改变宽度
 function divResize() {
     $("#chartleft").resize(function () {
         myChartOne.resize;
@@ -491,6 +543,12 @@ function divResize() {
     })
 }
 
+function getParentTabs(e) {
+    window.parent.changeTabs(e)
+    menu.style.display = "none";
+}
+
+//点击tab标签页显示对应的form表单
 function changeTab(tabnum) {
     if(tabnum == 1){
         $("#tab-one").slideDown(500, function () {
@@ -503,6 +561,7 @@ function changeTab(tabnum) {
         $("#tab-one").slideUp(500, function () {
         });
         $("#tab-two").slideDown(1000, function () {
+            document.getElementById("tab-two").style.visibility = '';
         });
         $("#tab-three").slideUp(1000, function () {
         });
@@ -512,6 +571,7 @@ function changeTab(tabnum) {
         $("#tab-two").slideUp(1000, function () {
         });
         $("#tab-three").slideDown(1000, function () {
+            document.getElementById("tab-three").style.visibility = '';
         });
     }
 }
