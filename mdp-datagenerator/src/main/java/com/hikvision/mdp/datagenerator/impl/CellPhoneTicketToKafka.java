@@ -94,14 +94,21 @@ public class CellPhoneTicketToKafka implements DataToKafka, Closeable {
 			});
 		}
 
+
 		ConnectorPool.close(YmlParse.getKafkaAddress(MDPConstants.Collector.PIPELINE_INFO_HIK_MDP_DATA),
 				YmlParse.getTopic(MDPConstants.Collector.PIPELINE_INFO_HIK_MDP_DATA, 0));
+
+		if (null != executorService) {
+			executorService.shutdown();
+		}
 		LOG.info("Send data to Kafka finished, The total number is: {}! Cost {} seconds!", ConnectorPool.succeeds,
 				stopwatch.elapsedTime());
 	}
 
 	@Override public void close() throws IOException {
 		LOG.info("Close Data Generator.");
+
+		System.out.println("hello");
 
 		if (null != executorService) {
 			executorService.shutdown();

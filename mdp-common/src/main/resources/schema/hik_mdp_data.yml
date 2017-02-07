@@ -166,21 +166,15 @@ schemas:
         optional: true
 topics:
   - name: hik_mdp_cellphone_topic
-    partitions: 10
-    replicas: 1
-    schema: hik_mdp_cellphone_schema
-    properties:
-      cleanup.policy: delete
-  - name: hik_mdp_cellphone
-    partitions: 10
-    replicas: 1
+    partitions: 5
+    replicas: 0
     schema: hik_mdp_cellphone_schema
     properties:
       cleanup.policy: delete
 connectors:
   # 批量写HBase和Kafka
   - name: hik_mdp_cellphone_connector
-    className: com.hikvision.bigdata.hbp.datacollectors.connector.v2.dag.impl.DAGConnectorImpl
+    className: com.hikvision.bigdata.hbp.datacollectors.api.connector.impl.sink.ChainSinkConnector
     parals: 1
     properties:
       connector.resources.cores: 1
@@ -188,12 +182,12 @@ connectors:
     from:
       topic: hik_mdp_cellphone_topic
     to:
-      table: hik_mdp_cellphone_schema
+      table: hik_mdp_cellphone_table
       hbase.zookeeper.quorum: 10.17.139.66:2181
-      index: hik_mdp_cellphone_schema
-      type: hikmacinfotype
+      index: hik_mdp_cellphone_index
+      type: hikmdptype
       router: DATE_FIELD
-      router.field: collect_time
+      router.field: qssj
       router.rules: day:1
       router.rules.locale: zh-cn
       router.rules.timezone: GMT
