@@ -16,7 +16,7 @@ import com.hikvision.mdp.commons.kafka.ConnectorPool;
 import com.hikvision.mdp.commons.parser.YmlParse;
 import com.hikvision.mdp.commons.util.DateUtils;
 import com.hikvision.mdp.commons.util.Stopwatch;
-import com.hikvision.mdp.datagenerator.CellPhoneTicketGen;
+import com.hikvision.mdp.datagenerator.gen.CellPhoneTicketGen;
 import com.hikvision.mdp.datagenerator.DataGeneratorConstants;
 import com.hikvision.mdp.datagenerator.DataToKafka;
 import org.apache.logging.log4j.LogManager;
