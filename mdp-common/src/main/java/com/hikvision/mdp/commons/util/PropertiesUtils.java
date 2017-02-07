@@ -35,7 +35,7 @@ public class PropertiesUtils {
 	 * @param key key
 	 * @return 返回value
 	 */
-	public final static String key(String key) {
+	public static String key(String key) {
 		return System.getProperty(key);
 	}
 
@@ -44,19 +44,69 @@ public class PropertiesUtils {
 	 *
 	 * @param filePath 属性文件
 	 * @param key      需要读取的属性
+	 * @param real     是否是真实路径
 	 */
-	public final static String GetValueByKey(String filePath, String key) {
+	public static String GetValueByKey(String filePath, String key, boolean real) {
+		InputStream in = null;
 		Properties pps = new Properties();
-		try (InputStream in = new BufferedInputStream(new FileInputStream(filePath))) {
+		String res = "";
+		try {
+			if (real) {
+				in = new FileInputStream(filePath);
+			} else {
+				in = PropertiesUtils.class.getResourceAsStream("/" + filePath);
+			}
 			pps.load(in);
-			return pps.getProperty(key);
+			res = pps.getProperty(key);
 		} catch (IOException e) {
-			e.printStackTrace();
-			return null;
+			logger.error(e.getMessage(), e);
+		} finally {
+			if (null != in) {
+				try {
+					in.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 		}
+
+		return res;
 	}
 
-	public final static Map<String, String> properties(InputStream in) {
+	/**
+	 * @param filePath     根据Key读取Value,如果没有，则赋默认值
+	 * @param key          需要读取的属性
+	 * @param defalutValue 如果没有读到，那么赋默认值
+	 * @param real         是否是真实路径
+	 * @return 属性值
+	 */
+	public static String GetDefalutValueByKey(String filePath, String key, String defalutValue, boolean real) {
+		InputStream in = null;
+		Properties pps = new Properties();
+		String res = "";
+		try {
+			if (real) {
+				in = new FileInputStream(filePath);
+			} else {
+				in = PropertiesUtils.class.getResourceAsStream("/" + filePath);
+			}
+			pps.load(in);
+			res = StringUtils.hasText(pps.getProperty(key, "").trim()) ? pps.getProperty(key, "").trim() : defalutValue;
+		} catch (IOException e) {
+			logger.error(e.getMessage(), e);
+		} finally {
+			if (null != in) {
+				try {
+					in.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return res;
+	}
+
+	public static Map<String, String> properties(InputStream in) {
 		Map<String, String> map = new HashMap<>();
 		Properties pps = new Properties();
 		try {
@@ -74,12 +124,43 @@ public class PropertiesUtils {
 	}
 
 	/**
+	 * 读取配置文件
+	 *
+	 * @param filePath 配置文件路径
+	 * @param real 是否是真实路径
+	 * @return 配置文件的properties
+	 */
+	public static Properties getProperties(String filePath, boolean real) {
+		Properties pro = new Properties();
+		InputStream in = null;
+		try {
+			if (real) {
+				in = new FileInputStream(filePath);
+			} else {
+				in = PropertiesUtils.class.getResourceAsStream("/" + filePath);
+			}
+			pro.load(in);
+		} catch (Exception e) {
+			logger.error("Read " + filePath + " IOException:", e);
+		} finally {
+			try {
+				if (in != null) {
+					in.close();
+				}
+			} catch (IOException e) {
+				logger.error("Read " + filePath + " IOException:", e);
+			}
+		}
+		return pro;
+	}
+
+	/**
 	 * 读取Properties的全部信息
 	 *
 	 * @param filePath 读取的属性文件
 	 * @return 返回所有的属性 key:value<>key:value
 	 */
-	public final static Map<String, String> GetAllProperties(String filePath) throws IOException {
+	public static Map<String, String> GetAllProperties(String filePath) throws IOException {
 		Map<String, String> map = new HashMap<>();
 		Properties pps = new Properties();
 		try (InputStream in = new BufferedInputStream(new FileInputStream(filePath))) {
@@ -97,7 +178,7 @@ public class PropertiesUtils {
 	 * @param pKey     属性名称
 	 * @param pValue   属性值
 	 */
-	public final static void WriteProperties(String filePath, String pKey, String pValue) throws IOException {
+	public static void WriteProperties(String filePath, String pKey, String pValue) throws IOException {
 		Properties props = new Properties();
 
 		props.load(new FileInputStream(filePath));

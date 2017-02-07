@@ -74,7 +74,7 @@ public class DateUtils {
 	 * @return
 	 */
 	public static long transStr2long(String dateStr, String pattern) {
-		if (StringUtils.hasText(dateStr)) {
+		if (!StringUtils.hasText(dateStr)) {
 			return 0;
 		}
 		SimpleDateFormat sdf = new SimpleDateFormat(pattern);

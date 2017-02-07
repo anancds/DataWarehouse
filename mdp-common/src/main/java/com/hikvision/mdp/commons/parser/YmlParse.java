@@ -17,8 +17,7 @@ import com.hikvision.mdp.commons.constants.MDPConstants;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +36,7 @@ public class YmlParse {
 	private static final Logger LOG = LogManager.getLogger(YmlParse.class);
 
 	// TODO: fileUrl应该自动去获取
-	private static String fileUrl = MDPConstants.Collector.PIPELINE_INFO_HIK_SMART_METADATA;
+	private static String fileUrl = MDPConstants.Collector.PIPELINE_INFO_HIK_MDP_DATA;
 
 	private static final String[] YMLFiles = new String[] { fileUrl };
 
@@ -50,7 +49,7 @@ public class YmlParse {
 		// 加载YML采集流水线配置
 		for (String fileName : YMLFiles) {
 			DataCollectorPipelineDescriptor descriptor = loadYMLResource(fileName);
-			if (descriptor != null) {
+			if (null != descriptor) {
 				pipelineCache.put(fileName, descriptor);
 				List<SchemaDescriptor> list = descriptor.schemas();
 				Map<String, Schema> schemaMap = ConnectorBuilderV1.createSchemas(list);
@@ -67,15 +66,19 @@ public class YmlParse {
 	 */
 	public static DataCollectorPipelineDescriptor loadYMLResource(String ymlFile) {
 		LOG.info("Loading collector config from {} ...", ymlFile);
-		// TODO: 缺乏判断文件合法性
 		// 解析Pipeline描述文件
 		String newFile = "mdp-common" + File.separator + "src" + File.separator + "main" + File.separator + "resources"
 				+ File.separator + "schema" + File.separator + ymlFile;
-		try {
-			return Descriptors.parseFile(new File(newFile), DataCollectorPipelineDescriptorImpl.class);
-		} catch (IOException e) {
-			LOG.error("IO Error while read YML file.", e);
+		File hik_mdp_data = new File(newFile);
+		//文件合法性
+		if (hik_mdp_data.isFile()) {
+			try {
+				return Descriptors.parseFile(hik_mdp_data, DataCollectorPipelineDescriptorImpl.class);
+			} catch (IOException e) {
+				LOG.error("IO Error while read YML file.", e);
+			}
 		}
+		LOG.info("File didn't exist.");
 		return null;
 	}
 
@@ -121,7 +124,7 @@ public class YmlParse {
 	public static void main(String[] args) {
 
 		System.out.println(getSchema("hik_smart_metadata_schema"));
-		System.out.println(getTopic(MDPConstants.Collector.PIPELINE_INFO_HIK_SMART_METADATA, 0));
-		System.out.println(getKafkaAddress(MDPConstants.Collector.PIPELINE_INFO_HIK_SMART_METADATA));
+		System.out.println(getTopic(MDPConstants.Collector.PIPELINE_INFO_HIK_MDP_DATA, 0));
+		System.out.println(getKafkaAddress(MDPConstants.Collector.PIPELINE_INFO_HIK_MDP_DATA));
 	}
 }

@@ -18,8 +18,8 @@ package com.hikvision.mdp.datagenerator;
  */
 public class DataGeneratorConstants {
 
-	//服务名称，或者说是表名
-	public static String SERVER_NAME = "";
+	//业务类型，或者说是表名
+	public static String BUSINESS_TYPE = "";
 
 	//生成数据的线程数
 	public static int THREAD_NUM = 1;
@@ -31,5 +31,5 @@ public class DataGeneratorConstants {
 	public static int TOTAL_NUM = 0;
 
 	//一次发送数据条数
-	public static int NUM_ONE_TIME = 0;
+	public static int ONE_TIME_NUM = 0;
 }

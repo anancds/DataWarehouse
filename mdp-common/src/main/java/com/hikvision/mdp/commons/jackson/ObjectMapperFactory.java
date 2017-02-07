@@ -31,104 +31,108 @@ import java.io.IOException;
  */
 public class ObjectMapperFactory {
 
-	//The modifiable Jackson object mapper
-	private volatile static ObjectMapper objectMapper;
+  //The modifiable Jackson object mapper
+  private volatile static ObjectMapper objectMapper;
 
-	//The modifiable Jackson Object Writer
-	private volatile static ObjectWriter objectWriter;
+  //The modifiable Jackson Object Writer
+  private volatile static ObjectWriter objectWriter;
 
-	//The modifiable Jackson Object Reader
-	private volatile static ObjectReader objectReader;
+  //The modifiable Jackson Object Reader
+  private volatile static ObjectReader objectReader;
 
-	private static ObjectMapper create(JsonFactory jsonFactory) {
-		ObjectMapper mapper = jsonFactory == null ? new ObjectMapper() : new ObjectMapper(jsonFactory);
+  private static ObjectMapper create(JsonFactory jsonFactory) {
+    ObjectMapper mapper = jsonFactory == null ? new ObjectMapper() : new ObjectMapper(jsonFactory);
 
-		// TODO: 添加注释 
-		mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-		mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
-		mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-		mapper.configure(JsonGenerator.Feature.AUTO_CLOSE_TARGET, false);
-		return mapper;
-	}
+    // TODO: 添加注释
+    mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+    mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+    mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+    mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    mapper.configure(JsonGenerator.Feature.AUTO_CLOSE_TARGET, false);
+    return mapper;
+  }
 
-	private static CsvSchema createCsvSchema(CsvMapper csvMapper, Class<?> clazz) {
-		return csvMapper.schemaFor(clazz);
-	}
+  private static CsvSchema createCsvSchema(CsvMapper csvMapper, Class<?> clazz) {
+    return csvMapper.schemaFor(clazz);
+  }
 
-	public static ObjectMapper getObjectMapper(MapperType mapperType) {
-		if (null == objectMapper) {
-			objectMapper = createObjectMapper(mapperType);
-		}
-		return objectMapper;
-	}
+  public static ObjectMapper getObjectMapper(MapperType mapperType) {
+    if (null == objectMapper) {
+      objectMapper = createObjectMapper(mapperType);
+    }
+    return objectMapper;
+  }
 
-	public static ObjectWriter getObjectWriter(MapperType mapperType, Class<?> clazz) throws IOException {
-		if (null == objectWriter) {
-			objectWriter = createObjectWriter(mapperType, clazz);
-		}
-		return objectWriter;
-	}
+  public static ObjectWriter getObjectWriter(MapperType mapperType, Class<?> clazz)
+      throws IOException {
+    if (null == objectWriter) {
+      objectWriter = createObjectWriter(mapperType, clazz);
+    }
+    return objectWriter;
+  }
 
-	public static ObjectReader getObjectReader(MapperType mapperType, Class<?> clazz) throws IOException {
-		if (null == objectReader) {
-			objectReader = createObjectReader(mapperType, clazz);
-		}
-		return objectReader;
-	}
+  public static ObjectReader getObjectReader(MapperType mapperType, Class<?> clazz)
+      throws IOException {
+    if (null == objectReader) {
+      objectReader = createObjectReader(mapperType, clazz);
+    }
+    return objectReader;
+  }
 
-	private static ObjectMapper createObjectMapper(MapperType mapperType) {
-		ObjectMapper result = null;
+  private static ObjectMapper createObjectMapper(MapperType mapperType) {
+    ObjectMapper result = null;
 
-		if (null == mapperType) {
-			return null;
-		}
+    if (null == mapperType) {
+      return null;
+    }
 
-		if (mapperType == MapperType.YAML) {
-			result = create(new YAMLFactory());
-		} else if (mapperType == MapperType.JSON) {
-			result = create(new JsonFactory());
-		} else if (mapperType == MapperType.CSV) {
-			result = create(new CsvFactory());
-		} else if (mapperType == MapperType.SMILE) {
-			result = create(new SmileFactory());
-		} else if (mapperType == MapperType.XML) {
-			result = create(new XmlFactory());
-		}
+    if (mapperType == MapperType.YAML) {
+      result = create(new YAMLFactory());
+    } else if (mapperType == MapperType.JSON) {
+      result = create(new JsonFactory());
+    } else if (mapperType == MapperType.CSV) {
+      result = create(new CsvFactory());
+    } else if (mapperType == MapperType.SMILE) {
+      result = create(new SmileFactory());
+    } else if (mapperType == MapperType.XML) {
+      result = create(new XmlFactory());
+    }
 
-		return result;
-	}
+    return result;
+  }
 
-	private static ObjectReader createObjectReader(MapperType mapperType, Class<?> clazz) throws IOException {
-		ObjectReader result;
-		if (null == mapperType) {
-			return null;
-		}
+  private static ObjectReader createObjectReader(MapperType mapperType, Class<?> clazz)
+      throws IOException {
+    ObjectReader result;
+    if (null == mapperType) {
+      return null;
+    }
 
-		if (mapperType == MapperType.CSV) {
-			CsvMapper csvMapper = (CsvMapper) getObjectMapper(mapperType);
-			CsvSchema csvSchema = createCsvSchema(csvMapper, clazz);
-			result = csvMapper.reader(clazz).with(csvSchema);
-		} else {
-			result = getObjectMapper(mapperType).reader(clazz);
-		}
-		return result;
-	}
+    if (mapperType == MapperType.CSV) {
+      CsvMapper csvMapper = (CsvMapper) getObjectMapper(mapperType);
+      CsvSchema csvSchema = createCsvSchema(csvMapper, clazz);
+      result = csvMapper.reader(clazz).with(csvSchema);
+    } else {
+      result = getObjectMapper(mapperType).reader(clazz);
+    }
+    return result;
+  }
 
-	private static ObjectWriter createObjectWriter(MapperType mapperType, Class<?> clazz) throws IOException {
-		ObjectWriter result;
-		if (null == mapperType) {
-			return null;
-		}
+  private static ObjectWriter createObjectWriter(MapperType mapperType, Class<?> clazz)
+      throws IOException {
+    ObjectWriter result;
+    if (null == mapperType) {
+      return null;
+    }
 
-		if (mapperType == MapperType.CSV) {
-			CsvMapper csvMapper = (CsvMapper) getObjectMapper(mapperType);
-			CsvSchema csvSchema = createCsvSchema(csvMapper, clazz);
-			result = csvMapper.writer(csvSchema);
-		} else {
-			result = getObjectMapper(mapperType).writerWithType(clazz);
-		}
+    if (mapperType == MapperType.CSV) {
+      CsvMapper csvMapper = (CsvMapper) getObjectMapper(mapperType);
+      CsvSchema csvSchema = createCsvSchema(csvMapper, clazz);
+      result = csvMapper.writer(csvSchema);
+    } else {
+      result = getObjectMapper(mapperType).writerWithType(clazz);
+    }
 
-		return result;
-	}
+    return result;
+  }
 }
