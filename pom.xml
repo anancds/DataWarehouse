@@ -16,6 +16,7 @@
         <module>mdp-web</module>
         <module>mdp-etl</module>
         <module>mdp-checkstyle</module>
+        <module>mdp-core</module>
     </modules>
 
 
@@ -75,12 +76,15 @@
     <properties>
         <compileSource>1.8</compileSource>
         <java.version>1.8</java.version>
+        <!--plugin-->
         <jar.plugin.version>2.4</jar.plugin.version>
         <dependency.plugin.version>2.8</dependency.plugin.version>
         <assembly.plugin.version>2.4</assembly.plugin.version>
         <source-plugin.version>2.4</source-plugin.version>
         <checkstyle.plugin.version>2.17</checkstyle.plugin.version>
         <checkstyle.tool.version>6.11.2</checkstyle.tool.version>
+        <scala.plugin>3.2.2</scala.plugin>
+        <!--web server-->
         <jetty.version>9.2.11.v20150529</jetty.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
@@ -218,6 +222,11 @@
                             </goals>
                         </execution>
                     </executions>
+                </plugin>
+                <plugin>
+                    <groupId>net.alchim31.maven</groupId>
+                    <artifactId>scala-maven-plugin</artifactId>
+                    <version>${scala.plugin}</version>
                 </plugin>
             </plugins>
         </pluginManagement>
