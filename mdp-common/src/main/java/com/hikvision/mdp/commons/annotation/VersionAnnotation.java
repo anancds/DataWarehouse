@@ -5,7 +5,7 @@
  * @date: 2017/2/8 13:47
  * @Description: 本内容仅限于杭州海康威视数字技术股份有限公司内部使用，禁止转发.
  */
-package com.hikvision.mdp;
+package com.hikvision.mdp.commons.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

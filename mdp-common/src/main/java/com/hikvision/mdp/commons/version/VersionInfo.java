@@ -7,7 +7,7 @@
  */
 package com.hikvision.mdp.commons.version;
 
-import com.hikvision.mdp.VersionAnnotation;
+import com.hikvision.mdp.commons.annotation.VersionAnnotation;
 
 /**
  * <p>提供MDP的版本信息</p>

@@ -5,3 +5,5 @@
     user="chendongsheng5", date="Wed Feb  8 06:38:53 GMT 2017", url="git://pc-cdsyjysj5/d/project",
     srcChecksum="01d4462753e59ce69fc959d952c12fc1")
 package com.hikvision.mdp;
+
+import com.hikvision.mdp.commons.annotation.VersionAnnotation;
