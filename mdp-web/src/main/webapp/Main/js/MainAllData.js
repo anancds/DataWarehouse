@@ -2,16 +2,50 @@
  * Created by laiqin on 2017/1/13.
  */
 
-var xTime = [[], [], [], []];     //横坐标时间   移动语音业务
-var yTime = [[], [], [], []];     //纵坐标时间
-var zTime = [[], [], [], []];     //通话时间
+//存放所有的散点图数据,包括话单、出行等数据，然后根据筛选条件往xTime、yTime、zTime放数据;
+var all_xAxis = [];
+var all_yAxis = [];
+var all_zAxis = [];
+var tempType = [];
+
+//散点图
+var xTime = [];     //横坐标时间
+var yTime = [];     //纵坐标时间
+var zTime = [];     //通话时间
+//时间轴
+var xAxis = [];
+var yAxis = [];
+var zAxis = [];
+
+//散点图
+var chartType;      //所有业务类型
+var typeValue;      //业务数据
+var chartData = [];   //散点图数据初始化,即option中的series
+//时间轴
+var chartTypeTime = [];      //所有业务类型
+var typeValueTime = [];          //业务数据
+var chartDataTime = [];   //时间轴数据初始化,即option中的series
+
 
 var chartBig = false;    //chart窗口大小开关
 
 var myChartOne;     //容器初始化
 var myChartTwo;
 
+//时间轴方式2加载的x轴数据
+var xATime = [];
+
+//图例颜色 形状数组
+var legendColor = ['#36CA2F','#FFBCD7','#4771FF','lightblue','#FFAF47'];
+var legendSymbol = ['circle','rectangle','triangle','diamond','star'];
+
 window.onload = function () {
+    xATime = utilGetDate('2016-1-17','2016-6-5');
+    dateControl();
+}
+
+//日期选择初始化
+function dateControl() {
     $('#first').datetimepicker({
         language: 'zh-CN',
         weekStart: 1,
@@ -59,53 +93,337 @@ function formResize() {
 
 //全量数据获取
 function chartAllData() {
-    $.ajax({
-        async: true,
-        type: 'GET',
-        url: 'data/phone.json',
-        complete: function (data) {
-            var ojson = data.responseJSON;//获取返回数据
-            // xTime.splice(0, xTime.length);
-            // yTime.splice(0, yTime.length);
-            // zTime.splice(0, zTime.length);
-            $("#info-name").html(ojson.name);
-            for (var i = 0; i < ojson.data.length; i++) {
-                if (ojson.data[i].type == 1) {
-                    xTime[0][xTime[0].length] = ojson.data[i].date.substring(0, ojson.data[i].date.indexOf(' '));
-                    var tempHour = ojson.data[i].date.substring(ojson.data[i].date.indexOf(' ') + 1, ojson.data[i].date.indexOf(':'));
-                    var tempMin = ojson.data[i].date.substring(ojson.data[i].date.indexOf(':') + 1)
-                    yTime[0][xTime[0].length] = parseFloat((tempMin / 60).toFixed(2)) + parseInt(tempHour);
-                    zTime[0][xTime[0].length] = ojson.data[i].hours;
-                } else if (ojson.data[i].type == 2) {
-                    xTime[1][xTime[1].length] = ojson.data[i].date.substring(0, ojson.data[i].date.indexOf(' '));
-                    var tempHour = ojson.data[i].date.substring(ojson.data[i].date.indexOf(' ') + 1, ojson.data[i].date.indexOf(':'));
-                    var tempMin = ojson.data[i].date.substring(ojson.data[i].date.indexOf(':') + 1)
-                    yTime[1][xTime[1].length] = parseFloat((tempMin / 60).toFixed(2)) + parseInt(tempHour);
-                    zTime[1][xTime[1].length] = ojson.data[i].hours;
-                } else if (ojson.data[i].type == 3) {
-                    xTime[2][xTime[2].length] = ojson.data[i].date;
-                    yTime[2][xTime[2].length] = ojson.data[i].hours;
-                    zTime[2][xTime[2].length] = ojson.data[i].hours;
+    var xhrurl = 'http://10.16.128.107:8100/service/info/phone-commuication?callerNum=18580382828';
+    $.ajax(
+        {
+            type:'get',
+            url : xhrurl,
+            dataType : 'jsonp',
+            success  : function(data) {
+                var ojson = data;
+
+                chartType = Object.keys(ojson);    //获取业务类型
+                typeValue = Object.values(ojson);  //获取业务值
+                xTime.splice(0, xTime.length);
+                yTime.splice(0, yTime.length);
+                zTime.splice(0, zTime.length);
+                chartData.splice(0,chartData.length);
+                for (var i = 0; i < chartType.length; i++) {
+                    xTime.push([]);
+                    yTime.push([]);
+                    zTime.push([]);
                 }
+
+                for (var i = 0; i < chartType.length; i++) {
+                    for (var j = 0; j < typeValue[i].length; j++) {
+                        xTime[i][xTime[i].length] = typeValue[i][j].startTime.substring(0 , typeValue[i][j].startTime.indexOf(' '));
+                        var tempHour = typeValue[i][j].startTime.substring(typeValue[i][j].startTime.indexOf(' ') + 1, typeValue[i][j].startTime.indexOf(':'));
+                        var tempMin = typeValue[i][j].startTime.substring(typeValue[i][j].startTime.indexOf(':') + 1);
+                        yTime[i][yTime[i].length] = parseInt(tempMin) + parseInt(tempHour*60);
+                        zTime[i][zTime[i].length] = typeValue[i][j].callDuration;
+                    }
+                    chartData.push(
+                        {
+                            name: chartType[i],
+                            type: 'scatter',
+                            tooltip: {
+                                trigger: 'item',
+                                formatter: function (params) {
+                                    var date = new Date(params.value[0]);
+                                    return params.seriesName
+                                        + ' （'
+                                        + date.getFullYear() + '-'
+                                        + (date.getMonth() + 1) + '-'
+                                        + date.getDate() + ' '
+                                        + date.getHours() + ':'
+                                        + date.getMinutes()
+                                        + '）<br/>'
+                                        + params.value[1] + ', '
+                                        + params.value[2] + ', '
+                                        + params.value[3];
+                                },
+                                axisPointer: {
+                                    type: 'shadow',
+                                    lineStyle: {
+                                        type: 'dashed',
+                                        width: 1
+                                    }
+                                }
+                            },
+                            symbolSize: function (value) {
+                                return 6;    //设置圆大小
+                            },
+                            itemStyle: {
+                                normal: {
+                                    color: legendColor[i],
+                                    label : {show: false},
+                                    borderColor: '#240513',
+                                    borderWidth: '0.2'
+                                },
+                                emphasis: {
+                                    color: legendColor[i],
+                                    borderColor: 'black',
+                                    borderWidth: '0.5'
+                                }
+                            },
+                            symbol : 'circle',
+                            data: (function () {
+                                var d = [];
+                                for (var k = 0; k < xTime[i].length; k++) {
+                                    d.push([new Date(xTime[i][k]), parseInt(yTime[i][k]), zTime[i][k], k])
+                                }
+                                return d;
+                            })()
+                        }
+                    )
+                }
+
+                chartInit();
+            },
+            error : function() {
+                alert('数据获取失败!');
+            },
+            complete : function () {
+
             }
-            debugger
-            ;
-            chartAllDataInit();
-        },
-        error: function () {
-            alert('数据获取失败!');
         }
-    });
+    );
+    // $.ajax({
+    //     async: true,
+    //     type: 'GET',
+    //     url: 'data/phone.json',
+    //     complete: function (data) {
+    //         var ojson = data.responseJSON;//获取返回数据
+    //         // xTime.splice(0, xTime.length);
+    //         // yTime.splice(0, yTime.length);
+    //         // zTime.splice(0, zTime.length);
+    //         $("#info-name").html(ojson.name);
+    //         for (var i = 0; i < ojson.data.length; i++) {
+    //             if (ojson.data[i].type == 1) {
+    //                 xTime[0][xTime[0].length] = ojson.data[i].date.substring(0, ojson.data[i].date.indexOf(' '));
+    //                 var tempHour = ojson.data[i].date.substring(ojson.data[i].date.indexOf(' ') + 1, ojson.data[i].date.indexOf(':'));
+    //                 var tempMin = ojson.data[i].date.substring(ojson.data[i].date.indexOf(':') + 1)
+    //                 //yTime[0][xTime[0].length] = parseFloat((tempMin / 60).toFixed(2)) + parseInt(tempHour);
+    //                 yTime[0][xTime[0].length] = parseInt(tempMin) + parseInt(tempHour*60);
+    //                 zTime[0][xTime[0].length] = ojson.data[i].hours;
+    //             } else if (ojson.data[i].type == 2) {
+    //                 xTime[1][xTime[1].length] = ojson.data[i].date.substring(0, ojson.data[i].date.indexOf(' '));
+    //                 var tempHour = ojson.data[i].date.substring(ojson.data[i].date.indexOf(' ') + 1, ojson.data[i].date.indexOf(':'));
+    //                 var tempMin = ojson.data[i].date.substring(ojson.data[i].date.indexOf(':') + 1)
+    //                 //yTime[1][xTime[1].length] = parseFloat((tempMin / 60).toFixed(2)) + parseInt(tempHour);
+    //                 yTime[1][xTime[1].length] = parseInt(tempMin) + parseInt(tempHour*60);
+    //                 zTime[1][xTime[1].length] = ojson.data[i].hours;
+    //             } else if (ojson.data[i].type == 3) {
+    //                 xTime[2][xTime[2].length] = ojson.data[i].date;
+    //                 yTime[2][xTime[2].length] = ojson.data[i].hours;
+    //                 zTime[2][xTime[2].length] = ojson.data[i].hours;
+    //             }
+    //         }
+    //         ;
+    //         chartInit();
+    //     },
+    //     error: function () {
+    //         alert('数据获取失败!');
+    //     }
+    // });
 }
 
-//绘制chart
-function chartAllDataInit() {
+//获取数据
+function getData() {
+    //getPhone();//获取话单数据
+     getAccommodation();//住宿信息获取
+    // getFlight();//获取飞机出行数据
+    // getTrain();//获取火车出行数据
+    // getNet();//获取上网数据
+}
+
+//获取话单数据
+function getPhone() {
+    var xhrurl = 'http://10.16.128.107:8100/service/info/phone-commuication?callerNum=18580382828';
+    $.ajax(
+        {
+            type: 'get',
+            url: xhrurl,
+            dataType: 'jsonp',
+            success: function (data) {
+                var ojson = data;
+
+                tempType = Object.keys(ojson);    //获取业务类型
+                var jsonValue = Object.values(ojson);  //获取业务值
+                all_xAxis.splice(0, all_xAxis.length);
+                all_yAxis.splice(0, all_yAxis.length);
+                all_zAxis.splice(0, all_zAxis.length);
+                for (var i = 0; i < tempType.length+1; i++) {//加1 是为了存放话单数据合集
+                    all_xAxis.push([]);
+                    all_yAxis.push([]);
+                    all_zAxis.push([]);
+                }
+
+                for (var i = 0; i < tempType.length; i++) {
+                    for (var j = 0; j < jsonValue[i].length; j++) {
+                        all_xAxis[i][all_xAxis[i].length] = jsonValue[i][j].startTime.substring(0, jsonValue[i][j].startTime.indexOf(' '));
+                        var tempHour = jsonValue[i][j].startTime.substring(jsonValue[i][j].startTime.indexOf(' ') + 1, jsonValue[i][j].startTime.indexOf(':'));
+                        var tempMin = jsonValue[i][j].startTime.substring(jsonValue[i][j].startTime.indexOf(':') + 1);
+                        all_yAxis[i][all_yAxis[i].length] = parseInt(tempMin) + parseInt(tempHour * 60);
+                        all_zAxis[i][all_zAxis[i].length] = jsonValue[i][j].callDuration;
+                    }
+                }
+
+                tempType.push('话单业务');
+                var temp_xAxis_length = all_xAxis.length;
+                for (var i = 0; i < all_xAxis.length - 1; i++) {
+                    for (var j = 0; j < all_xAxis[i].length; j++) {
+                        all_xAxis[temp_xAxis_length - 1].push(all_xAxis[i][j]);
+                        all_yAxis[temp_xAxis_length - 1].push(all_yAxis[i][j]);
+                        all_zAxis[temp_xAxis_length - 1].push(all_zAxis[i][j]);
+                    }
+                }
+            },
+            error : function() {
+                alert('数据获取失败!');
+            }
+        })
+}
+
+//住宿信息获取
+function getAccommodation() {
+    var xhrurl = 'http://10.16.128.107:8100/service/info/accommodationInfo';
+    $.ajax(
+        {
+            type: 'get',
+            url: xhrurl,
+            dataType: 'jsonp',
+            success: function (data) {
+                var ojson = data;
+
+                tempType.push('住宿信息');
+
+                all_xAxis.push([]);
+                all_yAxis.push([]);
+                all_zAxis.push([]);
+
+                var length = all_xAxis.length;
+                debugger
+                for (var i = 0; i <ojson.length; i++) {
+                    all_xAxis[length - 1][all_xAxis.length] = ojson[i].checkInDate;
+                    var tempHour = ojson[i].substring(0,ojson[i].checkInTime.indexOf(':'));
+                    var tempMin = ojson[i].checkInTime.substring(ojson[i].checkInTime.indexOf(':') + 1);
+                    all_yAxis[length - 1][all_yAxis.length] = parseInt(tempMin) + parseInt(tempHour * 60);
+                    all_zAxis[length - 1][all_zAxis.length] = 1;
+                }
+                debugger
+            },
+            error : function() {
+                alert('数据获取失败!');
+            }
+        })
+}
+
+//获取飞机出行数据
+function getFlight() {
+    var xhrurl = 'http://10.16.128.107:8100/service/info/flight-traveling';
+    $.ajax(
+        {
+            type: 'get',
+            url: xhrurl,
+            dataType: 'jsonp',
+            success: function (data) {
+                var ojson = data;
+
+                tempType.push('航班信息');
+
+                all_xAxis.push([]);
+                all_yAxis.push([]);
+                all_zAxis.push([]);
+
+                var length = all_xAxis.length;
+                for (var i = 0; i <ojson.length; i++) {
+                    all_xAxis[length - 1][all_xAxis.length] = ojson[i].flightCheckinDate;
+                    var tempHour = ojson[i].substring(0,ojson[i].flightCheckinTime.indexOf(':'));
+                    var tempMin = ojson[i].flightCheckinTime.substring(ojson[i].flightCheckinTime.indexOf(':') + 1);
+                    all_yAxis[length - 1][all_yAxis.length] = parseInt(tempMin) + parseInt(tempHour * 60);
+                    all_zAxis[length - 1][all_zAxis.length] = 1;
+                }
+            },
+            error : function() {
+                alert('数据获取失败!');
+            }
+        })
+}
+
+//获取火车出行数据
+function getTrain() {
+    var xhrurl = 'http://10.16.128.107:8100/service/info/train-traveling';
+    $.ajax(
+        {
+            type: 'get',
+            url: xhrurl,
+            dataType: 'jsonp',
+            success: function (data) {
+                var ojson = data;
+
+                tempType.push('火车信息');
+
+                all_xAxis.push([]);
+                all_yAxis.push([]);
+                all_zAxis.push([]);
+
+                var length = all_xAxis.length;
+                for (var i = 0; i <ojson.length; i++) {
+                    all_xAxis[length - 1][all_xAxis.length] = ojson[i].trainCheckinDate;
+                    var tempHour = ojson[i].substring(0,ojson[i].trainCheckinTime.indexOf(':'));
+                    var tempMin = ojson[i].trainCheckinTime.substring(ojson[i].trainCheckinTime.indexOf(':') + 1);
+                    all_yAxis[length - 1][all_yAxis.length] = parseInt(tempMin) + parseInt(tempHour * 60);
+                    all_zAxis[length - 1][all_zAxis.length] = 1;
+                }
+            },
+            error : function() {
+                alert('数据获取失败!');
+            }
+        })
+}
+
+//获取上网数据
+function getNet() {
+    var xhrurl = 'http://10.16.128.107:8100/service/info/internet';
+    $.ajax(
+        {
+            type: 'get',
+            url: xhrurl,
+            dataType: 'jsonp',
+            success: function (data) {
+                var ojson = data;
+
+                tempType.push('上网信息');
+
+                all_xAxis.push([]);
+                all_yAxis.push([]);
+                all_zAxis.push([]);
+
+                var length = all_xAxis.length;
+                for (var i = 0; i <ojson.length; i++) {
+                    all_xAxis[length - 1][all_xAxis.length] = ojson[i].startDate;
+                    var tempHour = ojson[i].substring(0,ojson[i].startTime.indexOf(':'));
+                    var tempMin = ojson[i].startTime.substring(ojson[i].startTime.indexOf(':') + 1);
+                    all_yAxis[length - 1][all_yAxis.length] = parseInt(tempMin) + parseInt(tempHour * 60);
+                    all_zAxis[length - 1][all_zAxis.length] = 1;
+                }
+                debugger
+            },
+            error : function() {
+                alert('数据获取失败!');
+            }
+        })
+}
+
+//绘制散点图
+function chartInit() {
     myChartOne = echarts.init(document.getElementById('chartinit'));
     divResize()
     var option1 = {
         title: {
-            text: '时间坐标散点图',
-            subtext: 'dataZoom支持'
+            text: '全量明细数据',
+            subtext: ''
         },
         tooltip: {
             trigger: 'item',
@@ -135,7 +453,7 @@ function chartAllDataInit() {
             handleSize: 20
         },
         legend: {
-            data: ['移动语音业务', 'GPRS业务']
+            data: chartType
         }/*,
          dataRange: {
          min: 0,
@@ -159,11 +477,18 @@ function chartAllDataInit() {
         yAxis: [
             {
                 type: 'values',
-                splitNumber: 12
+                splitNumber: 15,
+                axisLabel : {
+                    formatter: function (value) {
+                        var d;
+                        d = parseInt(value/60);
+                        return d;
+                    }
+                }
             }
         ],
         animation: false,
-        series: [
+        series: chartData,/*[
             {
                 name: '移动语音业务',
                 type: 'scatter',
@@ -180,7 +505,8 @@ function chartAllDataInit() {
                             + date.getMinutes()
                             + '）<br/>'
                             + params.value[1] + ', '
-                            + params.value[2];
+                            + params.value[2]
+                            + params.value[3];
                     },
                     axisPointer: {
                         type: 'shadow',
@@ -191,12 +517,12 @@ function chartAllDataInit() {
                     }
                 },
                 symbolSize: function (value) {
-                    return 7;    //设置圆大小
+                    return 6;    //设置圆大小
                 },
                 data: (function () {
                     var d = [];
                     for (var i = 0; i < xTime[0].length; i++) {
-                        d.push([new Date(xTime[0][i]), parseInt(yTime[0][i]), zTime[0][i]])
+                        d.push([new Date(xTime[0][i]), parseInt(yTime[0][i]), zTime[0][i], i])
                     }
                     return d;
                 })()
@@ -216,7 +542,8 @@ function chartAllDataInit() {
                             + date.getMinutes()
                             + '）<br/>'
                             + params.value[1] + ', '
-                            + params.value[2];
+                            + params.value[2]
+                            + params.value[3];
                     },
                     axisPointer: {
                         type: 'shadow',
@@ -227,17 +554,17 @@ function chartAllDataInit() {
                     }
                 },
                 symbolSize: function (value) {
-                    return 7;    //设置圆大小
+                    return 4;    //设置圆大小
                 },
                 data: (function () {
                     var d = [];
                     for (var i = 0; i < xTime[1].length; i++) {
-                        d.push([new Date(xTime[1][i]), parseInt(yTime[1][i]), zTime[1][i]])
+                        d.push([new Date(xTime[1][i]), parseInt(yTime[1][i]), zTime[1][i], i])
                     }
                     return d;
                 })()
             }
-        ]
+        ]*/
     };
 
     require(
@@ -251,16 +578,11 @@ function chartAllDataInit() {
             myChartOne.showLoading({
                 text: '正在努力的读取数据中...'
             });
-            var ecConfig = require('echarts/config');
 
             function focus(param) {
                 var data = param.data;
-                var links = option1.series[0].links;
                 var nodes = option1.series[0].nodes;
-                if (
-                    data.source !== undefined
-                    && data.target !== undefined
-                ) { //点击的是边
+                if ( data.source !== undefined && data.target !== undefined ) { //点击的是边
                     var sourceNode = nodes.filter(function (n) {
                         return n.name == data.source
                     })[0];
@@ -269,6 +591,8 @@ function chartAllDataInit() {
                     })[0];
                     console.log("选中了边 " + sourceNode.name + ' -> ' + targetNode.name + ' (' + data.weight + ')');
                 } else { // 点击的是点
+                    var e = event || window.event;
+                    showMenu(e.pageX, e.pageY);                // 左键点击弹窗
                     //sendData()//添加原点点击时间
                     console.log("选中了" + data.name + '(' + data.value + ')');
                 }
@@ -284,30 +608,146 @@ function chartAllDataInit() {
                     //showData()   弹出窗口
                 }
             });
-            // 为echarts对象加载数据
-            myChartOne.setOption(option1);
 
+            myChartOne.on(ecConfig.EVENT.HOVER, function (e) {
+
+            });
+
+            //双击事件
+            myChartOne.on(ecConfig.EVENT.DBLCLICK, function () {
+                getParentTabs(1);
+            });
+
+            // 为echarts对象加载数据
+            myChartOne.setOption(option1,true);
+
+            //初始化chart根据窗口大小来同步改变大小
             window.onresize = myChartOne.resize;
 
             myChartOne.hideLoading({
                 text: '正在努力的读取数据中...'
             });
-            chartTimeInit();
+            chartTimeData1();
         }
     );
 }
 
-function getParent() {
-    alert('fudiaozi')
-    return
-    window.parent.dataSearch()
-}
-
-//获取数据
+//获取数据方式1
 function chartTimeData() {
+    var xhrurl = 'http://10.16.128.107:8100/service/info/phone-communication-hour-count?callerNum=18580382828';
+    $.ajax(
+        {
+            type:'get',
+            url : xhrurl,
+            dataType : 'jsonp',
+            success  : function(data) {
+                var ojson = data;
+                var tempArray = Object.keys(ojson);
+                //chartTypeTime = Object.keys(ojson);
+                typeValueTime = Object.values(ojson);
 
+                for (var i = 0; i < tempArray.length; i++) {
+                    chartTypeTime.push([]);
+                    xAxis.push([]);
+                    yAxis.push([]);
+                    zAxis.push([]);
+
+                    switch (tempArray[i]){
+                        case '0004' :
+                            chartTypeTime[i] = ('GPRS业务');
+                            for (var j = 0; j < typeValueTime[i].length; j++) {
+                                xAxis[i][xAxis[i].length] = typeValueTime[i][j].day;
+                                yAxis[i][yAxis[i].length] = typeValueTime[i][j].connCount;
+                                zAxis[i][zAxis[i].length] = typeValueTime[i][j].hour;
+                            }
+                            break;
+                        case '0003' :
+                            chartTypeTime[i] = ('漫出业务');
+                            for (var j = 0; j < typeValueTime[i].length; j++) {
+                                xAxis[i][xAxis[i].length] = typeValueTime[i][j].day;
+                                yAxis[i][yAxis[i].length] = typeValueTime[i][j].connCount;
+                                zAxis[i][zAxis[i].length] = typeValueTime[i][j].hour;
+                            }
+                            break;
+                        case '0003.0002' :
+                            break;
+                        case '0003.0001' :
+                            break;
+                        case '0002' :
+                            chartTypeTime[i] = ('短信业务');
+                            for (var j = 0; j < typeValueTime[i].length; j++) {
+                                xAxis[i][xAxis[i].length] = typeValueTime[i][j].day;
+                                yAxis[i][yAxis[i].length] = typeValueTime[i][j].connCount;
+                                zAxis[i][zAxis[i].length] = typeValueTime[i][j].hour;
+                            }
+                            break;
+                        case '0001.0002' :
+                            break;
+                        case '0001.0001' :
+                            break;
+                        case '0001' :
+                            chartTypeTime[i] = ('移动语音业务');
+                            for (var j = 0; j < typeValueTime[i].length; j++) {
+                                xAxis[i][xAxis[i].length] = typeValueTime[i][j].date;
+                                yAxis[i][yAxis[i].length] = typeValueTime[i][j].connCount;
+                                zAxis[i][zAxis[i].length] = typeValueTime[i][j].hour;
+                            }
+                            break;
+                    }
+                }
+                for (var i = 0; i < chartTypeTime.length; i++) {
+                    chartDataTime.push(
+                        {
+                            name: chartTypeTime[i],
+                            type: 'bar',
+                            tooltip: {
+                                trigger: 'item',
+                                formatter: function (params) {
+                                    var date = new Date(params.value[0]);
+                                    return params.seriesName
+                                        + '<br/>'
+                                        + ' （'
+                                        + date.getFullYear() + '-'
+                                        + (date.getMonth() + 1) + '-'
+                                        + date.getDate() + ' '
+                                        + date.getHours() + ':'
+                                        + date.getMinutes()
+                                        + '）<br/>'
+                                        + params.value[1] + ', '
+                                        + params.value[2];
+                                },
+                                axisPointer: {
+                                    type: 'shadow',
+                                    lineStyle: {
+                                        type: 'dashed',
+                                        width: 1
+                                    }
+                                }
+                            },
+                            data: function () {
+                                var d = [];
+                                for (var k = 0; k < xAxis[i].length; k++) {
+                                    d.push([new Date(xAxis[i][k]), parseInt(yAxis[i][k]), zAxis[i][k], k])
+                                }
+                                return d;
+                            }()
+                        }
+                    )
+                }
+
+                chartTimeInit();
+            },
+            error : function() {
+                alert('数据获取失败!');
+            },
+            complete : function () {
+
+            }
+        }
+    );
 }
-//绘制下方的chart
+
+//绘制下方时间轴方式1
 function chartTimeInit() {
     myChartTwo = echarts.init(document.getElementById('chartinittime'));
     var option2 = {
@@ -315,7 +755,7 @@ function chartTimeInit() {
             trigger: 'item'
         },
         legend: {
-            data: ['移动语音业务', 'GPRS业务']
+            data: chartType/*['移动语音业务', 'GPRS业务']*/
         },
         toolbox: {
             show: true,
@@ -347,7 +787,7 @@ function chartTimeInit() {
                 type: 'value'
             }
         ],
-        series: [
+        series:chartDataTime/* [
             {
                 name: '移动语音业务',
                 type: 'bar',
@@ -418,7 +858,7 @@ function chartTimeInit() {
                     return d;
                 }()
             }
-        ]
+        ]*/
     };
 
     require(
@@ -432,11 +872,9 @@ function chartTimeInit() {
             myChartTwo.showLoading({
                 text: '正在努力的读取数据中...'
             });
-            var ecConfig = require('echarts/config');
 
             function focus(param) {
                 var data = param.data;
-                var links = option2.series[0].links;
                 var nodes = option2.series[0].nodes;
                 if (
                     data.source !== undefined
@@ -455,15 +893,31 @@ function chartTimeInit() {
                 }
             }
 
-            myChartTwo.on(ecConfig.EVENT.CLICK, focus)
+            // var _ZR = myChartTwo.getZrender();
+            // var CircleShape = require('zrender/shape/Circle');
+            // var TextShape = require('zrender/shape/Text');
+            // _ZR.addShape(new CircleShape({
+            //     style: {
+            //         x: 100,
+            //         y: 100,
+            //         r: 50,
+            //         brushType: 'both',
+            //         color: 'rgba(220, 20, 60, 0.8)',          // rgba supported
+            //         lineWidth: 5,
+            //         text: 'circle',
+            //         textPosition: 'inside'
+            //     },
+            //     hoverable: true,   // default true
+            //     draggable: true,   // default false
+            //     clickable: true,   // default false
+            // }))
 
-            myChartTwo.on(ecConfig.EVENT.FORCE_LAYOUT_END, function () {
-                console.log(myChartTwo.chart.force.getPosition());
-            });
+            myChartTwo.on(ecConfig.EVENT.CLICK, focus);
 
             // 为echarts对象加载数据
             myChartTwo.setOption(option2);
 
+            //初始化chart根据窗口大小来同步改变大小
             window.onresize = myChartTwo.resize;
 
             myChartTwo.hideLoading({
@@ -471,7 +925,7 @@ function chartTimeInit() {
             });
 
             myChartOne.connect([myChartTwo]);
-            //myChartTwo.connect([myChartOne]);
+            myChartTwo.connect([myChartOne]);
 
             setTimeout(function () {
                 window.onresize = function () {
@@ -483,7 +937,228 @@ function chartTimeInit() {
     );
 }
 
-//chart动态改变
+//获取数据方式2
+function chartTimeData1() {
+    var xhrurl = 'http://10.16.128.107:8100/service/info/phone-communication-hour-count?callerNum=18580382828';
+    $.ajax(
+        {
+            type:'get',
+            url : xhrurl,
+            dataType : 'jsonp',
+            success  : function(data) {
+                var ojson = data;
+                var tempArray = Object.keys(ojson);
+                //chartTypeTime = Object.keys(ojson);
+                typeValueTime = Object.values(ojson);
+
+                for (var i = 0; i < tempArray.length; i++) {
+                    yAxis.push([]);
+                    for (var j = 0; j < xATime.length; j++) {
+                        yAxis[i].push(0)
+                    }
+                }
+
+                for (var i = 0; i < tempArray.length; i++) {
+                    switch (tempArray[i]){
+                        case '0004' :
+                            chartTypeTime[i] = ('GPRS业务');
+                            for (var j = 0; j < typeValueTime[i].length; j++) {
+                                yAxis[i][xATime.indexOf(typeValueTime[i][j].day)] = yAxis[i][xATime.indexOf(typeValueTime[i][j].day)] + parseInt(typeValueTime[i][j].connCount);
+                            }
+                            break;
+                        case '0003' :
+                            chartTypeTime[i] = ('漫出业务');
+                            for (var j = 0; j < typeValueTime[i].length; j++) {
+                                yAxis[i][xATime.indexOf(typeValueTime[i][j].day)] = yAxis[i][xATime.indexOf(typeValueTime[i][j].day)] + parseInt(typeValueTime[i][j].connCount);
+                            }
+                            break;
+                        case '0003.0002' :
+                            break;
+                        case '0003.0001' :
+                            break;
+                        case '0002' :
+                            chartTypeTime[i] = ('短信业务');
+                            for (var j = 0; j < typeValueTime[i].length; j++) {
+                                yAxis[i][xATime.indexOf(typeValueTime[i][j].day)] = yAxis[i][xATime.indexOf(typeValueTime[i][j].day)] + parseInt(typeValueTime[i][j].connCount);
+                            }
+                            break;
+                        case '0001.0002' :
+                            break;
+                        case '0001.0001' :
+                            break;
+                        case '0001' :
+                            chartTypeTime[i] = ('移动语音业务');
+                            for (var j = 0; j < typeValueTime[i].length; j++) {
+                                yAxis[i][xATime.indexOf(typeValueTime[i][j].day)] = yAxis[i][xATime.indexOf(typeValueTime[i][j].day)] + parseInt(typeValueTime[i][j].connCount);
+                            }
+                            break;
+                    }
+                }
+
+                chartDataTime.splice(0 , chartDataTime.length);
+
+                for (var i = 0; i < chartTypeTime.length; i++) {
+                    chartDataTime.push(
+                        {
+                            name:chartTypeTime[i],
+                            type:'bar',
+                            data:yAxis[i]
+                        }
+                    )
+                }
+
+                chartTimeInit1();
+            },
+            error : function() {
+                alert('数据获取失败!');
+            },
+            complete : function () {
+
+            }
+        }
+    );
+}
+
+//绘制下方时间轴方式2
+function chartTimeInit1() {
+    myChartTwo = echarts.init(document.getElementById('chartinittime'));
+    var option2 = {
+        title: {
+            text: '全量明细数据',
+            subtext: 'dataZoom支持'
+        },
+        tooltip : {
+            trigger: 'axis'
+        },
+        legend: {
+            data:chartType
+        },
+        toolbox: {
+            show : true,
+            feature : {
+                mark : {show: true},
+                dataView : {readOnly:false},
+                magicType : {show: true, type: ['line', 'bar']},
+                restore : {show: true},
+                saveAsImage : {show: true}
+            }
+        },
+        calculable : true,
+        dataZoom : {
+            show : true,
+            realtime : true,
+            start : 0,
+            end : 100,
+            handleSize: 20
+        },
+        xAxis : [
+            {
+                type : 'category',
+                boundaryGap : true,
+                data : xATime
+            }
+        ],
+        yAxis : [
+            {
+                type : 'value'
+            }
+        ],
+        series : chartDataTime
+    };
+
+    require(
+        [
+            'echarts'
+        ],
+        function (ec) {
+            var ecConfig = require('echarts/config');
+
+            // 过渡---------------------
+            myChartTwo.showLoading({
+                text: '正在努力的读取数据中...'
+            });
+
+            function focus(param) {
+                var data = param.data;
+                var nodes = option2.series[0].nodes;
+                if (
+                    data.source !== undefined
+                    && data.target !== undefined
+                ) { //点击的是边
+                    var sourceNode = nodes.filter(function (n) {
+                        return n.name == data.source
+                    })[0];
+                    var targetNode = nodes.filter(function (n) {
+                        return n.name == data.target
+                    })[0];
+                    console.log("选中了边 " + sourceNode.name + ' -> ' + targetNode.name + ' (' + data.weight + ')');
+                } else { // 点击的是点
+                    sendData()//添加原点点击时间
+                    console.log("选中了" + data.name + '(' + data.value + ')');
+                }
+            }
+
+            // var _ZR = myChartTwo.getZrender();
+            // var CircleShape = require('zrender/shape/Circle');
+            // var TextShape = require('zrender/shape/Text');
+            // _ZR.addShape(new CircleShape({
+            //     style: {
+            //         x: 100,
+            //         y: 100,
+            //         r: 50,
+            //         brushType: 'both',
+            //         color: 'rgba(220, 20, 60, 0.8)',          // rgba supported
+            //         lineWidth: 5,
+            //         text: 'circle',
+            //         textPosition: 'inside'
+            //     },
+            //     hoverable: true,   // default true
+            //     draggable: true,   // default false
+            //     clickable: true,   // default false
+            // }))
+
+            myChartTwo.on(ecConfig.EVENT.CLICK, focus);
+
+            // 为echarts对象加载数据
+            myChartTwo.setOption(option2);
+
+            window.onresize = myChartTwo.resize;
+
+            myChartTwo.hideLoading({
+                text: '正在努力的读取数据中...'
+            });
+
+            //加载成功
+            loadSuccess();
+
+            myChartOne.connect([myChartTwo]);
+            myChartTwo.connect([myChartOne]);
+
+            setTimeout(function () {
+                window.onresize = function () {
+                    myChartOne.resize();
+                    myChartTwo.resize();
+                }
+            }, 200);
+        }
+    );
+}
+
+//隐藏左键菜单
+function menuHide() {
+    var menu = document.getElementById("myMenu");
+    menu.classList.remove('show-menu');
+}
+
+//散点图点击显示菜单
+function showMenu(x , y) {
+    var menu = document.getElementById("myMenu");
+    menu.style.left = x + 'px';
+    menu.style.top = y + 'px';
+    menu.classList.add('show-menu');
+}
+
+//chart动态改变chart宽度
 function divResize() {
     $("#chartleft").resize(function () {
         myChartOne.resize;
@@ -491,27 +1166,43 @@ function divResize() {
     })
 }
 
-function changeTab(tabnum) {
-    if(tabnum == 1){
-        $("#tab-one").slideDown(500, function () {
-        });
-        $("#tab-two").slideUp(1000, function () {
-        });
-        $("#tab-three").slideUp(1000, function () {
-        });
-    }else if (tabnum == 2){
-        $("#tab-one").slideUp(500, function () {
-        });
-        $("#tab-two").slideDown(1000, function () {
-        });
-        $("#tab-three").slideUp(1000, function () {
-        });
-    }else if (tabnum == 3){
-        $("#tab-one").slideUp(500, function () {
-        });
-        $("#tab-two").slideUp(1000, function () {
-        });
-        $("#tab-three").slideDown(1000, function () {
-        });
-    }
+//切换到时空关系窗口
+function getParentTabs(e) {
+    window.parent.changeTabs(e)
+    menu.style.display = "none";
+    menuHide();
 }
+
+//点击tab标签页显示对应的form表单
+function changeTab(tabnum) {
+    switch (tabnum) {
+        case 1 :
+            $("#tab-one").slideDown(500, function () {});
+            $("#tab-two").slideUp(1000, function () {});
+            $("#tab-three").slideUp(1000, function () {});
+            $("#tab-four").slideUp(1000, function () {});
+            break;
+        case 2 :
+            $("#tab-one").slideUp(500, function () {});
+            $("#tab-two").slideDown(1000, function () {});
+            $("#tab-three").slideUp(1000, function () {});
+            $("#tab-four").slideUp(1000, function () {});
+            break;
+        case 3 :
+            $("#tab-one").slideUp(500, function () {});
+            $("#tab-two").slideUp(1000, function () {});
+            $("#tab-three").slideDown(1000, function () {});
+            $("#tab-four").slideUp(1000, function () {});
+            break;
+        case 4 :
+            $('#myTab li:eq(3) a').tab('show');
+            $("#tab-one").slideUp(500, function () {});
+            $("#tab-two").slideUp(1000, function () {});
+            $("#tab-three").slideUp(1000, function () {});
+            $("#tab-four").slideDown(1000, function () {});
+            break;
+    }
+    menuHide();
+}
+
+

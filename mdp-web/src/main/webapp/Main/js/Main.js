@@ -4,8 +4,7 @@
 
 /*$(function () {
     $('#myTab li:eq(1) a').tab('show')
-    $('#chartTabs li:eq(1) a').tab('show')
-})*/   // 按序号来选择active窗口
+}) */  // 按序号来选择active窗口
 
 var xTime = [];     //横坐标时间   移动语音业务
 var yTime = [];     //纵坐标时间
@@ -15,21 +14,11 @@ var xTimeGPRS = [];     //横坐标时间   GPRS业务
 var yTimeGPRS = [];     //纵坐标时间
 var zTimeGPRS = [];     //通话时间
 
-function aa() {
-    // $("#test").fadeIn(200, function () {
-    // });
-    //$("#test").show()
-    $("#test").animate({width:'10%'},'slow');
-}
-
-function bb() {
-    // $("#test").fadeOut(200,function () {
-    //
-    // });
-    $("#test").hide()
-}
+var initFlag = false   //false:chart还未初始化  true:图像已经初始化
+var changeFlag = false;    //判断全量->关联
 
 window.onload = function () {
+    //窗口大小调整
     formResize()
     $(function(){
         $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
@@ -37,16 +26,20 @@ window.onload = function () {
             var activeTab = $(e.target).text();
             // 获取前一个激活的标签页的名称
             var previousTab = $(e.relatedTarget).text();
-            // switch (activeTab){
-            //     case '全量':
-            //         chartAllData();
-            // }
+
+            if (initFlag == false && activeTab == '信息检索'){
+                $(function () {
+                    $('#myTab li:eq(1) a').tab('show');
+                    $('#chartTabs li:eq(0) a').tab('show');
+                })
+            }
         });
     });
 }
 
 function formResize() {
     $("#mainalladta").height($(window).height()-200);
+    $("#relationdata").height($(window).height()-200);
 }
 
 function searchDialog() {
@@ -75,7 +68,7 @@ function chartAllData() {
         async:true,
         type:'GET',
         url:'data/phone.json',
-        complete:function(data){
+        success:function(data){
             var ojson = data.responseJSON;//获取返回数据
             xTime.splice(0, xTime.length);
             yTime.splice(0, yTime.length);
@@ -306,7 +299,6 @@ function chartAllDataInit() {
                 if(e.zoom.start != 0 && e.zoom.end != 100){
                     showData()
                 }
-                debugger
             });
             // 为echarts对象加载数据
             myChart1.setOption(option1);
@@ -314,11 +306,114 @@ function chartAllDataInit() {
             myChart1.hideLoading({
                 text: '正在努力的读取数据中...'
             });
+
+            initFlag = true;
         }
     );
 }
 
-function dataSearch() {
-    //alert('--+--+--+-+-+-+-+')
-    allData.window.getParent()
+function changeTabs(flag) {
+    if (flag == 1) {
+        $(function () {
+            $('#myTab li:eq(1) a').tab('show')
+            $('#chartTabs li:eq(2) a').tab('show');
+            changeTab(3)
+            relationdata.window.returnInitFlag() == false ? relationdata.window.chartRelationData() : relationdata.window.moreData();
+        });
+    }
+}
+
+function readData() {
+    var xhrurl = 'http://10.16.128.20:8100/service/info/phone-commuication';
+    $.ajax(
+        {
+            type:'get',
+            url : xhrurl,
+            dataType : 'jsonp',
+            success  : function(data) {
+                alert('success');
+            },
+            error : function() {
+                alert('fail');
+            }
+        }
+    );
+    return
+    $.ajax({
+        async:true,
+        type:'GET',
+        url:xhrurl,
+        complete:function(data){
+        }
+    });
+}
+
+//点击tab标签页显示对应的form表单
+function changeTab(tabnum) {
+    switch (tabnum){
+        case 1:
+            $("#childTabOne").slideDown(800, function () {
+            });
+            $("#childTabTwo").slideUp(800, function () {
+            });
+            $("#childTabThree").slideUp(800, function () {
+            });
+            $("#childTabFour").slideUp(800, function () {
+            });
+            $("#childTabFive").slideUp(800, function () {
+            });
+            break;
+        case 2:
+            $("#childTabOne").slideUp(800, function () {
+            });
+            $("#childTabTwo").slideDown(800, function () {
+                //document.getElementById("childTabTwo").style.visibility = '';
+            });
+            $("#childTabThree").slideUp(800, function () {
+            });
+            $("#childTabFour").slideUp(800, function () {
+            });
+            $("#childTabFive").slideUp(800, function () {
+            });
+            break;
+        case 3:
+            $("#childTabOne").slideUp(800, function () {
+            });
+            $("#childTabTwo").slideUp(800, function () {
+            });
+            $("#childTabThree").slideDown(800, function () {
+               // document.getElementById("childTabThree").style.visibility = '';
+            });
+            $("#childTabFour").slideUp(800, function () {
+            });
+            $("#childTabFive").slideUp(800, function () {
+            });
+            break;
+        case 4:
+            $("#childTabOne").slideUp(800, function () {
+            });
+            $("#childTabTwo").slideUp(800, function () {
+            });
+            $("#childTabThree").slideUp(800, function () {
+            });
+            $("#childTabFour").slideDown(800, function () {
+                //document.getElementById("childTabFour").style.visibility = '';
+            });
+            $("#childTabFive").slideUp(800, function () {
+            });
+            break;
+        case 5:
+            $("#childTabOne").slideUp(800, function () {
+            });
+            $("#childTabTwo").slideUp(800, function () {
+            });
+            $("#childTabThree").slideUp(800, function () {
+            });
+            $("#childTabFour").slideUp(800, function () {
+            });
+            $("#childTabFive").slideDown(800, function () {
+                //document.getElementById("childTabFive").style.visibility = '';
+            });
+            break;
+    }
 }
