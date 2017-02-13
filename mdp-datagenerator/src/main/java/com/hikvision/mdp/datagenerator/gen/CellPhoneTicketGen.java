@@ -69,10 +69,11 @@ public class CellPhoneTicketGen {
 	 *
 	 * @return 起始时间
 	 */
-	public static String getQSSJ() {
+	public static long getQSSJ() {
 		long times = System.currentTimeMillis();
-		Date date = new Date(times);
-		return sdf.format(date);
+		return times;
+//		Date date = new Date(times);
+//		return sdf.format(date);
 	}
 
 	/**

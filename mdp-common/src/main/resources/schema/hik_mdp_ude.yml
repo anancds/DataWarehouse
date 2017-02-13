@@ -1,0 +1,128 @@
+---
+name: hik_mdp_ude
+fields:
+  - name: rowKey
+    # Short, Int, Long, Float, Double, Decimal, Boolean, String, Byte, Binary, Date, Timestamp
+    type: String
+    indexParameters:
+      isStore: true
+      isTokenized: false
+  - name: yys
+    group: info
+    index: 0
+    type: String
+    indexParameters:
+      isStore: true
+      isTokenized: false
+  - name: ywlx
+    group: info
+    index: 1
+    type: String
+    indexParameters:
+      isStore: true
+      isTokenized: false
+  - name: qssj
+    group: info
+    index: 2
+    type: String
+    indexParameters:
+      isStore: true
+      isTokenized: false
+  - name: fwhm
+    group: info
+    index: 3
+    type: String
+    indexParameters:
+      isStore: true
+      isTokenized: false
+  - name: kh
+    group: info
+    index: 4
+    type: String
+    indexParameters:
+      isStore: true
+      isTokenized: false
+  - name: sbhm
+    group: info
+    index: 5
+    type: String
+    indexParameters:
+      isStore: true
+      isTokenized: false
+  - name: dfhm
+    group: info
+    index: 6
+    type: String
+    indexParameters:
+      isStore: true
+      isTokenized: false
+  - name: dfhmgsd
+    group: info
+    index: 7
+    type: String
+    indexParameters:
+      isStore: true
+      isTokenized: false
+  - name: thsc
+    group: info
+    index: 8
+    type: Int
+    indexParameters:
+      isStore: true
+      isTokenized: false
+  - name: hjlx
+    group: info
+    index: 9
+    type: String
+    indexParameters:
+      isStore: true
+      isTokenized: false
+  - name: lac
+    group: info
+    index: 10
+    type: String
+    indexParameters:
+      isStore: true
+      isTokenized: false
+  - name: cid
+    group: info
+    index: 11
+    type: String
+    indexParameters:
+      isStore: true
+      isTokenized: false
+  - name: fwhmjz
+    group: info
+    index: 12
+    type: String
+    indexParameters:
+      isStore: true
+      isTokenized: false
+  - name: msc
+    group: info
+    index: 13
+    type: String
+    indexParameters:
+      isStore: true
+      isTokenized: false
+  - name: cs
+    group: info
+    index: 14
+    type: String
+    indexParameters:
+      isStore: true
+      isTokenized: false
+  - name: dsfhm
+    group: info
+    index: 15
+    type: String
+    indexParameters:
+      isStore: true
+      isTokenized: false
+  - name: dsfhmgsd
+    group: info
+    index: 16
+    type: String
+    indexParameters:
+      isStore: true
+      isTokenized: false

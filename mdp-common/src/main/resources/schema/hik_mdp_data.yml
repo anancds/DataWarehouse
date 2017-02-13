@@ -3,19 +3,11 @@ name: hik-mdp-data-collector
 properties:
   kafka.bootstrap.servers: 10.17.139.66:9092
   kafka.zookeeper.connector: 10.17.139.66:2181
-#  hbase.zookeeper.quorum: 10.17.139.66
-#  hbase.zookeeper.property.clientPort: 2181
-#  hbase.table.name: hik_mdp_cellphone
-#  policeHash: Hash分配, policeAvg: 平均分配
-#  hbase.region.strategy: policeAvg
-#  rowkey.expression: hashFormatAndInsert(formatTime(timestamp_,'yyyyMM')+formatString(target_type,'%03d')+formatTime(timestamp_,'dd')+'_'+global_id,999,0,'%03d',6)
   collector.parser: json
 schemas:
   - name: hik_mdp_cellphone_schema
-    params:
-      skip.index: true
     #TODO 确定哪些字段是必须的 (optional = true)
-    #parameters -> 有检索需求的就加
+    #parameters -> 有检索需求的就加, 目前都加上
     fields:
       #运营商
       - name: yys
@@ -26,7 +18,7 @@ schemas:
         optional: true
         parameters:
           index.type: es
-          index.isStore: false
+          index.isStore: true
           index.isTokenized: false
       #业务类型
       - name: ywlx
@@ -36,7 +28,7 @@ schemas:
         optional: true
         parameters:
           index.type: es
-          index.isStore: false
+          index.isStore: true
           index.isTokenized: false
       #起始时间
       - name: qssj
@@ -46,7 +38,7 @@ schemas:
         optional: true
         parameters:
           index.type: es
-          index.isStore: false
+          index.isStore: true
           index.isTokenized: false
       #服务号码
       - name: fwhm
@@ -56,7 +48,7 @@ schemas:
         optional: true
         parameters:
           index.type: es
-          index.isStore: false
+          index.isStore: true
           index.isTokenized: false
       #卡号
       - name: kh
@@ -64,12 +56,20 @@ schemas:
         index: 4
         type: STRING
         optional: true
+        parameters:
+          index.type: es
+          index.isStore: true
+          index.isTokenized: false
       #设备号码
       - name: sbhm
         group: info
         index: 5
         type: STRING
         optional: true
+        parameters:
+          index.type: es
+          index.isStore: true
+          index.isTokenized: false
       #对方号码
       - name: dfhm
         group: info
@@ -78,7 +78,7 @@ schemas:
         optional: true
         parameters:
           index.type: es
-          index.isStore: false
+          index.isStore: true
           index.isTokenized: false
       #对方号码归属地
       - name: dfhmgsd
@@ -88,17 +88,17 @@ schemas:
         optional: true
         parameters:
           index.type: es
-          index.isStore: false
+          index.isStore: true
           index.isTokenized: false
-      #通话时长
+      #通话时长 int
       - name: thsc
         group: info
         index: 8
-        type: INT64
+        type: INT32
         optional: true
         parameters:
           index.type: es
-          index.isStore: false
+          index.isStore: true
           index.isTokenized: false
       #呼叫类型
       - name: hjlx
@@ -106,6 +106,10 @@ schemas:
         index: 9
         type: STRING
         optional: true
+        parameters:
+          index.type: es
+          index.isStore: true
+          index.isTokenized: false
       #LAC
       - name: lac
         group: info
@@ -114,7 +118,7 @@ schemas:
         optional: true
         parameters:
           index.type: es
-          index.isStore: false
+          index.isStore: true
           index.isTokenized: false
       #CID
       - name: cid
@@ -134,7 +138,7 @@ schemas:
         optional: true
         parameters:
           index.type: es
-          index.isStore: false
+          index.isStore: true
           index.isTokenized: false
       #MSC
       - name: msc
@@ -142,6 +146,10 @@ schemas:
         index: 13
         type: STRING
         optional: true
+        parameters:
+          index.type: es
+          index.isStore: true
+          index.isTokenized: false
       #城市
       - name: cs
         group: info
@@ -150,7 +158,7 @@ schemas:
         optional: true
         parameters:
           index.type: es
-          index.isStore: false
+          index.isStore: true
           index.isTokenized: false
       #第三方号码
       - name: dsfhm
@@ -158,12 +166,20 @@ schemas:
         index: 15
         type: STRING
         optional: true
+        parameters:
+          index.type: es
+          index.isStore: true
+          index.isTokenized: false
       #第三方号码归属地
       - name: dsfhmgsd
         group: info
         index: 16
         type: STRING
         optional: true
+        parameters:
+          index.type: es
+          index.isStore: true
+          index.isTokenized: false
 topics:
   - name: hik_mdp_cellphone_topic
     partitions: 5
@@ -185,7 +201,7 @@ connectors:
       table: hik_mdp_cellphone_table
       hbase.zookeeper.quorum: 10.17.139.66:2181
       index: hik_mdp_cellphone_index
-      type: hikmdptype
+      type: hikmdpcellphonetype
       router: DATE_FIELD
       router.field: qssj
       router.rules: day:1

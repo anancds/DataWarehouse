@@ -68,8 +68,9 @@ public class CellPhoneTicketToKafka implements DataToKafka, Closeable {
 
 				for (int i = 0; i < sendTimes; i++) {
 					for (int j = 0; j < DataGeneratorConstants.ONE_TIME_NUM; j++) {
-						long startTime = DateUtils
-								.transStr2long(CellPhoneTicketGen.getQSSJ(), DateUtils.DEFAULT_DATE_All_FORMAT);
+//						long startTime = DateUtils
+//								.transStr2long(CellPhoneTicketGen.getQSSJ(), DateUtils.DEFAULT_DATE_All_FORMAT);
+						long startTime = CellPhoneTicketGen.getQSSJ();
 
 						// TODO: 这个rowKey是为了测试用的，具体怎么设计还需要讨论
 						String rowKey = startTime + "_" + i + "_" + j;
@@ -94,24 +95,24 @@ public class CellPhoneTicketToKafka implements DataToKafka, Closeable {
 			});
 		}
 
-
 		ConnectorPool.close(YmlParse.getKafkaAddress(MDPConstants.Collector.PIPELINE_INFO_HIK_MDP_DATA),
 				YmlParse.getTopic(MDPConstants.Collector.PIPELINE_INFO_HIK_MDP_DATA, 0));
 
-		if (null != executorService) {
-			executorService.shutdown();
-		}
 		LOG.info("Send data to Kafka finished, The total number is: {}! Cost {} seconds!", ConnectorPool.succeeds,
 				stopwatch.elapsedTime());
+		try {
+			close();
+		}catch (IOException ioe){
+			System.out.println("close");
+		}
 	}
 
 	@Override public void close() throws IOException {
 		LOG.info("Close Data Generator.");
-
+		//TODO check executorService != null
 		System.out.println("hello");
-
-		if (null != executorService) {
+		//if (null != executorService) {
 			executorService.shutdown();
-		}
+		//}
 	}
 }
