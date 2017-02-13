@@ -19,6 +19,7 @@ import java.util.Map;
 
 import org.apache.http.Header;
 import org.apache.http.client.HttpClient;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.nio.client.CloseableHttpAsyncClient;
 import org.apache.http.protocol.HttpContext;
 
@@ -45,7 +46,7 @@ public class HttpConfig {
   /**
    * HttpClient对象
    */
-  private HttpClient client;
+  private CloseableHttpClient client;
 
   /**
    * CloseableHttpAsyncClient对象
@@ -134,7 +135,7 @@ public class HttpConfig {
   /**
    * HttpClient对象
    */
-  public HttpConfig client(HttpClient client) {
+  public HttpConfig client(CloseableHttpClient client) {
     this.client = client;
     return this;
   }
@@ -315,7 +316,7 @@ public class HttpConfig {
     return this;
   }
 
-  public HttpClient client() {
+  public CloseableHttpClient client() {
     return client;
   }
 
