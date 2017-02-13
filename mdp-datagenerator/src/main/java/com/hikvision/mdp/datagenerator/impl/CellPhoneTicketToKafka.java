@@ -111,8 +111,8 @@ public class CellPhoneTicketToKafka implements DataToKafka, Closeable {
 		LOG.info("Close Data Generator.");
 		//TODO check executorService != null
 		System.out.println("hello");
-		//if (null != executorService) {
+		if (null != executorService) {
 			executorService.shutdown();
-		//}
+		}
 	}
 }

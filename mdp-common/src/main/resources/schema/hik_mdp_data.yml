@@ -204,9 +204,9 @@ connectors:
       type: hikmdpcellphonetype
       router: DATE_FIELD
       router.field: qssj
-      router.rules: day:1
+      router.rules: day:7
       router.rules.locale: zh-cn
       router.rules.timezone: GMT
       es.rest.addresses: 10.17.139.66:9200
       queue.length: 10
-      package: true
+#      package: true

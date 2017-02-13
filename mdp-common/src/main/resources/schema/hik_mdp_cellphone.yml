@@ -24,7 +24,7 @@ fields:
   - name: qssj
     group: info
     index: 2
-    type: String
+    type: Long
     indexParameters:
       isStore: true
       isTokenized: false
