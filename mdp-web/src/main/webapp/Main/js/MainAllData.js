@@ -1,6 +1,13 @@
 /**
  * Created by laiqin on 2017/1/13.
  */
+
+//存放所有的散点图数据,包括话单、出行等数据，然后根据筛选条件往xTime、yTime、zTime放数据;
+var all_xAxis = [];
+var all_yAxis = [];
+var all_zAxis = [];
+var tempType = [];
+
 //散点图
 var xTime = [];     //横坐标时间
 var yTime = [];     //纵坐标时间
@@ -9,7 +16,6 @@ var zTime = [];     //通话时间
 var xAxis = [];
 var yAxis = [];
 var zAxis = [];
-
 
 //散点图
 var chartType;      //所有业务类型
@@ -30,7 +36,7 @@ var myChartTwo;
 var xATime = [];
 
 //图例颜色 形状数组
-var legendColor = ['#36CA2F','#F2994E','#4771FF','#990000','#7A57FF'];
+var legendColor = ['#36CA2F','#FFBCD7','#4771FF','lightblue','#FFAF47'];
 var legendSymbol = ['circle','rectangle','triangle','diamond','star'];
 
 window.onload = function () {
@@ -222,6 +228,194 @@ function chartAllData() {
     // });
 }
 
+//获取数据
+function getData() {
+    //getPhone();//获取话单数据
+     getAccommodation();//住宿信息获取
+    // getFlight();//获取飞机出行数据
+    // getTrain();//获取火车出行数据
+    // getNet();//获取上网数据
+}
+
+//获取话单数据
+function getPhone() {
+    var xhrurl = 'http://10.16.128.107:8100/service/info/phone-commuication?callerNum=18580382828';
+    $.ajax(
+        {
+            type: 'get',
+            url: xhrurl,
+            dataType: 'jsonp',
+            success: function (data) {
+                var ojson = data;
+
+                tempType = Object.keys(ojson);    //获取业务类型
+                var jsonValue = Object.values(ojson);  //获取业务值
+                all_xAxis.splice(0, all_xAxis.length);
+                all_yAxis.splice(0, all_yAxis.length);
+                all_zAxis.splice(0, all_zAxis.length);
+                for (var i = 0; i < tempType.length+1; i++) {//加1 是为了存放话单数据合集
+                    all_xAxis.push([]);
+                    all_yAxis.push([]);
+                    all_zAxis.push([]);
+                }
+
+                for (var i = 0; i < tempType.length; i++) {
+                    for (var j = 0; j < jsonValue[i].length; j++) {
+                        all_xAxis[i][all_xAxis[i].length] = jsonValue[i][j].startTime.substring(0, jsonValue[i][j].startTime.indexOf(' '));
+                        var tempHour = jsonValue[i][j].startTime.substring(jsonValue[i][j].startTime.indexOf(' ') + 1, jsonValue[i][j].startTime.indexOf(':'));
+                        var tempMin = jsonValue[i][j].startTime.substring(jsonValue[i][j].startTime.indexOf(':') + 1);
+                        all_yAxis[i][all_yAxis[i].length] = parseInt(tempMin) + parseInt(tempHour * 60);
+                        all_zAxis[i][all_zAxis[i].length] = jsonValue[i][j].callDuration;
+                    }
+                }
+
+                tempType.push('话单业务');
+                var temp_xAxis_length = all_xAxis.length;
+                for (var i = 0; i < all_xAxis.length - 1; i++) {
+                    for (var j = 0; j < all_xAxis[i].length; j++) {
+                        all_xAxis[temp_xAxis_length - 1].push(all_xAxis[i][j]);
+                        all_yAxis[temp_xAxis_length - 1].push(all_yAxis[i][j]);
+                        all_zAxis[temp_xAxis_length - 1].push(all_zAxis[i][j]);
+                    }
+                }
+            },
+            error : function() {
+                alert('数据获取失败!');
+            }
+        })
+}
+
+//住宿信息获取
+function getAccommodation() {
+    var xhrurl = 'http://10.16.128.107:8100/service/info/accommodationInfo';
+    $.ajax(
+        {
+            type: 'get',
+            url: xhrurl,
+            dataType: 'jsonp',
+            success: function (data) {
+                var ojson = data;
+
+                tempType.push('住宿信息');
+
+                all_xAxis.push([]);
+                all_yAxis.push([]);
+                all_zAxis.push([]);
+
+                var length = all_xAxis.length;
+                debugger
+                for (var i = 0; i <ojson.length; i++) {
+                    all_xAxis[length - 1][all_xAxis.length] = ojson[i].checkInDate;
+                    var tempHour = ojson[i].substring(0,ojson[i].checkInTime.indexOf(':'));
+                    var tempMin = ojson[i].checkInTime.substring(ojson[i].checkInTime.indexOf(':') + 1);
+                    all_yAxis[length - 1][all_yAxis.length] = parseInt(tempMin) + parseInt(tempHour * 60);
+                    all_zAxis[length - 1][all_zAxis.length] = 1;
+                }
+                debugger
+            },
+            error : function() {
+                alert('数据获取失败!');
+            }
+        })
+}
+
+//获取飞机出行数据
+function getFlight() {
+    var xhrurl = 'http://10.16.128.107:8100/service/info/flight-traveling';
+    $.ajax(
+        {
+            type: 'get',
+            url: xhrurl,
+            dataType: 'jsonp',
+            success: function (data) {
+                var ojson = data;
+
+                tempType.push('航班信息');
+
+                all_xAxis.push([]);
+                all_yAxis.push([]);
+                all_zAxis.push([]);
+
+                var length = all_xAxis.length;
+                for (var i = 0; i <ojson.length; i++) {
+                    all_xAxis[length - 1][all_xAxis.length] = ojson[i].flightCheckinDate;
+                    var tempHour = ojson[i].substring(0,ojson[i].flightCheckinTime.indexOf(':'));
+                    var tempMin = ojson[i].flightCheckinTime.substring(ojson[i].flightCheckinTime.indexOf(':') + 1);
+                    all_yAxis[length - 1][all_yAxis.length] = parseInt(tempMin) + parseInt(tempHour * 60);
+                    all_zAxis[length - 1][all_zAxis.length] = 1;
+                }
+            },
+            error : function() {
+                alert('数据获取失败!');
+            }
+        })
+}
+
+//获取火车出行数据
+function getTrain() {
+    var xhrurl = 'http://10.16.128.107:8100/service/info/train-traveling';
+    $.ajax(
+        {
+            type: 'get',
+            url: xhrurl,
+            dataType: 'jsonp',
+            success: function (data) {
+                var ojson = data;
+
+                tempType.push('火车信息');
+
+                all_xAxis.push([]);
+                all_yAxis.push([]);
+                all_zAxis.push([]);
+
+                var length = all_xAxis.length;
+                for (var i = 0; i <ojson.length; i++) {
+                    all_xAxis[length - 1][all_xAxis.length] = ojson[i].trainCheckinDate;
+                    var tempHour = ojson[i].substring(0,ojson[i].trainCheckinTime.indexOf(':'));
+                    var tempMin = ojson[i].trainCheckinTime.substring(ojson[i].trainCheckinTime.indexOf(':') + 1);
+                    all_yAxis[length - 1][all_yAxis.length] = parseInt(tempMin) + parseInt(tempHour * 60);
+                    all_zAxis[length - 1][all_zAxis.length] = 1;
+                }
+            },
+            error : function() {
+                alert('数据获取失败!');
+            }
+        })
+}
+
+//获取上网数据
+function getNet() {
+    var xhrurl = 'http://10.16.128.107:8100/service/info/internet';
+    $.ajax(
+        {
+            type: 'get',
+            url: xhrurl,
+            dataType: 'jsonp',
+            success: function (data) {
+                var ojson = data;
+
+                tempType.push('上网信息');
+
+                all_xAxis.push([]);
+                all_yAxis.push([]);
+                all_zAxis.push([]);
+
+                var length = all_xAxis.length;
+                for (var i = 0; i <ojson.length; i++) {
+                    all_xAxis[length - 1][all_xAxis.length] = ojson[i].startDate;
+                    var tempHour = ojson[i].substring(0,ojson[i].startTime.indexOf(':'));
+                    var tempMin = ojson[i].startTime.substring(ojson[i].startTime.indexOf(':') + 1);
+                    all_yAxis[length - 1][all_yAxis.length] = parseInt(tempMin) + parseInt(tempHour * 60);
+                    all_zAxis[length - 1][all_zAxis.length] = 1;
+                }
+                debugger
+            },
+            error : function() {
+                alert('数据获取失败!');
+            }
+        })
+}
+
 //绘制散点图
 function chartInit() {
     myChartOne = echarts.init(document.getElementById('chartinit'));
@@ -397,7 +591,8 @@ function chartInit() {
                     })[0];
                     console.log("选中了边 " + sourceNode.name + ' -> ' + targetNode.name + ' (' + data.weight + ')');
                 } else { // 点击的是点
-                    showMenu();                // 左键点击弹窗
+                    var e = event || window.event;
+                    showMenu(e.pageX, e.pageY);                // 左键点击弹窗
                     //sendData()//添加原点点击时间
                     console.log("选中了" + data.name + '(' + data.value + ')');
                 }
@@ -951,20 +1146,16 @@ function chartTimeInit1() {
 
 //隐藏左键菜单
 function menuHide() {
-    menu.style.display = "none";
+    var menu = document.getElementById("myMenu");
+    menu.classList.remove('show-menu');
 }
 
 //散点图点击显示菜单
-function showMenu() {
-    var e = event || window.event;
-    //单击显示div
-    menu.style.display = "block";
-    //设置定义
-    //判断鼠标坐标是否大于视口宽度-块本身宽度
-    var cakLeft = (e.clientX > document.documentElement.clientWidth - menu.offsetWidth)?(document.documentElement.clientWidth - menu.offsetWidth):e.clientX;
-    var cakTop = (e.clientY > document.documentElement.clientHeight - menu.offsetHeight)?(document.documentElement.clientHeight - menu.offsetHeight):e.clientY;
-    menu.style.left = cakLeft + "px";
-    menu.style.top = cakTop + "px";
+function showMenu(x , y) {
+    var menu = document.getElementById("myMenu");
+    menu.style.left = x + 'px';
+    menu.style.top = y + 'px';
+    menu.classList.add('show-menu');
 }
 
 //chart动态改变chart宽度
@@ -979,6 +1170,7 @@ function divResize() {
 function getParentTabs(e) {
     window.parent.changeTabs(e)
     menu.style.display = "none";
+    menuHide();
 }
 
 //点击tab标签页显示对应的form表单
@@ -1003,12 +1195,14 @@ function changeTab(tabnum) {
             $("#tab-four").slideUp(1000, function () {});
             break;
         case 4 :
+            $('#myTab li:eq(3) a').tab('show');
             $("#tab-one").slideUp(500, function () {});
             $("#tab-two").slideUp(1000, function () {});
             $("#tab-three").slideUp(1000, function () {});
             $("#tab-four").slideDown(1000, function () {});
             break;
     }
+    menuHide();
 }
 
 

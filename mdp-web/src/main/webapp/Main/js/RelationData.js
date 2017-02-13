@@ -516,18 +516,7 @@ function menuHide() {
     menu.classList.remove('show-menu');
 }
 
-//显示二级菜单
-function showEr(ernum) {
-    switch (ernum) {
-        case 1 :
-            $("#er"+ernum).show();
-            break;
-    }
-}
-
 function showMenu(x, y){
-    /*var cakLeft = (x > document.documentElement.clientWidth - menu.offsetWidth)?(document.documentElement.clientWidth - menu.offsetWidth):x;
-    var cakTop = (y > document.documentElement.clientHeight - menu.offsetHeight)?(document.documentElement.clientHeight - menu.offsetHeight):y;*/
     var menu = document.getElementById("myMenu");
     menu.style.left = x + 'px';
     menu.style.top = y + 'px';
