@@ -9,6 +9,7 @@ package com.hikvision.mdp.commons.kafka;
 
 import com.hikvision.bigdata.hbp.datacollectors.api.connector.Callback;
 import com.hikvision.bigdata.hbp.datacollectors.api.connector.impl.source.ClientSourceConnector;
+import com.hikvision.mdp.commons.annotation.ThreadSafe;
 import com.hikvision.mdp.commons.constants.MDPConstants;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -26,101 +27,106 @@ import java.util.Map;
  * @modify by user: chendongsheng5 2017/1/6 15:18
  * @modify by reason:{方法名}:{原因}
  */
+@ThreadSafe
 public class ConnectorPool {
 
-	private static final Logger LOG = LogManager.getLogger(ConnectorPool.class);
+  private static final Logger LOG = LogManager.getLogger(ConnectorPool.class);
+  public static long succeeds = 0;
+  private static Map<String, ClientSourceConnector> pool = new HashMap<>();
 
-	private static Map<String, ClientSourceConnector> pool = new HashMap<>();
+  /**
+   * create kafaka consumer connector
+   * 需要同步该方法，相当于一个单例模式
+   *
+   * @param kafkaAddr kafka ip
+   * @param topicName kafka topic name
+   * @return kafka client connector
+   */
+  public static synchronized ClientSourceConnector getConnector(String kafkaAddr,
+      String topicName) {
 
-	public static long succeeds = 0;
+    String key = getKey(kafkaAddr, topicName);
+    if (pool.get(key) != null) {
+      return pool.get(key);
+    }
 
-	/**
-	 * create kafaka consumer connector
-	 * 需要同步该方法，相当于一个单例模式
-	 *
-	 * @param kafkaAddr kafka ip
-	 * @param topicName kafka topic name
-	 * @return kafka client connector
-	 */
-	public static synchronized ClientSourceConnector getConnector(String kafkaAddr, String topicName) {
+    Map<String, String> kafkaConfig = initKafkaConfig(kafkaAddr);
+    // Create Connector
+    ClientSourceConnector connector = new ClientSourceConnector(topicName, kafkaConfig,
+        new Callback() {
 
-		String key = getKey(kafkaAddr, topicName);
-		if (pool.get(key) != null) {
-			return pool.get(key);
-		}
+          /**
+           * 发送成功回调
+           *
+           * @param record data
+           */
+          @Override
+          public void onSucceeded(Object record) {
+            succeeds++;
+          }
 
-		Map<String, String> kafkaConfig = initKafkaConfig(kafkaAddr);
-		// Create Connector
-		ClientSourceConnector connector = new ClientSourceConnector(topicName, kafkaConfig, new Callback() {
+          /**
+           * 发送失败回调
+           *
+           * @param record data
+           * @param t 抛出的异常
+           */
+          @Override
+          public void onFailed(Object record, Throwable t) {
+            LOG.error("Message send failed!", t);
+          }
+        });
 
-			/**
-			 * 发送成功回调
-			 *
-			 * @param record data
-			 */
-			@Override public void onSucceeded(Object record) {
-				succeeds++;
-			}
+    if (!pool.containsKey(key)) {
+      pool.put(key, connector);
+      connector.connect();
+    }
 
-			/**
-			 * 发送失败回调
-			 *
-			 * @param record data
-			 * @param t 抛出的异常
-			 */
-			@Override public void onFailed(Object record, Throwable t) {
-				LOG.error("Message send failed!", t);
-			}
-		});
+    return connector;
+  }
 
-		if (!pool.containsKey(key)) {
-			pool.put(key, connector);
-			connector.connect();
-		}
+  /**
+   * Kafka配置初始化
+   *
+   * @return key-value类型的配置
+   */
+  private static Map<String, String> initKafkaConfig(String kafkaAddr) {
 
-		return connector;
-	}
+    Map<String, String> kafkaConfig = new HashMap<>();
+    kafkaConfig.put("acks", "all");
+    kafkaConfig.put("retries", "0");
+    kafkaConfig.put("batch.size", "16384");
+    kafkaConfig.put("linger.ms", "1");
+    kafkaConfig.put("buffer.memory", "33554432");
+    kafkaConfig.put("key.serializer", "org.apache.kafka.common.serialization.ByteArraySerializer");
+    kafkaConfig
+        .put("value.serializer", "org.apache.kafka.common.serialization.ByteArraySerializer");
 
-	/**
-	 * Kafka配置初始化
-	 *
-	 * @return key-value类型的配置
-	 */
-	private static Map<String, String> initKafkaConfig(String kafkaAddr) {
+    if (StringUtils.isEmpty(kafkaAddr)) {
+      LOG.error("{} must be configured first.", MDPConstants.Collector.BOOTSTRAP_SERVERS_NAME);
+      throw new RuntimeException(
+          MDPConstants.Collector.BOOTSTRAP_SERVERS_NAME + " must be configured first.");
+    }
+    kafkaConfig.put(MDPConstants.Collector.BOOTSTRAP_SERVERS_NAME, kafkaAddr);
 
-		Map<String, String> kafkaConfig = new HashMap<>();
-		kafkaConfig.put("acks", "all");
-		kafkaConfig.put("retries", "0");
-		kafkaConfig.put("batch.size", "16384");
-		kafkaConfig.put("linger.ms", "1");
-		kafkaConfig.put("buffer.memory", "33554432");
-		kafkaConfig.put("key.serializer", "org.apache.kafka.common.serialization.ByteArraySerializer");
-		kafkaConfig.put("value.serializer", "org.apache.kafka.common.serialization.ByteArraySerializer");
+    return kafkaConfig;
+  }
 
-		if (StringUtils.isEmpty(kafkaAddr)) {
-			LOG.error("{} must be configured first.", MDPConstants.Collector.BOOTSTRAP_SERVERS_NAME);
-			throw new RuntimeException(MDPConstants.Collector.BOOTSTRAP_SERVERS_NAME + " must be configured first.");
-		}
-		kafkaConfig.put(MDPConstants.Collector.BOOTSTRAP_SERVERS_NAME, kafkaAddr);
+  private static String getKey(String kafkaAddr, String topic) {
+    return kafkaAddr + MDPConstants.Collector.UNDERLINE + topic;
+  }
 
-		return kafkaConfig;
-	}
-
-	private static String getKey(String kafkaAddr, String topic) {
-		return kafkaAddr + MDPConstants.Collector.UNDERLINE + topic;
-	}
-
-	public static synchronized void close(String kafkaAddr, String topicName) {
-		String key = getKey(kafkaAddr, topicName);
-		ClientSourceConnector connector;
-		if (null != pool.get(key)) {
-			connector = pool.get(key);
-			try {
-				connector.disconnect();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			pool.remove(key);
-		}
-	}
+  public static synchronized void close(String kafkaAddr, String topicName) {
+    String key = getKey(kafkaAddr, topicName);
+    ClientSourceConnector connector;
+    if (null != pool.get(key)) {
+      connector = pool.get(key);
+      try {
+        connector.disconnect();
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
+      pool.remove(key);
+    }
+  }
 }

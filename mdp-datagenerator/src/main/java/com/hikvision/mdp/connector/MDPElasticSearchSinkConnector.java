@@ -24,12 +24,14 @@ import com.hikvision.bigdata.hbp.datacollectors.common.io.descriptors.DataCollec
  */
 public class MDPElasticSearchSinkConnector extends ElasticSearchJESTSinkConnector {
 
-	public MDPElasticSearchSinkConnector(DataCollectorPipelineDescriptor descriptor, String connectorName, int index,
-			Callback callback) {
-		super(descriptor, connectorName, index, callback);
-	}
+  public MDPElasticSearchSinkConnector(DataCollectorPipelineDescriptor descriptor,
+      String connectorName, int index,
+      Callback callback) {
+    super(descriptor, connectorName, index, callback);
+  }
 
-	@Override protected ConnectorFrom createConnectorFrom(ConnectorContext context) {
-		return new DataGeneratorFromKafka(context);
-	}
+  @Override
+  protected ConnectorFrom createConnectorFrom(ConnectorContext context) {
+    return new DataGeneratorFromKafka(context);
+  }
 }
