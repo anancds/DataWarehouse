@@ -42,7 +42,7 @@
     <li>打印(P)</li>
     <li>查看网页源代码(V)</li>
     <li>查看网页信息(I)</li>
-    <li>审查元素(N)</li>
+    <li onclick="shower()">审查元素(N)</li>
 </ul>
 <script type="text/javascript">
     var menu = document.getElementById("menu");
@@ -73,6 +73,10 @@
         menu.style.display = "none";
     }
 
+    function shower() {
+        $("#er").animate({width: '100%'}, 'slow');
+        //document.getElementById("er").style.display = 'block';
+    }
 </script>
 </body>
 </html>

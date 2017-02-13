@@ -8,10 +8,8 @@ var chartBig = false;    //chart窗口大小开关
 var myChartOne;     //容器初始化
 var myChartTwo;
 
-var personArray = [];   //节点,nodes
-var personRelation = [];   //关系,links
-var chartLegend = [];   //图标
-var chartShip = [];    //chart中存在的所有关系
+var personArray = [];   //人物
+var personRelation = [];   //人物关系
 
 var initFlag = false;
 
@@ -89,42 +87,6 @@ function dataControl() {
 //时空关系数据获取
 function chartRelationData() {
 
-    var xhrurl = 'http://10.16.128.107:8100/service/relationship/ids-hierarchy?ids=1&hierarchy=3';
-    $.ajax(
-        {
-            type: 'get',
-            url: xhrurl,
-            dataType: 'jsonp',
-            success: function (data) {
-                var ojson = data;
-                chartLegend = ojson.legendData;     //图标
-                chartShip = ojson.categoriesData;    //关系
-                //personArray = ojson.nodesData;      //节点
-                for (var i = 0; i < ojson.nodesData.length; i++) {
-                    personArray.push(
-                        {
-                            category : ojson.nodesData[i].category,
-                            name : ojson.nodesData[i].name,
-                            label : ojson.nodesData[i].label
-                        }
-                    )
-                }
-                personRelation = ojson.linksData;   //links
-                for (var i = 0; i < personRelation.length; i++) {
-                    personRelation[i].weight = 1;
-                }
-                debugger
-                //关系拓扑图初始化
-                chartInit();
-
-                //时间轴chart初始化
-                chartTimeInit();
-            },
-            error: function () {
-                alert('数据获取失败!')
-            }
-        });
-    return
     personArray = [
         {
             category:0, name: '乔布斯', value : 10,
@@ -213,14 +175,25 @@ function chartInit() {
         },
         legend: {
             x: 'center',
-            data: chartLegend
+            data:['家人','朋友']
         },
         series : [
             {
                 type:'force',
                 name : "人物关系",
                 ribbonType: false,
-                categories : chartShip,
+                categories : [
+                    {
+                        name: '人物'
+                    },
+                    {
+                        name: '家人',
+                        symbol: 'diamond'
+                    },
+                    {
+                        name:'朋友'
+                    }
+                ],
                 itemStyle: {
                     normal: {
                         label: {
@@ -246,8 +219,8 @@ function chartInit() {
                         linkStyle : {}
                     }
                 },
-                minRadius : 20,
-                maxRadius : 20,
+                minRadius : 15,
+                maxRadius : 25,
                 gravity: 1.1,
                 scaling: 1.2,
                 draggable: true,
@@ -284,8 +257,7 @@ function chartInit() {
                     var targetNode = nodes.filter(function (n) {return n.name == data.target})[0];
                     console.log("选中了边 " + sourceNode.name + ' -> ' + targetNode.name + ' (' + data.weight + ')');
                 } else { // 点击的是点
-                    var e = event || window.event;
-                    showMenu(e.pageX, e.pageY)
+                    showMenu();
                     targetName = data.name;
                     console.log("选中了" + data.name + '(' + data.value + ')');
                 }
@@ -496,14 +468,12 @@ function changeTab(tabnum) {
             $("#tab-four").slideUp(1000, function () {});
             break;
         case 4 :
-            $('#myTab li:eq(3) a').tab('show');
             $("#tab-one").slideUp(500, function () {});
             $("#tab-two").slideUp(1000, function () {});
             $("#tab-three").slideUp(1000, function () {});
             $("#tab-four").slideDown(1000, function () {});
             break;
     }
-    menuHide();
 }
 
 function returnInitFlag() {
@@ -512,8 +482,23 @@ function returnInitFlag() {
 
 //隐藏左键菜单
 function menuHide() {
-    var menu = document.getElementById("myMenu");
-    menu.classList.remove('show-menu');
+    menu.style.display = "none";
+    for (var i = 1; i <= 3; i++) {
+        $("#er"+i).hide();
+    }
+}
+
+//散点图点击显示菜单
+function showMenu() {
+    var e = event || window.event;
+    //单击显示div
+    menu.style.display = "block";
+    //设置定义
+    //判断鼠标坐标是否大于视口宽度-块本身宽度
+    var cakLeft = (e.clientX > document.documentElement.clientWidth - menu.offsetWidth)?(document.documentElement.clientWidth - menu.offsetWidth):e.clientX;
+    var cakTop = (e.clientY > document.documentElement.clientHeight - menu.offsetHeight)?(document.documentElement.clientHeight - menu.offsetHeight):e.clientY;
+    menu.style.left = cakLeft + "px";
+    menu.style.top = cakTop + "px";
 }
 
 //显示二级菜单
@@ -525,15 +510,6 @@ function showEr(ernum) {
     }
 }
 
-function showMenu(x, y){
-    /*var cakLeft = (x > document.documentElement.clientWidth - menu.offsetWidth)?(document.documentElement.clientWidth - menu.offsetWidth):x;
-    var cakTop = (y > document.documentElement.clientHeight - menu.offsetHeight)?(document.documentElement.clientHeight - menu.offsetHeight):y;*/
-    var menu = document.getElementById("myMenu");
-    menu.style.left = x + 'px';
-    menu.style.top = y + 'px';
-    menu.classList.add('show-menu');
-}
-
 //移除关系拓扑图中的对象
 function targetRemove() {
     for (var i = 0; i < personArray.length; i++) {
@@ -543,22 +519,4 @@ function targetRemove() {
     }
     myChartOne.setOption(option1,true);   //设置为true,不让数据合并
     menuHide();
-}
-
-//层级关系扩展
-function moreRelation(flag) {
-alert(flag + targetName)
-    var xhrurl = 'http://10.16.128.107:8100/service/info/phone-commuication?callerNum=18580382828';
-    $.ajax(
-        {
-            type: 'get',
-            url: xhrurl,
-            dataType: 'jsonp',
-            success: function (data) {
-                alert('success')
-            },
-            error: function () {
-                alert('数据获取失败!')
-            }
-        })
 }

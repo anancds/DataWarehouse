@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>全量明细数据</title>
+    <title>时空关系图</title>
 
     <!--  Bootstrap 核心 CSS 文件 -->
     <link rel="stylesheet" href="../css/bootstrap.css">
@@ -10,8 +10,6 @@
     <link rel="stylesheet" href="../css/bootstrap-select.css">
     <!--  Bootstrap 日期选择 CSS 文件 -->
     <link rel="stylesheet" href="../css/bootstrap-datetimepicker.css">
-    <!--  Bootstrap 弹窗样式-->
-    <link rel="stylesheet" href="../css/jquery-confirm.min.css">
     <!--  自定义 CSS 文件 -->
     <link rel="stylesheet" href="css/mainalldatastyle.css">
     <style type="text/css">
@@ -43,6 +41,10 @@
             background-color: #4281f4;
             color: #fff;
         }
+        #er1 li:hover{
+            background-color: #5bc0de;
+            color: #fff;
+        }
         .li-hr {
             margin: 2px 5px 2px 5px;
         }
@@ -53,8 +55,6 @@
 
     <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
     <script src="../js/bootstrap.min.js"></script>
-    <!-- 最新的 Bootstrap 弹窗js -->
-    <script src="../js/jquery-confirm.min.js"></script>
     <!-- 最新的 Bootstrap 下拉选择 JavaScript 文件 -->
     <script src="../js/bootstrap-select.js"></script>
     <!-- 最新的 Bootstrap 日期选择 JavaScript 文件 -->
@@ -65,16 +65,23 @@
     <script src="../js/echarts_more.js"></script>
     <script src="../js/util.js"></script>
 
-    <script src="js/MainAllData.js"></script>
+    <script src="js/RelationData.js"></script>
 </head>
 <body class="body">
 
 <ul id="menu" style="z-index: 999; font-size: 14px">
-    <li onclick="getParentTabs(1)">添加到时空关系</li>
+    <li onclick="targetRemove()">移除对象</li>
     <hr class="li-hr">
-    <li>查看通话详情</li>
+    <li>查看关系详情</li>
     <hr class="li-hr">
-    <li>功能1</li>
+    <li onclick="showEr(1)">关系扩展</li>
+    <ul id="er1" style="display: none;margin-left: 16px">
+        <hr class="li-hr">
+        <li>一级关系</li>
+        <li>二级关系</li>
+        <li>三级关系</li>
+        <li>四级关系</li>
+    </ul>
     <hr class="li-hr">
     <li>功能2</li>
     <hr class="li-hr">
@@ -88,20 +95,24 @@
 </ul>
 
 <div style="width: 100%;height: 750px;overflow-x: hidden">
+
     <div id="chartleft" style="float: left;width: 70%;height: 750px;border:1px solid #96c2f1;">
+
         <div style="margin-top: 5px;margin-right: 10px;text-align: right">
             <div class="nav-header">
-                <a href="#" onclick="formResize()" class="glyphicon glyphicon-resize-full" id ="icon-resize" ></a>
+                <a href="#" onclick="formResize(1)" class="glyphicon glyphicon-resize-full"></a>
             </div>
         </div>
-        <div id="chartinit" style="height: 510px;overflow: hidden;text-align: center;border-bottom: 3px solid #428bca" onclick="menuHide()">
+        <div id="chartinit" style="height: 510px;overflow: hidden;text-align: center;border-bottom: 2px solid #428bca;" onclick="menuHide()">
             <p style="color: #5bc0de;font-size: 20px">输入相关信息进行检索...</p>
         </div>
-        <div id="chartinittime" style="height: 200px;overflow: hidden" onclick="menuHide()"></div>
+
+        <div id="chartinittime" style="height: 200px" onclick="menuHide()">
+        </div>
+
     </div>
 
     <div id="chartright" style="float: left;width: 30%;height: 750px;border:1px solid #96c2f1;overflow-x: auto" onclick="menuHide()">
-
         <ul id="myTab" class="nav nav-pills" role="tablist" style="margin-top: 5px;margin-left: 5px">
             <li role="presentation" class="active">
                 <a href="#info" id="home-tab" role="tab-info" data-toggle="tab" aria-controls="home" aria-expanded="true" onclick="changeTab(1)">信息检索</a>
@@ -115,12 +126,15 @@
             <li role="presentation" class="dropdown">
                 <a href="#more" role="tab" id="tab-more" data-toggle="tab" aria-controls="profile" onclick="changeTab(4)">详情查看</a>
             </li>
+            <li>
+                <a href="#" onclick="formResize(2)" class="glyphicon glyphicon-resize-full"></a>
+            </li>
         </ul>
 
         <div class="div-hr"></div>
 
         <div id="tab-one">
-            <div style="margin-left: 10px;margin-top: 10px;">
+            <div style="margin: 10px 0px 0px 10px">
                 <h5 style="font-weight: bold">检索条件</h5>
             </div>
 
@@ -170,7 +184,7 @@
 
             <div class="row" style="width: 100%;margin-top: 10px">
                 <div class="col-lg-6" style="width: 251px;">
-                    <label style="width: auto" for="dtp_inputone" class="col-md-2 control-label">时间选择:</label>
+                    <label style="width: auto" for="dtp_inputone" class="col-md-2 control-label">时间选择</label>
                     <div id="first" style="width: auto" class="input-group date form_date col-md-5" data-date="" data-link-field="dtp_input2" data-link-format="yyyy-mm-dd">
                         <input id="choosetimefirst" class="form-control" size="16" type="text" value="2017-01-10" readonly >
                         <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
@@ -192,7 +206,8 @@
             </div>
 
             <div style="margin-top: 10px;margin-left: 10px">
-                <button class="btn btn-info" onclick="chartAllData()">检索</button>
+                <button class="btn btn-info" onclick="chartRelationData()">检索</button>
+                <button class="btn btn-info" onclick="moreData()">增加</button>
             </div>
 
             <div style="margin: 10px 0px 0px 10px">
@@ -419,244 +434,8 @@
         <div id="tab-four" style="display: none">
             详情查看
         </div>
-
-        <!--<div style="margin-left: 10px">
-                <h4 style="font-weight: bold">搜索条件</h4>
-            </div>
-
-            <div class="row" style="width: 100%">
-                <div class="col-lg-6" style="width: 251px;margin-left: 10px">
-                    <div class="input-group">
-                            <span class="input-group-btn">
-                                <button class="btn btn-default" type="button">姓名</button>
-                            </span>
-                        <input type="text" class="form-control" placeholder="请输入姓名">
-                    </div>
-                </div>
-                <div class="col-lg-6" style="width: 281px;">
-                    <div class="input-group">
-                            <span class="input-group-btn">
-                                <button class="btn btn-default" type="button">身份证</button>
-                            </span>
-                        <input type="text" class="form-control" placeholder="请输入身份证号">
-                    </div>
-                </div>
-            </div>
-
-            <div class="row" style="margin-top: 10px;width: 100%;">
-                <div class="col-lg-6" style="width: 251px;margin-left: 10px">
-                    <div class="input-group">
-                            <span class="input-group-btn">
-                                <button class="btn btn-default" type="button">性别</button>
-                            </span>
-                        <div>
-                            <select class="selectpicker" id="">
-                                <option>男</option>
-                                <option>女</option>
-                                <option selected = "selected">不详</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div style="margin-top: 10px;margin-left: 10px">
-                <button class="btn btn-info" onclick="chartAllData()">搜索</button>
-            </div>
-
-            <hr class="right-hr">
-
-            <div style="margin-left: 10px">
-                <h4 style="font-weight: bold">数据选择</h4>
-            </div>
-            <div class="row" style="width: 100%">
-                <div class="col-lg-6" style="width: 251px;margin-left: 10px">
-                    <select class="selectpicker" id="selecttest">
-                        <option>所有数据(出行、住宿、话单等)</option>
-                        <option>话单数据</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="row" style="width: 100%;margin-top: 10px">
-                <div class="col-lg-6" style="width: 251px;">
-                    <label style="width: auto" for="dtp_inputone" class="col-md-2 control-label">时间选择:</label>
-                    <div id="first" style="width: auto" class="input-group date form_date col-md-5" data-date="" data-link-field="dtp_input2" data-link-format="yyyy-mm-dd">
-                        <input id="choosetimefirst" class="form-control" size="16" type="text" value="2017-01-10" readonly >
-                        <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
-                        <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
-                    </div>
-                    <input type="hidden" id="dtp_inputone" value="" /><br/>
-                </div>
-                <div class="col-lg-1" style="width: 25px;margin-top: 30px;margin-left: -20px">
-                    <p style="font-size: 20px">~</p>
-                </div>
-                <div class="col-lg-6" style="width: 251px;">
-                    <div id="second" style="width: auto;margin-top: 25px" class="input-group date form_date col-md-5" data-date="" data-link-field="dtp_input2" data-link-format="yyyy-mm-dd">
-                        <input id="choosetimesecond" class="form-control" size="16" type="text" value="2017-01-17" readonly >
-                        <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
-                        <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
-                    </div>
-                    <input type="hidden" id="dtp_inputtwo" value="" /><br/>
-                </div>
-            </div>
-
-            <hr class="right-hr">
-
-            <div style="margin-left: 10px;width: 97%">
-                <h4 style="font-weight: bold">人物画像</h4>
-
-                <div style="width: 100%">
-                    <table class="table" style="table-layout: fixed;border-color: #5bc0de">
-                        <tr style="visibility: hidden">
-                            <td width="10%"></td>
-                            <td width="40%"></td>
-                            <td width="10%"></td>
-                            <td width="40%"></td>
-                        </tr>
-                        <tr>
-                            <td colspan="4" style="font-weight: bold">基本信息</td>
-                        </tr>
-                        <tr>
-                            <td>姓名</td>
-                            <td>
-                                123
-                            </td>
-                            <td>ID</td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td>国际</td>
-                            <td>
-                                123
-                            </td>
-                            <td>性别</td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td>生日</td>
-                            <td>
-                                123
-                            </td>
-                            <td>联系方式</td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td colspan="4" style="font-weight: bold">通讯信息</td>
-                        </tr>
-                        <tr>
-                            <td>手机号变更情况</td>
-                            <td colspan="3">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>设备变更情况</td>
-                            <td colspan="3">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>SIM卡变更情况</td>
-                            <td colspan="3">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="4" style="font-weight: bold">航班信息</td>
-                        </tr>
-                        <tr>
-                            <td>起飞时间</td>
-                            <td>
-                                123
-                            </td>
-                            <td>航班号</td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td>登记机场</td>
-                            <td>
-                                123
-                            </td>
-                            <td>性别</td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td>到达机场</td>
-                            <td>
-                                123
-                            </td>
-                            <td>座位号</td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td colspan="4" style="font-weight: bold">火车出行信息</td>
-                        </tr>
-                        <tr>
-                            <td>乘车日期</td>
-                            <td>
-                                123
-                            </td>
-                            <td>出发站</td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td>到达站</td>
-                            <td>
-                                123
-                            </td>
-                            <td>车次</td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td>座位</td>
-                            <td>
-                                123
-                            </td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td colspan="4" style="font-weight: bold">宾馆住宿信息</td>
-                        </tr>
-                        <tr>
-                            <td>宾馆名称</td>
-                            <td>
-                                123
-                            </td>
-                            <td>入住房号</td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td>入住时间</td>
-                            <td>
-                                123
-                            </td>
-                            <td>退房时间</td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td colspan="4" style="font-weight: bold">网吧上网信息</td>
-                        </tr>
-                        <tr>
-                            <td>网吧名称</td>
-                            <td>
-                                123
-                            </td>
-                            <td>上网时间</td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td>下网时间</td>
-                            <td>
-                                123
-                            </td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                    </table>
-                </div>
-            </div>-->
     </div>
 </div>
-
 
 </body>
 </html>

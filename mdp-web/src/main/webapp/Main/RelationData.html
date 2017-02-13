@@ -10,6 +10,8 @@
     <link rel="stylesheet" href="../css/bootstrap-select.css">
     <!--  Bootstrap 日期选择 CSS 文件 -->
     <link rel="stylesheet" href="../css/bootstrap-datetimepicker.css">
+    <!--  左键菜单样式 -->
+    <link rel="stylesheet" href="../css/contextmenu.css">
     <!--  自定义 CSS 文件 -->
     <link rel="stylesheet" href="css/mainalldatastyle.css">
 
@@ -32,6 +34,164 @@
 </head>
 <body class="body">
 
+<menu class="menu" id="myMenu">
+    <li class="menu-item" onclick="targetRemove()">
+        <button type="button" class="menu-btn">
+            <i class="fa fa-folder-open"></i>
+            <span class="menu-text">移除对象</span>
+        </button>
+    </li>
+    <li class="menu-item"onclick="changeTab(4)">
+        <button type="button" class="menu-btn">
+            <span class="menu-text">查看详情</span>
+        </button>
+    </li>
+    <li class="menu-separator"></li>
+    <li class="menu-item submenu">
+        <button type="button" class="menu-btn">
+            <i class="fa fa-reply"></i>
+            <span class="menu-text">关系层级展开</span>
+        </button>
+        <menu class="menu">
+            <li class="menu-item" onclick="moreRelation(1)">
+                <button type="button" class="menu-btn">
+                    <i class="fa fa-twitter"></i>
+                    <span class="menu-text">一级以内关系</span>
+                </button>
+            </li>
+            <li class="menu-item" onclick="moreRelation(2)">
+                <button type="button" class="menu-btn">
+                    <i class="fa fa-facebook-official"></i>
+                    <span class="menu-text">二级以内关系</span>
+                </button>
+            </li>
+            <li class="menu-separator"></li>
+            <li class="menu-item" onclick="moreRelation(3)">
+                <button type="button" class="menu-btn">
+                    <i class="fa fa-google-plus"></i>
+                    <span class="menu-text">三级以内关系</span>
+                </button>
+            </li>
+            <li class="menu-item" onclick="moreRelation(4)">
+                <button type="button" class="menu-btn">
+                    <i class="fa fa-envelope"></i>
+                    <span class="menu-text">四级以内关系</span>
+                </button>
+            </li>
+            <li class="menu-separator"></li>
+            <li class="menu-item" onclick="moreRelation(5)">
+                <button type="button" class="menu-btn">
+                    <i class="fa fa-envelope"></i>
+                    <span class="menu-text">五级以内关系</span>
+                </button>
+            </li>
+            <li class="menu-item" onclick="moreRelation(6)">
+                <button type="button" class="menu-btn">
+                    <i class="fa fa-envelope"></i>
+                    <span class="menu-text">六级以内关系</span>
+                </button>
+            </li>
+            <li class="menu-separator"></li>
+            <li class="menu-item" onclick="moreRelation(7)">
+                <button type="button" class="menu-btn">
+                    <i class="fa fa-envelope"></i>
+                    <span class="menu-text">七级以内关系</span>
+                </button>
+            </li>
+            <li class="menu-item" onclick="moreRelation(8)">
+                <button type="button" class="menu-btn">
+                    <i class="fa fa-envelope"></i>
+                    <span class="menu-text">八级以内关系</span>
+                </button>
+            </li>
+            <li class="menu-separator"></li>
+            <li class="menu-item" onclick="moreRelation(9)">
+                <button type="button" class="menu-btn">
+                    <i class="fa fa-envelope"></i>
+                    <span class="menu-text">九级以内关系</span>
+                </button>
+            </li>
+            <li class="menu-item" onclick="moreRelation(10)">
+                <button type="button" class="menu-btn">
+                    <i class="fa fa-envelope"></i>
+                    <span class="menu-text">十级以内关系</span>
+                </button>
+            </li>
+        </menu>
+    </li>
+    <li class="menu-item">
+        <button type="button" class="menu-btn">
+            <i class="fa fa-star"></i>
+            <span class="menu-text">Favorite</span>
+        </button>
+    </li>
+    <li class="menu-item submenu">
+        <button type="button" class="menu-btn">
+            <i class="fa fa-users"></i>
+            <span class="menu-text">Social</span>
+        </button>
+        <menu class="menu">
+            <li class="menu-item">
+                <button type="button" class="menu-btn">
+                    <i class="fa fa-comment"></i>
+                    <span class="menu-text">Comment</span>
+                </button>
+            </li>
+            <li class="menu-item submenu">
+                <button type="button" class="menu-btn">
+                    <i class="fa fa-share"></i>
+                    <span class="menu-text">Share</span>
+                </button>
+                <menu class="menu">
+                    <li class="menu-item">
+                        <button type="button" class="menu-btn">
+                            <i class="fa fa-twitter"></i>
+                            <span class="menu-text">Twitter</span>
+                        </button>
+                    </li>
+                    <li class="menu-item">
+                        <button type="button" class="menu-btn">
+                            <i class="fa fa-facebook-official"></i>
+                            <span class="menu-text">Facebook</span>
+                        </button>
+                    </li>
+                    <li class="menu-item">
+                        <button type="button" class="menu-btn">
+                            <i class="fa fa-google-plus"></i>
+                            <span class="menu-text">Google Plus</span>
+                        </button>
+                    </li>
+                    <li class="menu-item">
+                        <button type="button" class="menu-btn">
+                            <i class="fa fa-envelope"></i>
+                            <span class="menu-text">Email</span>
+                        </button>
+                    </li>
+                </menu>
+            </li>
+        </menu>
+    </li>
+<li class="menu-separator"></li>
+<li class="menu-item">
+    <button type="button" class="menu-btn">
+        <i class="fa fa-download"></i>
+        <span class="menu-text">Save</span>
+    </button>
+</li>
+<li class="menu-item">
+    <button type="button" class="menu-btn">
+        <i class="fa fa-edit"></i>
+        <span class="menu-text">Rename</span>
+    </button>
+</li>
+<li class="menu-item">
+    <button type="button" class="menu-btn">
+        <i class="fa fa-trash"></i>
+        <span class="menu-text">Delete</span>
+    </button>
+</li>
+</menu>
+
 <div style="width: 100%;height: 750px;overflow-x: hidden">
 
     <div id="chartleft" style="float: left;width: 70%;height: 750px;border:1px solid #96c2f1;">
@@ -41,16 +201,16 @@
                 <a href="#" onclick="formResize(1)" class="glyphicon glyphicon-resize-full"></a>
             </div>
         </div>
-        <div id="chartinit" style="height: 510px;overflow: hidden;text-align: center;border-bottom: 2px solid #428bca;">
+        <div id="chartinit" style="height: 510px;overflow: hidden;text-align: center;border-bottom: 2px solid #428bca;" onclick="menuHide()">
             <p style="color: #5bc0de;font-size: 20px">输入相关信息进行检索...</p>
         </div>
 
-        <div id="chartinittime" style="height: 200px">
+        <div id="chartinittime" style="height: 200px" onclick="menuHide()">
         </div>
 
     </div>
 
-    <div id="chartright" style="float: left;width: 30%;height: 750px;border:1px solid #96c2f1;overflow-x: auto">
+    <div id="chartright" style="float: left;width: 30%;height: 750px;border:1px solid #96c2f1;overflow-x: auto" onclick="menuHide()">
         <ul id="myTab" class="nav nav-pills" role="tablist" style="margin-top: 5px;margin-left: 5px">
             <li role="presentation" class="active">
                 <a href="#info" id="home-tab" role="tab-info" data-toggle="tab" aria-controls="home" aria-expanded="true" onclick="changeTab(1)">信息检索</a>
@@ -60,6 +220,9 @@
             </li>
             <li role="presentation" class="dropdown">
                 <a href="#senior" role="tab" id="tab-senior" data-toggle="tab" aria-controls="profile" onclick="changeTab(3)">高级检索</a>
+            </li>
+            <li role="presentation" class="dropdown">
+                <a href="#more" role="tab" id="tab-more" data-toggle="tab" aria-controls="profile" onclick="changeTab(4)">详情查看</a>
             </li>
             <li>
                 <a href="#" onclick="formResize(2)" class="glyphicon glyphicon-resize-full"></a>
@@ -94,6 +257,14 @@
 
             <div class="row" style="margin-top: 10px;width: 100%;">
                 <div class="col-lg-6" style="width: 251px;margin-left: 10px">
+                    <div class="input-group">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" type="button">电话</button>
+                        </span>
+                        <input type="text" class="form-control" placeholder="请输入电话号码">
+                    </div>
+                </div>
+                <div class="col-lg-6" style="width: 251px;">
                     <div class="input-group">
                         <span class="input-group-btn">
                             <button class="btn btn-default" type="button">性别</button>
@@ -356,6 +527,10 @@
                 </div>
             </div>
 
+        </div>
+
+        <div id="tab-four" style="display: none">
+            详情查看
         </div>
     </div>
 </div>
