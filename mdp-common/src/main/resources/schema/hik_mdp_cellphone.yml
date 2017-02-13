@@ -1,5 +1,5 @@
 ---
-name: hik_mdp_ude
+name: hik_mdp_cellphone
 fields:
   - name: rowKey
     # Short, Int, Long, Float, Double, Decimal, Boolean, String, Byte, Binary, Date, Timestamp

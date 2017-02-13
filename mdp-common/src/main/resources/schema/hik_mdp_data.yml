@@ -34,7 +34,7 @@ schemas:
       - name: qssj
         group: info
         index: 2
-        type: STRING
+        type: INT64
         optional: true
         parameters:
           index.type: es
