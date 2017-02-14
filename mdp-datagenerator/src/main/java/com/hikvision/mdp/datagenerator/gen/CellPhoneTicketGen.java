@@ -5,7 +5,7 @@
  * @date: 2016/12/29 16:27
  * @Description: 本内容仅限于杭州海康威视数字技术股份有限公司内部使用，禁止转发.
  */
-package com.hikvision.mdp.datagenerator;
+package com.hikvision.mdp.datagenerator.gen;
 
 import com.hikvision.mdp.commons.util.DateUtils;
 import com.hikvision.mdp.commons.util.In;
@@ -69,10 +69,11 @@ public class CellPhoneTicketGen {
 	 *
 	 * @return 起始时间
 	 */
-	public static String getQSSJ() {
+	public static long getQSSJ() {
 		long times = System.currentTimeMillis();
-		Date date = new Date(times);
-		return sdf.format(date);
+		return times;
+//		Date date = new Date(times);
+//		return sdf.format(date);
 	}
 
 	/**

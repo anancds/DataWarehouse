@@ -124,7 +124,7 @@
     <spring.data.es>2.0.5.RELEASE</spring.data.es>
     <flume.version>1.7.0</flume.version>
     <hbp.version>1.3.0-beta1</hbp.version>
-    <httpclient.version>4.5.2</httpclient.version>
+    <httpclient.version>4.4.1</httpclient.version>
     <httpasyncclient.version>4.1.2</httpasyncclient.version>
   </properties>
 
@@ -427,6 +427,17 @@
         <groupId>org.apache.httpcomponents</groupId>
         <artifactId>httpasyncclient</artifactId>
         <version>${httpasyncclient.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>httpcore</artifactId>
+        <version>${httpclient.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>iop</groupId>
+        <artifactId>pae</artifactId>
+        <version>1.0</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

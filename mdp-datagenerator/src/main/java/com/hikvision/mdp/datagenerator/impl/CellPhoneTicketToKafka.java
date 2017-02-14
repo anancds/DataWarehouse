@@ -16,7 +16,7 @@ import com.hikvision.mdp.commons.kafka.ConnectorPool;
 import com.hikvision.mdp.commons.parser.YmlParse;
 import com.hikvision.mdp.commons.util.DateUtils;
 import com.hikvision.mdp.commons.util.Stopwatch;
-import com.hikvision.mdp.datagenerator.CellPhoneTicketGen;
+import com.hikvision.mdp.datagenerator.gen.CellPhoneTicketGen;
 import com.hikvision.mdp.datagenerator.DataGeneratorConstants;
 import com.hikvision.mdp.datagenerator.DataToKafka;
 import org.apache.logging.log4j.LogManager;
@@ -68,8 +68,9 @@ public class CellPhoneTicketToKafka implements DataToKafka, Closeable {
 
 				for (int i = 0; i < sendTimes; i++) {
 					for (int j = 0; j < DataGeneratorConstants.ONE_TIME_NUM; j++) {
-						long startTime = DateUtils
-								.transStr2long(CellPhoneTicketGen.getQSSJ(), DateUtils.DEFAULT_DATE_All_FORMAT);
+//						long startTime = DateUtils
+//								.transStr2long(CellPhoneTicketGen.getQSSJ(), DateUtils.DEFAULT_DATE_All_FORMAT);
+						long startTime = CellPhoneTicketGen.getQSSJ();
 
 						// TODO: 这个rowKey是为了测试用的，具体怎么设计还需要讨论
 						String rowKey = startTime + "_" + i + "_" + j;
@@ -96,13 +97,20 @@ public class CellPhoneTicketToKafka implements DataToKafka, Closeable {
 
 		ConnectorPool.close(YmlParse.getKafkaAddress(MDPConstants.Collector.PIPELINE_INFO_HIK_MDP_DATA),
 				YmlParse.getTopic(MDPConstants.Collector.PIPELINE_INFO_HIK_MDP_DATA, 0));
+
 		LOG.info("Send data to Kafka finished, The total number is: {}! Cost {} seconds!", ConnectorPool.succeeds,
 				stopwatch.elapsedTime());
+		try {
+			close();
+		}catch (IOException ioe){
+			System.out.println("close");
+		}
 	}
 
 	@Override public void close() throws IOException {
 		LOG.info("Close Data Generator.");
-
+		//TODO check executorService != null
+		System.out.println("hello");
 		if (null != executorService) {
 			executorService.shutdown();
 		}

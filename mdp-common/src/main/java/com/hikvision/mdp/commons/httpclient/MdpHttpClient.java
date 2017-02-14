@@ -34,6 +34,9 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.methods.HttpTrace;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 
@@ -48,14 +51,15 @@ import org.apache.http.util.EntityUtils;
 public class MdpHttpClient {
 
   //默认采用的http协议的HttpClient对象
-  private static HttpClient client4HTTP;
+  private static CloseableHttpClient client4HTTP;
 
   //默认采用的https协议的HttpClient对象
-  private static HttpClient client4HTTPS;
+  private static CloseableHttpClient client4HTTPS;
 
   static {
     try {
-      client4HTTP = HttpClientBuilderV2.custom().build();
+      client4HTTP = HttpClients.createDefault();
+//      client4HTTP = HttpClientBuilder.create().build();
       client4HTTPS = HttpClientBuilderV2.custom().ssl().build();
     } catch (HttpProcessException e) {
       CommonUtils.errorException("创建https协议的HttpClient对象出错：{}", e);
@@ -87,10 +91,6 @@ public class MdpHttpClient {
     }
   }
 
-  //-----------华----丽----分----割----线--------------
-  //-----------华----丽----分----割----线--------------
-  //-----------华----丽----分----割----线--------------
-
   /**
    * 以Get方式，请求资源或服务
    *
@@ -101,7 +101,7 @@ public class MdpHttpClient {
    * @param encoding 编码
    * @return 返回处理结果
    */
-  public static String get(HttpClient client, String url, Header[] headers, HttpContext context,
+  public static String get(CloseableHttpClient client, String url, Header[] headers, HttpContext context,
       String encoding) throws HttpProcessException {
     return get(HttpConfig.custom().client(client).url(url).headers(headers).context(context)
         .encoding(encoding));
@@ -127,7 +127,7 @@ public class MdpHttpClient {
    * @param encoding 编码
    * @return 返回处理结果
    */
-  public static String post(HttpClient client, String url, Header[] headers,
+  public static String post(CloseableHttpClient client, String url, Header[] headers,
       Map<String, Object> parasMap, HttpContext context, String encoding)
       throws HttpProcessException {
     return post(
@@ -155,7 +155,7 @@ public class MdpHttpClient {
    * @param encoding 编码
    * @return 返回处理结果
    */
-  public static String put(HttpClient client, String url, Map<String, Object> parasMap,
+  public static String put(CloseableHttpClient client, String url, Map<String, Object> parasMap,
       Header[] headers, HttpContext context, String encoding) throws HttpProcessException {
     return put(
         HttpConfig.custom().client(client).url(url).headers(headers).map(parasMap).context(context)
@@ -181,7 +181,7 @@ public class MdpHttpClient {
    * @param encoding 编码
    * @return 返回处理结果
    */
-  public static String delete(HttpClient client, String url, Header[] headers, HttpContext context,
+  public static String delete(CloseableHttpClient client, String url, Header[] headers, HttpContext context,
       String encoding) throws HttpProcessException {
     return delete(HttpConfig.custom().client(client).url(url).headers(headers).context(context)
         .encoding(encoding));
@@ -207,7 +207,7 @@ public class MdpHttpClient {
    * @param encoding 编码
    * @return 返回处理结果
    */
-  public static String patch(HttpClient client, String url, Map<String, Object> parasMap,
+  public static String patch(CloseableHttpClient client, String url, Map<String, Object> parasMap,
       Header[] headers, HttpContext context, String encoding) throws HttpProcessException {
     return patch(
         HttpConfig.custom().client(client).url(url).headers(headers).map(parasMap).context(context)
@@ -233,7 +233,7 @@ public class MdpHttpClient {
    * @param encoding 编码
    * @return 返回处理结果
    */
-  public static String head(HttpClient client, String url, Header[] headers, HttpContext context,
+  public static String head(CloseableHttpClient client, String url, Header[] headers, HttpContext context,
       String encoding) throws HttpProcessException {
     return head(HttpConfig.custom().client(client).url(url).headers(headers).context(context)
         .encoding(encoding));
@@ -258,7 +258,7 @@ public class MdpHttpClient {
    * @param encoding 编码
    * @return 返回处理结果
    */
-  public static String options(HttpClient client, String url, Header[] headers, HttpContext context,
+  public static String options(CloseableHttpClient client, String url, Header[] headers, HttpContext context,
       String encoding) throws HttpProcessException {
     return options(HttpConfig.custom().client(client).url(url).headers(headers).context(context)
         .encoding(encoding));
@@ -283,7 +283,7 @@ public class MdpHttpClient {
    * @param encoding 编码
    * @return 返回处理结果
    */
-  public static String trace(HttpClient client, String url, Header[] headers, HttpContext context,
+  public static String trace(CloseableHttpClient client, String url, Header[] headers, HttpContext context,
       String encoding) throws HttpProcessException {
     return trace(HttpConfig.custom().client(client).url(url).headers(headers).context(context)
         .encoding(encoding));
@@ -308,7 +308,7 @@ public class MdpHttpClient {
    * @param out 输出流
    * @return 返回处理结果
    */
-  public static OutputStream down(HttpClient client, String url, Header[] headers,
+  public static OutputStream down(CloseableHttpClient client, String url, Header[] headers,
       HttpContext context, OutputStream out) throws HttpProcessException {
     return down(
         HttpConfig.custom().client(client).url(url).headers(headers).context(context).out(out));
@@ -333,7 +333,7 @@ public class MdpHttpClient {
    * @param context http上下文，用于cookie操作
    * @return 返回处理结果
    */
-  public static String upload(HttpClient client, String url, Header[] headers, HttpContext context)
+  public static String upload(CloseableHttpClient client, String url, Header[] headers, HttpContext context)
       throws HttpProcessException {
     return upload(HttpConfig.custom().client(client).url(url).headers(headers).context(context));
   }
@@ -360,7 +360,7 @@ public class MdpHttpClient {
    * @param context http上下文，用于cookie操作
    * @return 返回处理结果
    */
-  public static int status(HttpClient client, String url, Header[] headers, HttpContext context,
+  public static int status(CloseableHttpClient client, String url, Header[] headers, HttpContext context,
       HttpMethods method) throws HttpProcessException {
     return status(HttpConfig.custom().client(client).url(url).headers(headers).context(context)
         .method(method));
@@ -375,10 +375,6 @@ public class MdpHttpClient {
   public static int status(HttpConfig config) throws HttpProcessException {
     return fmt2Int(execute(config));
   }
-
-  //-----------华----丽----分----割----线--------------
-  //-----------华----丽----分----割----线--------------
-  //-----------华----丽----分----割----线--------------
 
   /**
    * 请求资源或服务
@@ -450,9 +446,6 @@ public class MdpHttpClient {
     }
   }
 
-  //-----------华----丽----分----割----线--------------
-  //-----------华----丽----分----割----线--------------
-  //-----------华----丽----分----割----线--------------
 
   /**
    * 转化为字符串

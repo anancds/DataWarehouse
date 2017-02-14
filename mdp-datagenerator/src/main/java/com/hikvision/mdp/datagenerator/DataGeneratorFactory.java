@@ -29,6 +29,8 @@ public class DataGeneratorFactory {
 		DataToKafka res = null;
 
 		// TODO: 当业务多的话，这个switch语句太长了，能否优化
+		// 将使用频率高的case放在靠前的位置 或者 将type分类 再switch
+		// 试试map
 		switch (type) {
 		case CELL_PHONE:
 			res = new CellPhoneTicketToKafka();
