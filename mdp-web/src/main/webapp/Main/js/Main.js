@@ -38,8 +38,8 @@ window.onload = function () {
 }
 
 function formResize() {
-    $("#mainalladta").height($(window).height()-200);
-    $("#relationdata").height($(window).height()-200);
+    $("#mainalladta").height($(window).height()-170);
+    $("#relationdata").height($(window).height()-170);
 }
 
 function searchDialog() {
@@ -312,13 +312,15 @@ function chartAllDataInit() {
     );
 }
 
-function changeTabs(flag) {
+//显示对应页面
+function changeTabs(flag , num) {
     if (flag == 1) {
         $(function () {
             $('#myTab li:eq(1) a').tab('show')
             $('#chartTabs li:eq(2) a').tab('show');
             changeTab(3)
-            relationdata.window.returnInitFlag() == false ? relationdata.window.chartRelationData() : relationdata.window.moreData();
+            if (num == 1) relationdata.window.chartRelationData(num);
+            //relationdata.window.returnInitFlag() == false ? relationdata.window.chartRelationData() : relationdata.window.moreData();
         });
     }
 }

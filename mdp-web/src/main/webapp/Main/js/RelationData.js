@@ -2,6 +2,7 @@
  * Created by laiqin on 2017/1/20.
  */
 
+//http://127.0.0.1:8080/mdp-web/service/relationship/ids-hierarchy?ids=25&hierarchy=1
 
 var chartBig = false;    //chart窗口大小开关
 
@@ -15,7 +16,8 @@ var chartShip = [];    //chart中存在的所有关系
 
 var initFlag = false;
 
-var targetName;    //左键点击时获取点击对象
+var targetName;    //左键点击时获取点击对象名
+var targetObj;     //左键点击时获取点击对象
 
 window.onload = function () {
     dataControl()
@@ -87,9 +89,10 @@ function dataControl() {
 }
 
 //时空关系数据获取
-function chartRelationData() {
-
-    var xhrurl = 'http://10.16.128.107:8100/service/relationship/ids-hierarchy?ids=1&hierarchy=3';
+function chartRelationData(num) {
+    var msgId;
+    num == 1 ? msgId = 24 : msgId = 1;
+    var xhrurl = 'http://10.16.128.107:8100/service/relationship/ids-hierarchy?ids='+24+'&hierarchy=1';
     $.ajax(
         {
             type: 'get',
@@ -100,6 +103,7 @@ function chartRelationData() {
                 chartLegend = ojson.legendData;     //图标
                 chartShip = ojson.categoriesData;    //关系
                 //personArray = ojson.nodesData;      //节点
+                personArray.splice(0 , personArray.length);
                 for (var i = 0; i < ojson.nodesData.length; i++) {
                     personArray.push(
                         {
@@ -113,7 +117,6 @@ function chartRelationData() {
                 for (var i = 0; i < personRelation.length; i++) {
                     personRelation[i].weight = 1;
                 }
-                debugger
                 //关系拓扑图初始化
                 chartInit();
 
@@ -287,6 +290,7 @@ function chartInit() {
                     var e = event || window.event;
                     showMenu(e.pageX, e.pageY)
                     targetName = data.name;
+                    targetObj = data;
                     console.log("选中了" + data.name + '(' + data.value + ')');
                 }
             }
@@ -303,7 +307,7 @@ function chartInit() {
             }
 
             // 为echarts对象加载数据
-            myChartOne.setOption(option1);
+            myChartOne.setOption(option1 , true);
 
             //初始化chart根据窗口大小来同步改变大小
             window.onresize = myChartOne.resize;
@@ -430,11 +434,11 @@ function chartTimeInit() {
             myChartTwo.on(ecConfig.EVENT.DATA_ZOOM, dataZoom);
 
             function dataZoom() {
-                myChartOne.setOption(option1);   //拖动时间轴动态修改关系拓扑图
+                myChartOne.setOption(option1 , true);   //拖动时间轴动态修改关系拓扑图
             }
 
             // 为echarts对象加载数据
-            myChartTwo.setOption(option);
+            myChartTwo.setOption(option , true);
 
             //初始化chart根据窗口大小来同步改变大小
             window.onresize = myChartOne.resize;
@@ -471,7 +475,7 @@ function moreData() {
 
     //chartInit();
 
-    myChartOne.setOption(option1);
+    myChartOne.setOption(option1 , true);
 }
 
 //点击tab标签页显示对应的form表单
@@ -536,15 +540,47 @@ function targetRemove() {
 
 //层级关系扩展
 function moreRelation(flag) {
-alert(flag + targetName)
-    var xhrurl = 'http://10.16.128.107:8100/service/info/phone-commuication?callerNum=18580382828';
+    var xhrurl = 'http://10.16.128.107:8100/service/relationship/ids-hierarchy?ids='+targetObj.name+'&hierarchy='+flag;
     $.ajax(
         {
             type: 'get',
             url: xhrurl,
             dataType: 'jsonp',
             success: function (data) {
-                alert('success')
+                var ojson = data;
+                for (var i = 0; i < ojson.legendData.length; i++) {
+                    if (chartLegend.indexOf(ojson.legendData[i]) == -1) {
+                        chartLegend.push(ojson.legendData[i]);    //图标
+                    }
+                }
+
+                chartShip.splice(0,chartShip.length);
+                for (var i = 0; i < chartLegend.length; i++) {
+                    chartShip.push(
+                        {
+                            name :　chartLegend[i]
+                        }
+                    )
+                }
+                for (var i = 0; i < ojson.linksData.length; i++) {
+                    personRelation.push(ojson.linksData[i]);    //links
+                }
+                for (var i = 0; i < personRelation.length; i++) {
+                    personRelation[i].weight = 1;
+                }
+                //personArray.splice(0,personArray.length);
+                for (var i = 0; i < ojson.nodesData.length; i++) {
+                    personArray.push(
+                        {
+                            category : chartLegend.indexOf(ojson.nodesData[i].categoryValue),
+                            name : ojson.nodesData[i].name,
+                            label : ojson.nodesData[i].label
+                        }
+                    )
+                }
+                // 为echarts对象加载数据
+                myChartOne.setOption(option1 , true);
+                menuHide();
             },
             error: function () {
                 alert('数据获取失败!')

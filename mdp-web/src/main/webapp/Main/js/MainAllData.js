@@ -18,8 +18,8 @@ var yAxis = [];
 var zAxis = [];
 
 //散点图
-var chartType;      //所有业务类型
-var typeValue;      //业务数据
+var chartType = [];      //所有业务类型
+var typeValue = [];      //业务数据
 var chartData = [];   //散点图数据初始化,即option中的series
 //时间轴
 var chartTypeTime = [];      //所有业务类型
@@ -27,21 +27,21 @@ var typeValueTime = [];          //业务数据
 var chartDataTime = [];   //时间轴数据初始化,即option中的series
 
 
-var chartBig = false;    //chart窗口大小开关
+var chartBig = false;    //chart窗口大小开关,false表示chart默认大小,true表示放大
 
-var myChartOne;     //容器初始化
-var myChartTwo;
+var myChartOne;     //容器初始化 散点图
+var myChartTwo;     //容器初始化 时间轴
 
 //时间轴方式2加载的x轴数据
 var xATime = [];
 
 //图例颜色 形状数组
-var legendColor = ['#36CA2F','#FFBCD7','#4771FF','lightblue','#FFAF47'];
+var legendColor = ['#36CA2F','#FFBCD7','#4771FF','lightblue','#DC5E5E'];
 var legendSymbol = ['circle','rectangle','triangle','diamond','star'];
 
 window.onload = function () {
-    xATime = utilGetDate('2016-1-17','2016-6-5');
-    dateControl();
+    xATime = utilGetDate('2016-1-17','2016-6-5');    //时间轴横轴坐标数据
+    dateControl();   //时间选择器初始化
 }
 
 //日期选择初始化
@@ -77,7 +77,7 @@ function dateControl() {
     });
 }
 
-function formResize() {
+function formResize() {   //chart窗口  和   交互窗口  大小调整
     if (chartBig == false) {
         $("#chartleft").animate({width: '100%'}, 'slow');
         $("#chartright").animate({width: '0'}, 'slow');
@@ -230,11 +230,7 @@ function chartAllData() {
 
 //获取数据
 function getData() {
-    //getPhone();//获取话单数据
-     getAccommodation();//住宿信息获取
-    // getFlight();//获取飞机出行数据
-    // getTrain();//获取火车出行数据
-    // getNet();//获取上网数据
+    getPhone();//获取话单数据
 }
 
 //获取话单数据
@@ -269,7 +265,7 @@ function getPhone() {
                     }
                 }
 
-                tempType.push('话单业务');
+                tempType.push('话单信息');
                 var temp_xAxis_length = all_xAxis.length;
                 for (var i = 0; i < all_xAxis.length - 1; i++) {
                     for (var j = 0; j < all_xAxis[i].length; j++) {
@@ -278,6 +274,8 @@ function getPhone() {
                         all_zAxis[temp_xAxis_length - 1].push(all_zAxis[i][j]);
                     }
                 }
+
+                getAccommodation();//住宿信息获取
             },
             error : function() {
                 alert('数据获取失败!');
@@ -287,7 +285,7 @@ function getPhone() {
 
 //住宿信息获取
 function getAccommodation() {
-    var xhrurl = 'http://10.16.128.107:8100/service/info/accommodationInfo';
+    var xhrurl = 'http://10.16.128.107:8100/service/info/accommodationInfo?name=YUSUFU';
     $.ajax(
         {
             type: 'get',
@@ -303,15 +301,15 @@ function getAccommodation() {
                 all_zAxis.push([]);
 
                 var length = all_xAxis.length;
-                debugger
                 for (var i = 0; i <ojson.length; i++) {
-                    all_xAxis[length - 1][all_xAxis.length] = ojson[i].checkInDate;
-                    var tempHour = ojson[i].substring(0,ojson[i].checkInTime.indexOf(':'));
+                    all_xAxis[length - 1][all_xAxis[length - 1].length] = ojson[i].checkInDate;
+                    var tempHour = ojson[i].checkInTime.substring(0,ojson[i].checkInTime.indexOf(':'));
                     var tempMin = ojson[i].checkInTime.substring(ojson[i].checkInTime.indexOf(':') + 1);
-                    all_yAxis[length - 1][all_yAxis.length] = parseInt(tempMin) + parseInt(tempHour * 60);
-                    all_zAxis[length - 1][all_zAxis.length] = 1;
+                    all_yAxis[length - 1][all_yAxis[length - 1].length] = parseInt(tempMin) + parseInt(tempHour * 60);
+                    all_zAxis[length - 1][all_zAxis[length - 1].length] = 1;
                 }
-                debugger
+
+                getFlight();//获取飞机出行数据
             },
             error : function() {
                 alert('数据获取失败!');
@@ -321,7 +319,7 @@ function getAccommodation() {
 
 //获取飞机出行数据
 function getFlight() {
-    var xhrurl = 'http://10.16.128.107:8100/service/info/flight-traveling';
+    var xhrurl = 'http://10.16.128.107:8100/service/info/flight-traveling?name_spell=YUSUFU';
     $.ajax(
         {
             type: 'get',
@@ -338,12 +336,14 @@ function getFlight() {
 
                 var length = all_xAxis.length;
                 for (var i = 0; i <ojson.length; i++) {
-                    all_xAxis[length - 1][all_xAxis.length] = ojson[i].flightCheckinDate;
-                    var tempHour = ojson[i].substring(0,ojson[i].flightCheckinTime.indexOf(':'));
+                    all_xAxis[length - 1][all_xAxis[length - 1].length] = ojson[i].flightCheckinDate;
+                    var tempHour = ojson[i].flightCheckinTime.substring(0,ojson[i].flightCheckinTime.indexOf(':'));
                     var tempMin = ojson[i].flightCheckinTime.substring(ojson[i].flightCheckinTime.indexOf(':') + 1);
-                    all_yAxis[length - 1][all_yAxis.length] = parseInt(tempMin) + parseInt(tempHour * 60);
-                    all_zAxis[length - 1][all_zAxis.length] = 1;
+                    all_yAxis[length - 1][all_yAxis[length - 1].length] = parseInt(tempMin) + parseInt(tempHour * 60);
+                    all_zAxis[length - 1][all_zAxis[length - 1].length] = 1;
                 }
+
+                getTrain();//获取火车出行数据
             },
             error : function() {
                 alert('数据获取失败!');
@@ -353,7 +353,7 @@ function getFlight() {
 
 //获取火车出行数据
 function getTrain() {
-    var xhrurl = 'http://10.16.128.107:8100/service/info/train-traveling';
+    var xhrurl = 'http://10.16.128.107:8100/service/info/train-traveling?nameSpell=YUSUFU';
     $.ajax(
         {
             type: 'get',
@@ -370,12 +370,14 @@ function getTrain() {
 
                 var length = all_xAxis.length;
                 for (var i = 0; i <ojson.length; i++) {
-                    all_xAxis[length - 1][all_xAxis.length] = ojson[i].trainCheckinDate;
-                    var tempHour = ojson[i].substring(0,ojson[i].trainCheckinTime.indexOf(':'));
+                    all_xAxis[length - 1][all_xAxis[length - 1].length] = ojson[i].trainCheckinDate;
+                    var tempHour = ojson[i].trainCheckinTime.substring(0,ojson[i].trainCheckinTime.indexOf(':'));
                     var tempMin = ojson[i].trainCheckinTime.substring(ojson[i].trainCheckinTime.indexOf(':') + 1);
-                    all_yAxis[length - 1][all_yAxis.length] = parseInt(tempMin) + parseInt(tempHour * 60);
-                    all_zAxis[length - 1][all_zAxis.length] = 1;
+                    all_yAxis[length - 1][all_yAxis[length - 1].length] = parseInt(tempMin) + parseInt(tempHour * 60);
+                    all_zAxis[length - 1][all_zAxis[length - 1].length] = 1;
                 }
+
+                getNet();//获取上网数据
             },
             error : function() {
                 alert('数据获取失败!');
@@ -385,7 +387,7 @@ function getTrain() {
 
 //获取上网数据
 function getNet() {
-    var xhrurl = 'http://10.16.128.107:8100/service/info/internet';
+    var xhrurl = 'http://10.16.128.107:8100/service/info/internet?name=YUSUFU';
     $.ajax(
         {
             type: 'get',
@@ -402,13 +404,14 @@ function getNet() {
 
                 var length = all_xAxis.length;
                 for (var i = 0; i <ojson.length; i++) {
-                    all_xAxis[length - 1][all_xAxis.length] = ojson[i].startDate;
-                    var tempHour = ojson[i].substring(0,ojson[i].startTime.indexOf(':'));
+                    all_xAxis[length - 1][all_xAxis[length - 1].length] = ojson[i].startDate;
+                    var tempHour = ojson[i].startTime.substring(0,ojson[i].startTime.indexOf(':'));
                     var tempMin = ojson[i].startTime.substring(ojson[i].startTime.indexOf(':') + 1);
-                    all_yAxis[length - 1][all_yAxis.length] = parseInt(tempMin) + parseInt(tempHour * 60);
-                    all_zAxis[length - 1][all_zAxis.length] = 1;
+                    all_yAxis[length - 1][all_yAxis[length - 1].length] = parseInt(tempMin) + parseInt(tempHour * 60);
+                    all_zAxis[length - 1][all_zAxis[length - 1].length] = 1;
                 }
-                debugger
+
+                initData();   //拼接散点图数据
             },
             error : function() {
                 alert('数据获取失败!');
@@ -416,11 +419,78 @@ function getNet() {
         })
 }
 
+//拼接散点图数据
+function initData() {
+    chartData.splice(0,chartData.length);
+    chartType.splice(0,chartType.length);
+    for (var i = 0; i < tempType.length; i++) {
+        if (tempType[i] != '短信业务' && tempType[i] != '漫出业务' && tempType[i] != '彩信业务' && tempType[i] != 'GPRS业务' && tempType[i] != '移动语音业务') {
+            chartType.push(tempType[i]);
+            chartData.push(
+                {
+                    name: tempType[i],
+                    type: 'scatter',
+                    tooltip: {
+                        trigger: 'item',
+                        formatter: function (params) {
+                            var date = new Date(params.value[0]);
+                            return params.seriesName
+                                + ' （'
+                                + date.getFullYear() + '-'
+                                + (date.getMonth() + 1) + '-'
+                                + date.getDate() + ' '
+                                + date.getHours() + ':'
+                                + date.getMinutes()
+                                + '）<br/>'
+                                + params.value[1] + ', '
+                                + params.value[2] + ', '
+                                + params.value[3];
+                        },
+                        axisPointer: {
+                            type: 'shadow',
+                            lineStyle: {
+                                type: 'dashed',
+                                width: 1
+                            }
+                        }
+                    },
+                    symbolSize: function (value) {
+                        return 6;    //设置圆大小
+                    },
+                    itemStyle: {
+                        normal: {
+                            color: legendColor[i],
+                            label : {show: false},
+                            borderColor: '#240513',
+                            borderWidth: '0.2'
+                        },
+                        emphasis: {
+                            color: legendColor[i],
+                            borderColor: 'black',
+                            borderWidth: '0.5'
+                        }
+                    },
+                    symbol : 'circle',
+                    data: (function () {
+                        var d = [];
+                        for (var k = 0; k < all_xAxis[i].length; k++) {
+                            d.push([new Date(all_xAxis[i][k]), parseInt(all_yAxis[i][k]), all_zAxis[i][k], k])
+                        }
+                        return d;
+                    })()
+                }
+            )
+        }
+    }
+    chartInit();
+}
+
+var option1
 //绘制散点图
 function chartInit() {
     myChartOne = echarts.init(document.getElementById('chartinit'));
     divResize()
-    var option1 = {
+    option1 = {
         title: {
             text: '全量明细数据',
             subtext: ''
@@ -615,7 +685,7 @@ function chartInit() {
 
             //双击事件
             myChartOne.on(ecConfig.EVENT.DBLCLICK, function () {
-                getParentTabs(1);
+                //getParentTabs(1);
             });
 
             // 为echarts对象加载数据
@@ -915,7 +985,7 @@ function chartTimeInit() {
             myChartTwo.on(ecConfig.EVENT.CLICK, focus);
 
             // 为echarts对象加载数据
-            myChartTwo.setOption(option2);
+            myChartTwo.setOption(option2 , true);
 
             //初始化chart根据窗口大小来同步改变大小
             window.onresize = myChartTwo.resize;
@@ -1120,7 +1190,7 @@ function chartTimeInit1() {
             myChartTwo.on(ecConfig.EVENT.CLICK, focus);
 
             // 为echarts对象加载数据
-            myChartTwo.setOption(option2);
+            myChartTwo.setOption(option2 , true);
 
             window.onresize = myChartTwo.resize;
 
@@ -1168,8 +1238,7 @@ function divResize() {
 
 //切换到时空关系窗口
 function getParentTabs(e) {
-    window.parent.changeTabs(e)
-    menu.style.display = "none";
+    window.parent.changeTabs(e , 1)    //1表示全量在时空关系中展开
     menuHide();
 }
 
@@ -1205,4 +1274,128 @@ function changeTab(tabnum) {
     menuHide();
 }
 
+function seniorData(e) {
+    var selectVal = $('#seniorselect').val();
+    chartData.splice(0,chartData.length);
+    chartType.splice(0,chartType.length);
+    for (var i = 0; i < tempType.length; i++) {
+        if (selectVal == 1) {
+            if (tempType[i] != '短信业务' && tempType[i] != '漫出业务' && tempType[i] != '彩信业务' && tempType[i] != 'GPRS业务' && tempType[i] != '移动语音业务') {
+                chartType.push(tempType[i]);
+                chartData.push(
+                    {
+                        name: tempType[i],
+                        type: 'scatter',
+                        tooltip: {
+                            trigger: 'item',
+                            formatter: function (params) {
+                                var date = new Date(params.value[0]);
+                                return params.seriesName
+                                    + ' （'
+                                    + date.getFullYear() + '-'
+                                    + (date.getMonth() + 1) + '-'
+                                    + date.getDate() + ' '
+                                    + date.getHours() + ':'
+                                    + date.getMinutes()
+                                    + '）<br/>'
+                                    + params.value[1] + ', '
+                                    + params.value[2] + ', '
+                                    + params.value[3];
+                            },
+                            axisPointer: {
+                                type: 'shadow',
+                                lineStyle: {
+                                    type: 'dashed',
+                                    width: 1
+                                }
+                            }
+                        },
+                        symbolSize: function (value) {
+                            return 6;    //设置圆大小
+                        },
+                        itemStyle: {
+                            normal: {
+                                color: legendColor[i],
+                                label : {show: false},
+                                borderColor: '#240513',
+                                borderWidth: '0.2'
+                            },
+                            emphasis: {
+                                color: legendColor[i],
+                                borderColor: 'black',
+                                borderWidth: '0.5'
+                            }
+                        },
+                        symbol : 'circle',
+                        data: (function () {
+                            var d = [];
+                            for (var k = 0; k < all_xAxis[i].length; k++) {
+                                d.push([new Date(all_xAxis[i][k]), parseInt(all_yAxis[i][k]), all_zAxis[i][k], k])
+                            }
+                            return d;
+                        })()
+                    }
+                )
+            }
+        }else if(selectVal == 2 && tempType[i] == '短信业务' || tempType[i] == '漫出业务' || tempType[i] == '彩信业务' || tempType[i] == 'GPRS业务' || tempType[i] == '移动语音业务') {
+            chartType.push(tempType[i]);
+            chartData.push(
+                {
+                    name: tempType[i],
+                    type: 'scatter',
+                    tooltip: {
+                        trigger: 'item',
+                        formatter: function (params) {
+                            var date = new Date(params.value[0]);
+                            return params.seriesName
+                                + ' （'
+                                + date.getFullYear() + '-'
+                                + (date.getMonth() + 1) + '-'
+                                + date.getDate() + ' '
+                                + date.getHours() + ':'
+                                + date.getMinutes()
+                                + '）<br/>'
+                                + params.value[1] + ', '
+                                + params.value[2] + ', '
+                                + params.value[3];
+                        },
+                        axisPointer: {
+                            type: 'shadow',
+                            lineStyle: {
+                                type: 'dashed',
+                                width: 1
+                            }
+                        }
+                    },
+                    symbolSize: function (value) {
+                        return 6;    //设置圆大小
+                    },
+                    itemStyle: {
+                        normal: {
+                            color: legendColor[i],
+                            label : {show: false},
+                            borderColor: '#240513',
+                            borderWidth: '0.2'
+                        },
+                        emphasis: {
+                            color: legendColor[i],
+                            borderColor: 'black',
+                            borderWidth: '0.5'
+                        }
+                    },
+                    symbol : 'circle',
+                    data: (function () {
+                        var d = [];
+                        for (var k = 0; k < all_xAxis[i].length; k++) {
+                            d.push([new Date(all_xAxis[i][k]), parseInt(all_yAxis[i][k]), all_zAxis[i][k], k])
+                        }
+                        return d;
+                    })()
+                }
+            )
+        }
+    }
 
+    // 为echarts对象加载数据
+    myChartOne.setOption(option1,true);
+}

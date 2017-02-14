@@ -158,8 +158,8 @@
     </li>
 </menu>
 
-<div style="width: 100%;height: 750px;overflow-x: hidden">
-    <div id="chartleft" style="float: left;width: 70%;height: 750px;border:1px solid #96c2f1;">
+<div style="width: 100%;height: 780px;overflow-x: hidden">
+    <div id="chartleft" style="float: left;width: 70%;height: 780px;border:1px solid #96c2f1;">
         <div style="margin-top: 5px;margin-right: 10px;text-align: right">
             <div class="nav-header">
                 <a href="#" onclick="formResize()" class="glyphicon glyphicon-resize-full" id ="icon-resize" ></a>
@@ -171,7 +171,7 @@
         <div id="chartinittime" style="height: 200px;overflow: hidden" onclick="menuHide()"></div>
     </div>
 
-    <div id="chartright" style="float: left;width: 30%;height: 750px;border:1px solid #96c2f1;overflow-x: auto" onclick="menuHide()">
+    <div id="chartright" style="float: left;width: 30%;height: 780px;border:1px solid #96c2f1;overflow-x: auto" onclick="menuHide()">
 
         <ul id="myTab" class="nav nav-pills" role="tablist" style="margin-top: 5px;margin-left: 5px">
             <li role="presentation" class="active">
@@ -478,9 +478,9 @@
 
             <div class="row" style="width: 100%;margin-top: 10px">
                 <div class="col-lg-6" style="width: 251px;margin-left: 10px">
-                    <select class="selectpicker" id="selecttest">
-                        <option>所有数据(出行、住宿、话单等)</option>
-                        <option>话单数据</option>
+                    <select class="selectpicker" id="seniorselect" onchange="seniorData()">
+                        <option value="1">所有数据(出行、住宿、话单等)</option>
+                        <option value="2">话单数据</option>
                     </select>
                 </div>
             </div>
