@@ -53,7 +53,7 @@ public class ObjectMapperFactory {
   }
 
   private static CsvSchema createCsvSchema(CsvMapper csvMapper, Class<?> clazz) {
-    return csvMapper.schemaFor(clazz);
+    return csvMapper.schemaFor(clazz).withHeader();
   }
 
   public static ObjectMapper getObjectMapper(MapperType mapperType) {
@@ -109,11 +109,11 @@ public class ObjectMapperFactory {
     }
 
     if (mapperType == MapperType.CSV) {
-      CsvMapper csvMapper = (CsvMapper) getObjectMapper(mapperType);
+      CsvMapper csvMapper = new CsvMapper();
       CsvSchema csvSchema = createCsvSchema(csvMapper, clazz);
-      result = csvMapper.reader(clazz).with(csvSchema);
+      result = csvMapper.readerFor(clazz).with(csvSchema);
     } else {
-      result = getObjectMapper(mapperType).reader(clazz);
+      result = getObjectMapper(mapperType).readerFor(clazz);
     }
     return result;
   }
@@ -126,11 +126,11 @@ public class ObjectMapperFactory {
     }
 
     if (mapperType == MapperType.CSV) {
-      CsvMapper csvMapper = (CsvMapper) getObjectMapper(mapperType);
+      CsvMapper csvMapper = new CsvMapper();
       CsvSchema csvSchema = createCsvSchema(csvMapper, clazz);
       result = csvMapper.writer(csvSchema);
     } else {
-      result = getObjectMapper(mapperType).writerWithType(clazz);
+      result = getObjectMapper(mapperType).writerFor(clazz);
     }
 
     return result;
