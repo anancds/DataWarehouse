@@ -48,7 +48,7 @@ public class ObjectMapperFactoryTest {
   private JavaObject bean = null;
   private ListToStrings listToStrings = null;
   private ObjectWriter objectWriter = null;
-  SequenceWriter writer = null;
+  private SequenceWriter writer = null;
 
   @Before
   public void init() throws IOException {

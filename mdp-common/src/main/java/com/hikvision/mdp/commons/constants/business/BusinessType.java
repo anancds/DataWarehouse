@@ -8,7 +8,7 @@
 package com.hikvision.mdp.commons.constants.business;
 
 /**
- * <p>业务类型</p>
+ * <p>业务类型枚举类</p>
  *
  * @author chendongsheng5 2017/1/9 16:07
  * @version V1.0
@@ -18,11 +18,45 @@ package com.hikvision.mdp.commons.constants.business;
  */
 public enum BusinessType {
 
-  HIGHWAY_VEHICLE(0), RAILWAY_SECURITY_CHECK(1), TEMPORARY_RESIDENT(2), CELL_PHONE(3);
+  // TODO: 对每一个业务都需要有中文的注释
+  HIGHWAY_VEHICLE(0, "/service/1163317", HighwayVehicles.class),
+  RAILWAY_SECURITY_CHECK(1, "", Object.class),
+  TEMPORARY_RESIDENT(2, "", Object.class),
+  CELL_PHONE(3, "", Object.class);
 
-  public int code;
+  Class<?> obj;
+  private int code;
+  //服务上下文
+  private String service_context;
 
-  BusinessType(int code) {
+  BusinessType(int code, String service_context, Class<?> obj) {
+    this.code = code;
+    this.service_context = service_context;
+    this.obj = obj;
+  }
+
+  public Class<?> getObj() {
+    return obj;
+  }
+
+  public void setObj(Class<?> obj) {
+    this.obj = obj;
+  }
+
+  public int getCode() {
+    return code;
+  }
+
+  public void setCode(int code) {
     this.code = code;
   }
+
+  public String getService_context() {
+    return service_context;
+  }
+
+  public void setService_context(String service_context) {
+    this.service_context = service_context;
+  }
+
 }

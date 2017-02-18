@@ -16,6 +16,7 @@ package com.hikvision.mdp.commons.constants.business;
  * @modify by user: chendongsheng5 2016/12/27 20:15
  * @modify by reason:{方法名}:{原因}
  */
+@SuppressWarnings("unused")
 public class HighwayVehicles {
 
   //车牌号码
@@ -96,4 +97,107 @@ public class HighwayVehicles {
   //拖车标识
   public static final String TC_PDBZ = "TC_PDBZ";
 
+  public static String getCphmJdchphm() {
+    return CPHM_JDCHPHM;
+  }
+
+  public static String getRKZBH() {
+    return RKZBH;
+  }
+
+  public static String getRKCDH() {
+    return RKCDH;
+  }
+
+  public static String getRKSJ() {
+    return RKSJ;
+  }
+
+  public static String getRKCX() {
+    return RKCX;
+  }
+
+  public static String getRkclCllxdm() {
+    return RKCL_CLLXDM;
+  }
+
+  public static String getRKJDCHPHM() {
+    return RKJDCHPHM;
+  }
+
+  public static String getRkkhcPdbz() {
+    return RKKHC_PDBZ;
+  }
+
+  public static String getCKZBH() {
+    return CKZBH;
+  }
+
+  public static String getCKCDH() {
+    return CKCDH;
+  }
+
+  public static String getCKSJ() {
+    return CKSJ;
+  }
+
+  public static String getCKLSH() {
+    return CKLSH;
+  }
+
+  public static String getCKJDCHPHM() {
+    return CKJDCHPHM;
+  }
+
+  public static String getCLLX() {
+    return CLLX;
+  }
+
+  public static String getCLDWS() {
+    return CLDWS;
+  }
+
+  public static String getCLDM() {
+    return CLDM;
+  }
+
+  public static String getPKDM() {
+    return PKDM;
+  }
+
+  public static String getPKHM() {
+    return PKHM;
+  }
+
+  public static String getYjPdbz() {
+    return YJ_PDBZ;
+  }
+
+  public static String getCccPdbz() {
+    return CCC_PDBZ;
+  }
+
+  public static String getKhcPdbz() {
+    return KHC_PDBZ;
+  }
+
+  public static String getDNPH() {
+    return DNPH;
+  }
+
+  public static String getXZZL() {
+    return XZZL;
+  }
+
+  public static String getPJSD() {
+    return PJSD;
+  }
+
+  public static String getZZ1ZL() {
+    return ZZ1ZL;
+  }
+
+  public static String getTcPdbz() {
+    return TC_PDBZ;
+  }
 }

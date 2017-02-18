@@ -7,30 +7,15 @@
  */
 package com.hikvision.mdp;
 
+import com.hikvision.mdp.common.CommonUtils;
 import com.hikvision.mdp.commons.exception.HttpProcessException;
-import com.hikvision.mdp.commons.httpclient.MdpHttpAsyncClient;
-import com.hikvision.mdp.commons.httpclient.MdpHttpClient;
-import com.hikvision.mdp.commons.httpclient.common.HttpConfig;
-import com.hikvision.mdp.commons.httpclient.common.HttpHeader.Headers;
-import iop.Oauth;
-import iop.OpenApi;
-import iop.http.AccessToken;
 import iop.model.IopException;
-import iop.model.PostParameter;
-import iop.org.json.JSONObject;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
- * <p></p>
+ * <p>爬取数据工具主函数类</p>
  *
  * @author chendongsheng5 2017/1/17 19:44
  * @version V1.0
@@ -38,32 +23,29 @@ import org.apache.http.util.EntityUtils;
  * @modify by user: chendongsheng5 2017/1/17 19:44
  * @modify by reason:{方法名}:{原因}
  */
+// TODO:  如下
+
+/**
+ * 1、因为查询到第几页是不知道的，所以服务起来的时候从redis中读取每个服务的查询页，每次查询一页都需要把页数写入redis中。
+ * 2、因为flume服务起来时会重新读取文件中的内容，所以在flume起来时需要重新命名监控的文件，防止数据重复读取，不过数据即使
+ * 重复读取了其实也没关系。
+ */
 public class Etl {
+
+  private static final Logger logger = LogManager.getLogger(Etl.class);
 
   public static void main(String[] args) throws HttpProcessException, IOException, IopException {
 
-    //1.在pae config.properties配置文件中做相应的配置
-    OpenApi api = new OpenApi();//2.创建调用对象
-    Oauth oauth = new Oauth();//3.创建Oauth对象
-    AccessToken token = null;//4.获取AccessToken
-    try {
-      token = oauth.getAccessTokenByCredentials();
-    } catch (IopException e) {
-      e.printStackTrace();
-    }
-    String accessTokenString = token.getAccessToken();//5.获取token字符串
-    System.out.println(accessTokenString);
-    api.client.setToken(accessTokenString);//6.传递上一步获取到的访问令牌参数
-    List<PostParameter> list = new ArrayList<>();// 组装业务参数（假如服务需要传递名称为cym与name两个参数）
-    list.add(new PostParameter("GMSFHM","510202198212241237"));
-    list.add(new PostParameter("index","1"));
-    list.add(new PostParameter("pagesize","100"));
+    String accessTokenString = CommonUtils.getAccessToken();//5.获取token字符串
 
-    //数据查询服务调用参数说明：(服务上下文, 服务版本, 请求方式, 请求参数)
-    //返回结果为异步查询任务号时，该任务正在执行，可通过taskId 在aynQurey.java中查询结果或任务执行情况
-    JSONObject result_get=api.sendCommand("/service/1049635", "2.0", "GET", list);//GET方式调用服务得到结果
-    System.out.println(result_get.toString());
-    JSONObject result_post=api.sendCommand("/service/1049635", "2.0", "POST", list);//POST调用服务得到结果
-    System.out.println(result_post.toString());
+    if (null == accessTokenString) {
+      logger.error("The access token is null. so quit the program!");
+      System.exit(1);
+    }
+    logger.warn("The access token is : " + accessTokenString);
+
+
+    //循环时需要判断获取的数据，如果数据的size > 0 才需要继续，否则退出。
+
   }
 }

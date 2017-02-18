@@ -18,18 +18,19 @@ package com.hikvision.mdp.datagenerator;
  */
 public class DataGeneratorConstants {
 
-	//业务类型，或者说是表名
-	public static String BUSINESS_TYPE = "";
+  //业务类型，或者说是表名
+  // TODO: 这个类型应该改成int
+  public static String BUSINESS_TYPE = "";
 
-	//生成数据的线程数
-	public static int THREAD_NUM = 1;
+  //生成数据的线程数
+  public static int THREAD_NUM = 1;
 
-	//数据的终点，0表示ES，1表示Hbase，2表示ES和Hbase，默认值是2。
-	public static int DESTINATION = 2;
+  //数据的终点，0表示ES，1表示Hbase，2表示ES和Hbase，默认值是2。
+  public static int DESTINATION = 2;
 
-	//发送数据总条数
-	public static int TOTAL_NUM = 0;
+  //发送数据总条数
+  public static int TOTAL_NUM = 0;
 
-	//一次发送数据条数
-	public static int ONE_TIME_NUM = 0;
+  //一次发送数据条数
+  public static int ONE_TIME_NUM = 0;
 }
