@@ -44,10 +44,6 @@ public class MdpCommunicationInfoService {
 
     public Map<String,List<MdpCommunicationsInfoReflect>> queryMdpCommuicationInfoReflect(MdpCommunicationsInfoReflect mdpCommunicationsInfoReflect){
 
-
-
-
-
         List<MdpCommunicationsInfoReflect> mdpCommunicationsInfoReflects= this.mdpCommunicationsInfoReflectMapper.select(mdpCommunicationsInfoReflect);
 
         Map<String,List<MdpCommunicationsInfoReflect>> infoMap=null;

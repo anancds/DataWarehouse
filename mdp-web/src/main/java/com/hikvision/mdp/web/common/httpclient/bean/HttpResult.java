@@ -8,6 +8,7 @@ public class HttpResult {
     public HttpResult() {// TODO Auto-generated constructor stub
     }
 
+
     public HttpResult(Integer statusCode, String data) {
         this.statusCode = statusCode;
         this.data = data;
