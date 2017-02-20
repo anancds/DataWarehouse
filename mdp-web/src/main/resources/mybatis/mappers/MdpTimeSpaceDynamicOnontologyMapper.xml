@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace命名空间，为了对sql语句进行隔离，方便管理 ，mapper开发dao方式，使用namespace有特殊作用
+mapper代理开发时将namespace指定为mapper接口的全限定名
+ -->
+<mapper namespace="com.hikvision.mdp.web.mapper.MdpTimeSpaceDynamicOnontologyMapper">
+
+
+    <sql id="query_ids">
+        <if test="list!=null">
+            <foreach collection="list" open=" ( " close=")" item="id" separator=",">
+                #{id}
+            </foreach>
+            <!--
+            SELECT id ,username ,birthday  FROM USER WHERE username LIKE '%小明%' AND (id = 16 OR id = 22 OR id = 25)
+             <foreach collection="ids" open=" AND ( " close=")" item="id" separator="OR">
+                id = #{id}
+            </foreach>
+             -->
+        </if>
+    </sql>
+
+
+    <resultMap type="mdpOntologyObjectModel" id="mdpOntologyObjectMap">
+
+        <id column="obj_id" property="objId"/>
+        <result column="obj_name" property="objName"/>
+        <result column="obj_type" property="objType"/>
+        <collection property="objeProperties" ofType="com.hikvision.mdp.web.pojo.MdpOntologyObjectProperties">
+            <id column="prop_id" property="propId"/>
+            <result column="prop_name" property="propName"/>
+            <result column="prop_value" property="propValue"/>
+            <result column="prop_obj_id" property="propObjId"/>
+        </collection>
+    </resultMap>
+
+
+    <select id="queryAllUsedMdpOntologyObjectType" resultType="mdpOntologyObjectType">
+		SELECT DISTINCT
+			b.type_id,
+			b.type_value,
+			b.type_desc,
+			b.type_parent_id
+		FROM
+			mdp_ontology_object_model a
+		INNER JOIN mdp_ontology_object_type b ON a.obj_type = b.type_value
+		ORDER BY
+			type_value ASC
+	</select>
+
+    <select id="queryAllMdpOntologyObject" resultMap="mdpOntologyObjectMap">
+	SELECT
+	a.obj_id,
+	a.obj_name,
+	a.obj_type,
+	b.prop_id,
+	b.prop_name,
+	b.prop_value,
+	b.prop_obj_id
+	FROM
+	mdp_ontology_object_model a
+	INNER JOIN mdp_ontology_object_properties b ON a.obj_id = b.prop_obj_id
+	ORDER BY
+	a.obj_id
+</select>
+
+
+    <select id="queryMdpOntologyObjectByIds" resultMap="mdpOntologyObjectMap">
+        SELECT
+        a.obj_id,
+        a.obj_name,
+        a.obj_type,
+        b.prop_id,
+        b.prop_name,
+        b.prop_value,
+        b.prop_obj_id
+        FROM
+        mdp_ontology_object_model a
+        INNER JOIN mdp_ontology_object_properties b ON a.obj_id = b.prop_obj_id
+        WHERE
+        a.obj_id  IN
+        <include refid="query_ids"></include>
+        ORDER BY
+        a.obj_id
+    </select>
+
+
+    <select id="queryAllObjectsRelationShip" resultType="mdpOntologyObjectRelationship">
+		SELECT
+			a.rel_id,
+			a.rel_obj_id1,
+			a.rel_obj_id2,
+			a.rel_value,
+			a.rel_desc,
+			a.rel_direction
+		FROM
+			mdp_ontology_object_relationship a
+	</select>
+
+    <select id="queryObjectsRelationShipByIds" parameterType="list" resultType="mdpOntologyObjectRelationship">
+        SELECT
+        a.rel_id,
+        a.rel_obj_id1,
+        a.rel_obj_id2,
+        a.rel_value,
+        a.rel_desc,
+        a.rel_direction
+        FROM
+        mdp_ontology_object_relationship a
+        WHERE
+        a.rel_obj_id1 IN
+        <include refid="query_ids"></include>
+        OR a.rel_obj_id2
+        IN
+        <include refid="query_ids"></include>
+    </select>
+
+
+    <select id="queryUsedMdpOntologyObjectTypeByObjIds" resultType="mdpOntologyObjectType">
+        SELECT DISTINCT
+        b.type_id,
+        b.type_value,
+        b.type_desc,
+        b.type_parent_id
+        FROM
+        mdp_ontology_object_model a
+        INNER JOIN mdp_ontology_object_type b ON a.obj_type = b.type_value
+        WHERE
+        a.obj_id  IN
+        <include refid="query_ids"></include>
+        ORDER BY
+        type_value ASC
+    </select>
+
+
+</mapper>
+

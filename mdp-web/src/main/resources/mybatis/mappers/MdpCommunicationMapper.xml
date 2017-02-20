@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace命名空间，为了对sql语句进行隔离，方便管理 ，mapper开发dao方式，使用namespace有特殊作用
+mapper代理开发时将namespace指定为mapper接口的全限定名
+ -->
+<mapper namespace="com.hikvision.mdp.web.mapper.MdpCommunicationMapper">
+
+    <select id="queryMdpCommunicationsInfoReflect" parameterType="mdpCommunicationsInfo" resultType="com.hikvision.mdp.web.pojo.MdpCommunicationsInfoReflect">
+		SELECT
+            a.*, b.data_id,b.object_id,b.table_name from mdp_communications_info a
+        LEFT JOIN mdp_data_object_reflect b ON a.id = b.data_id;
+	</select>
+
+
+
+
+</mapper>
+
