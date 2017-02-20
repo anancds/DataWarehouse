@@ -25,7 +25,7 @@ public class EtlConstants {
   //查询第几页信息
   public static final long INDEX = 1;
   //每页显示的信息数
-  public static final int PAGE_SIZE = 200;
+  public static final String PAGE_SIZE = "200";
 
 
   //有几个需要通过命令行获取的，csv路径和文件名字，业务类型，线程数，http请求暂停时间，服务版本号，服务地址，每页显示信息数

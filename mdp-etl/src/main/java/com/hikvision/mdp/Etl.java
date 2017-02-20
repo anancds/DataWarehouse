@@ -10,7 +10,10 @@ package com.hikvision.mdp;
 import com.hikvision.mdp.common.CommonUtils;
 import com.hikvision.mdp.commons.exception.HttpProcessException;
 import iop.model.IopException;
+import iop.model.PostParameter;
+import iop.org.json.JSONException;
 import java.io.IOException;
+import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -34,7 +37,8 @@ public class Etl {
 
   private static final Logger logger = LogManager.getLogger(Etl.class);
 
-  public static void main(String[] args) throws HttpProcessException, IOException, IopException {
+  public static void main(String[] args)
+      throws HttpProcessException, IOException, IopException, JSONException {
 
     String accessTokenString = CommonUtils.getAccessToken();//5.获取token字符串
 
@@ -46,6 +50,21 @@ public class Etl {
 
 
     //循环时需要判断获取的数据，如果数据的size > 0 才需要继续，否则退出。
+
+    long index;
+    List<PostParameter> list = null;
+    List<List<String>> result= null;
+    for (index = 1; index < Integer.MAX_VALUE; index++ ) {
+      list = CommonUtils.getParam(String.valueOf(index), EtlConstants.PAGE_SIZE);
+
+      result = CommonUtils.getQueryResult(accessTokenString, list);
+
+      if (result.size() != 0) {
+       CommonUtils.sendDataToCSV(result);
+      } else {
+        break;
+      }
+    }
 
   }
 }
