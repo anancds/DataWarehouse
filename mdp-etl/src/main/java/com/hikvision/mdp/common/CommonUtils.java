@@ -55,6 +55,11 @@ public class CommonUtils {
     }
   }
 
+  /**
+   * 获取oauth access tocken
+   *
+   * @return access token
+   */
   public static String getAccessToken() {
     //1.在pae config.properties配置文件中做相应的配置
     Oauth oauth = new Oauth();//3.创建Oauth对象
@@ -63,6 +68,7 @@ public class CommonUtils {
     try {
       token = oauth.getAccessTokenByCredentials();
       accessTokenString = token.getAccessToken();
+      logger.warn("The access token is : " + accessTokenString);
     } catch (IopException e) {
       logger.error("Get the access token failed!", e);
     }
@@ -70,6 +76,13 @@ public class CommonUtils {
     return accessTokenString;
   }
 
+  /**
+   * 获取查询参数
+   *
+   * @param index 查询第几页
+   * @param pageSize 每页显示数据量
+   * @return 参数的list
+   */
   public static List<PostParameter> getParam(String index, String pageSize) {
     List<PostParameter> list = new ArrayList<>();
     list.add(new PostParameter("index", index));
@@ -77,6 +90,11 @@ public class CommonUtils {
     return list;
   }
 
+  /**
+   * @param accessTokenString oauth access token
+   * @param list 查询参数列表
+   * @return 数据集合，每条数据都是值的集合
+   */
   @SuppressWarnings("unchecked")
   public static List<List<String>> getQueryResult(String accessTokenString,
       List<PostParameter> list)
@@ -100,12 +118,34 @@ public class CommonUtils {
     return data;
   }
 
+  /**
+   * 把从http请求中解析出数据发送到CSV文件中
+   *
+   * @param data 数据
+   */
   public static void sendDataToCSV(List<List<String>> data) {
     for (int i = 0; i < data.size(); i++) {
       try {
         writer.write(data.get(i));
       } catch (IOException e) {
         logger.error("Write data to CSV file failed!", e);
+      }
+    }
+  }
+
+  public static void sendData(String accessTokenString) throws IopException, JSONException {
+    long index;
+    List<PostParameter> list;
+    List<List<String>> result;
+    for (index = 1; index < EtlConstants.TOTAL_INDEX; index++) {
+      list = CommonUtils.getParam(String.valueOf(index), EtlConstants.PAGE_SIZE);
+
+      result = CommonUtils.getQueryResult(accessTokenString, list);
+
+      if (result.size() != 0) {
+        CommonUtils.sendDataToCSV(result);
+      } else {
+        break;
       }
     }
   }
