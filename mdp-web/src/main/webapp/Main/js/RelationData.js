@@ -92,7 +92,7 @@ function dataControl() {
 function chartRelationData(num) {
     var msgId;
     num == 1 ? msgId = 24 : msgId = 1;
-    var xhrurl = 'http://10.16.128.107:8100/service/relationship/ids-hierarchy?ids='+24+'&hierarchy=1';
+    var xhrurl = 'http://127.0.0.1:8100/service/relationship/ids-hierarchy?ids='+24+'&hierarchy=1';
     $.ajax(
         {
             type: 'get',
@@ -540,7 +540,7 @@ function targetRemove() {
 
 //层级关系扩展
 function moreRelation(flag) {
-    var xhrurl = 'http://10.16.128.107:8100/service/relationship/ids-hierarchy?ids='+targetObj.name+'&hierarchy='+flag;
+    var xhrurl = 'http://127.0.0.1:8100/service/relationship/ids-hierarchy?ids='+targetObj.name+'&hierarchy='+flag;
     $.ajax(
         {
             type: 'get',

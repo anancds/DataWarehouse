@@ -12,6 +12,7 @@ var tempType = [];
 var xTime = [];     //横坐标时间
 var yTime = [];     //纵坐标时间
 var zTime = [];     //通话时间
+
 //时间轴
 var xAxis = [];
 var yAxis = [];
@@ -21,8 +22,10 @@ var zAxis = [];
 var chartType = [];      //所有业务类型
 var typeValue = [];      //业务数据
 var chartData = [];   //散点图数据初始化,即option中的series
+
 //时间轴
 var chartTypeTime = [];      //所有业务类型
+var chartUse = [];    //根据筛选条件存放业务类型,从chartTypeTime中获取
 var typeValueTime = [];          //业务数据
 var chartDataTime = [];   //时间轴数据初始化,即option中的series
 
@@ -36,7 +39,7 @@ var myChartTwo;     //容器初始化 时间轴
 var xATime = [];
 
 //图例颜色 形状数组
-var legendColor = ['#36CA2F','#FFBCD7','#4771FF','lightblue','#DC5E5E'];
+var legendColor = [/*'#36CA2F','#FFBCD7','#4771FF','lightblue','#DC5E5E'*/];
 var legendSymbol = ['circle','rectangle','triangle','diamond','star'];
 
 window.onload = function () {
@@ -77,7 +80,8 @@ function dateControl() {
     });
 }
 
-function formResize() {   //chart窗口  和   交互窗口  大小调整
+//chart窗口  和   交互窗口  大小调整
+function formResize() {
     if (chartBig == false) {
         $("#chartleft").animate({width: '100%'}, 'slow');
         $("#chartright").animate({width: '0'}, 'slow');
@@ -93,7 +97,7 @@ function formResize() {   //chart窗口  和   交互窗口  大小调整
 
 //全量数据获取
 function chartAllData() {
-    var xhrurl = 'http://10.16.128.107:8100/service/info/phone-commuication?callerNum=18580382828';
+    var xhrurl = 'http://127.0.0.1:8100/service/info/phone-commuication?callerNum=18580382828';
     $.ajax(
         {
             type:'get',
@@ -104,17 +108,17 @@ function chartAllData() {
 
                 chartType = Object.keys(ojson);    //获取业务类型
                 typeValue = Object.values(ojson);  //获取业务值
-                xTime.splice(0, xTime.length);
+                xTime.splice(0, xTime.length);//    清空原有数据
                 yTime.splice(0, yTime.length);
                 zTime.splice(0, zTime.length);
                 chartData.splice(0,chartData.length);
-                for (var i = 0; i < chartType.length; i++) {
+                for (var i = 0; i < chartType.length; i++) {//     根据获取的数据的长度push等长的[]
                     xTime.push([]);
                     yTime.push([]);
                     zTime.push([]);
                 }
 
-                for (var i = 0; i < chartType.length; i++) {
+                for (var i = 0; i < chartType.length; i++) {//      散点图数据初始化
                     for (var j = 0; j < typeValue[i].length; j++) {
                         xTime[i][xTime[i].length] = typeValue[i][j].startTime.substring(0 , typeValue[i][j].startTime.indexOf(' '));
                         var tempHour = typeValue[i][j].startTime.substring(typeValue[i][j].startTime.indexOf(' ') + 1, typeValue[i][j].startTime.indexOf(':'));
@@ -235,7 +239,7 @@ function getData() {
 
 //获取话单数据
 function getPhone() {
-    var xhrurl = 'http://10.16.128.107:8100/service/info/phone-commuication?callerNum=18580382828';
+    var xhrurl = 'http://127.0.0.1:8100/service/info/phone-commuication?callerNum=18580382828';
     $.ajax(
         {
             type: 'get',
@@ -246,16 +250,16 @@ function getPhone() {
 
                 tempType = Object.keys(ojson);    //获取业务类型
                 var jsonValue = Object.values(ojson);  //获取业务值
-                all_xAxis.splice(0, all_xAxis.length);
+                all_xAxis.splice(0, all_xAxis.length);//   数据清空
                 all_yAxis.splice(0, all_yAxis.length);
                 all_zAxis.splice(0, all_zAxis.length);
-                for (var i = 0; i < tempType.length+1; i++) {//加1 是为了存放话单数据合集
+                for (var i = 0; i < tempType.length+1; i++) {//加1 是为了存放话单数据合集;   放入与数据等长的[],用以存放获取的数据
                     all_xAxis.push([]);
                     all_yAxis.push([]);
                     all_zAxis.push([]);
                 }
 
-                for (var i = 0; i < tempType.length; i++) {
+                for (var i = 0; i < tempType.length; i++) {//    组装获取的数据
                     for (var j = 0; j < jsonValue[i].length; j++) {
                         all_xAxis[i][all_xAxis[i].length] = jsonValue[i][j].startTime.substring(0, jsonValue[i][j].startTime.indexOf(' '));
                         var tempHour = jsonValue[i][j].startTime.substring(jsonValue[i][j].startTime.indexOf(' ') + 1, jsonValue[i][j].startTime.indexOf(':'));
@@ -267,7 +271,7 @@ function getPhone() {
 
                 tempType.push('话单信息');
                 var temp_xAxis_length = all_xAxis.length;
-                for (var i = 0; i < all_xAxis.length - 1; i++) {
+                for (var i = 0; i < all_xAxis.length - 1; i++) {//     将所有话单数据拼接在一个数组里
                     for (var j = 0; j < all_xAxis[i].length; j++) {
                         all_xAxis[temp_xAxis_length - 1].push(all_xAxis[i][j]);
                         all_yAxis[temp_xAxis_length - 1].push(all_yAxis[i][j]);
@@ -285,7 +289,7 @@ function getPhone() {
 
 //住宿信息获取
 function getAccommodation() {
-    var xhrurl = 'http://10.16.128.107:8100/service/info/accommodationInfo?name=YUSUFU';
+    var xhrurl = 'http://127.0.0.1:8100/service/info/accommodationInfo?name=YUSUFU';
     $.ajax(
         {
             type: 'get',
@@ -296,12 +300,12 @@ function getAccommodation() {
 
                 tempType.push('住宿信息');
 
-                all_xAxis.push([]);
+                all_xAxis.push([]);//   初始化,放入[]以存放数据
                 all_yAxis.push([]);
                 all_zAxis.push([]);
 
-                var length = all_xAxis.length;
-                for (var i = 0; i <ojson.length; i++) {
+                var length = all_xAxis.length;//    获取已有数据的长度
+                for (var i = 0; i <ojson.length; i++) {//     组装数据
                     all_xAxis[length - 1][all_xAxis[length - 1].length] = ojson[i].checkInDate;
                     var tempHour = ojson[i].checkInTime.substring(0,ojson[i].checkInTime.indexOf(':'));
                     var tempMin = ojson[i].checkInTime.substring(ojson[i].checkInTime.indexOf(':') + 1);
@@ -319,7 +323,7 @@ function getAccommodation() {
 
 //获取飞机出行数据
 function getFlight() {
-    var xhrurl = 'http://10.16.128.107:8100/service/info/flight-traveling?name_spell=YUSUFU';
+    var xhrurl = 'http://127.0.0.1:8100/service/info/flight-traveling?name_spell=YUSUFU';
     $.ajax(
         {
             type: 'get',
@@ -353,7 +357,7 @@ function getFlight() {
 
 //获取火车出行数据
 function getTrain() {
-    var xhrurl = 'http://10.16.128.107:8100/service/info/train-traveling?nameSpell=YUSUFU';
+    var xhrurl = 'http://127.0.0.1:8100/service/info/train-traveling?nameSpell=YUSUFU';
     $.ajax(
         {
             type: 'get',
@@ -387,7 +391,7 @@ function getTrain() {
 
 //获取上网数据
 function getNet() {
-    var xhrurl = 'http://10.16.128.107:8100/service/info/internet?name=YUSUFU';
+    var xhrurl = 'http://127.0.0.1:8100/service/info/internet?name=YUSUFU';
     $.ajax(
         {
             type: 'get',
@@ -421,9 +425,9 @@ function getNet() {
 
 //拼接散点图数据
 function initData() {
-    chartData.splice(0,chartData.length);
-    chartType.splice(0,chartType.length);
-    for (var i = 0; i < tempType.length; i++) {
+    chartData.splice(0,chartData.length);//   清空原有数据,防止chart绘制重叠
+    chartType.splice(0,chartType.length);//   清空原有数据,防止chart绘制重叠
+    for (var i = 0; i < tempType.length; i++) {//      具体话单业务放入二级
         if (tempType[i] != '短信业务' && tempType[i] != '漫出业务' && tempType[i] != '彩信业务' && tempType[i] != 'GPRS业务' && tempType[i] != '移动语音业务') {
             chartType.push(tempType[i]);
             chartData.push(
@@ -485,11 +489,12 @@ function initData() {
     chartInit();
 }
 
-var option1
+var option1; //  散点图数据格式存放
+
 //绘制散点图
 function chartInit() {
     myChartOne = echarts.init(document.getElementById('chartinit'));
-    divResize()
+    divResize()    //监听窗口大小的改动,使chart能同步改变大小
     option1 = {
         title: {
             text: '全量明细数据',
@@ -670,12 +675,9 @@ function chartInit() {
 
             myChartOne.on(ecConfig.EVENT.CLICK, focus)
 
-            myChartOne.on(ecConfig.EVENT.FORCE_LAYOUT_END, function () {
-                console.log(myChartOne.chart.force.getPosition());
-            });
             myChartOne.on(ecConfig.EVENT.DATA_ZOOM, function (e) {
                 if (e.zoom.start != 0 && e.zoom.end != 100) {
-                    //showData()   弹出窗口
+                    showData()   //弹出窗口
                 }
             });
 
@@ -704,7 +706,7 @@ function chartInit() {
 
 //获取数据方式1
 function chartTimeData() {
-    var xhrurl = 'http://10.16.128.107:8100/service/info/phone-communication-hour-count?callerNum=18580382828';
+    var xhrurl = 'http://127.0.0.1:8100/service/info/phone-communication-hour-count?callerNum=18580382828';
     $.ajax(
         {
             type:'get',
@@ -1009,7 +1011,7 @@ function chartTimeInit() {
 
 //获取数据方式2
 function chartTimeData1() {
-    var xhrurl = 'http://10.16.128.107:8100/service/info/phone-communication-hour-count?callerNum=18580382828';
+    var xhrurl = 'http://127.0.0.1:8100/service/info/phone-communication-hour-count';
     $.ajax(
         {
             type:'get',
@@ -1017,16 +1019,23 @@ function chartTimeData1() {
             dataType : 'jsonp',
             success  : function(data) {
                 var ojson = data;
-                var tempArray = Object.keys(ojson);
-                //chartTypeTime = Object.keys(ojson);
-                typeValueTime = Object.values(ojson);
+                var tempArray; // 存放所有key值,即0001、0002、0003等
 
-                for (var i = 0; i < tempArray.length; i++) {
+                typeValueTime.splice(0 , typeValueTime.length);
+                yAxis.splice(0 , yAxis.length);
+
+                tempArray = Object.keys(ojson);
+                typeValueTime = Object.values(ojson);  //存放所有object中key对应的value值
+
+                for (var i = 0; i < tempArray.length + 1; i++) {    //根据key长度加1初始化 ,  加1是为了存放所有话单数据
                     yAxis.push([]);
-                    for (var j = 0; j < xATime.length; j++) {
+                    for (var j = 0; j < xATime.length; j++) {     //再根据日期长度初始化
                         yAxis[i].push(0)
                     }
                 }
+
+                //单独初始化话单信息
+                chartTypeTime[tempArray.length] = '话单信息'
 
                 for (var i = 0; i < tempArray.length; i++) {
                     switch (tempArray[i]){
@@ -1034,12 +1043,14 @@ function chartTimeData1() {
                             chartTypeTime[i] = ('GPRS业务');
                             for (var j = 0; j < typeValueTime[i].length; j++) {
                                 yAxis[i][xATime.indexOf(typeValueTime[i][j].day)] = yAxis[i][xATime.indexOf(typeValueTime[i][j].day)] + parseInt(typeValueTime[i][j].connCount);
+                                yAxis[tempArray.length][xATime.indexOf(typeValueTime[i][j].day)] = yAxis[tempArray.length][xATime.indexOf(typeValueTime[i][j].day)] + parseInt(typeValueTime[i][j].connCount);
                             }
                             break;
                         case '0003' :
                             chartTypeTime[i] = ('漫出业务');
                             for (var j = 0; j < typeValueTime[i].length; j++) {
                                 yAxis[i][xATime.indexOf(typeValueTime[i][j].day)] = yAxis[i][xATime.indexOf(typeValueTime[i][j].day)] + parseInt(typeValueTime[i][j].connCount);
+                                yAxis[tempArray.length][xATime.indexOf(typeValueTime[i][j].day)] = yAxis[tempArray.length][xATime.indexOf(typeValueTime[i][j].day)] + parseInt(typeValueTime[i][j].connCount);
                             }
                             break;
                         case '0003.0002' :
@@ -1050,6 +1061,7 @@ function chartTimeData1() {
                             chartTypeTime[i] = ('短信业务');
                             for (var j = 0; j < typeValueTime[i].length; j++) {
                                 yAxis[i][xATime.indexOf(typeValueTime[i][j].day)] = yAxis[i][xATime.indexOf(typeValueTime[i][j].day)] + parseInt(typeValueTime[i][j].connCount);
+                                yAxis[tempArray.length][xATime.indexOf(typeValueTime[i][j].day)] = yAxis[tempArray.length][xATime.indexOf(typeValueTime[i][j].day)] + parseInt(typeValueTime[i][j].connCount);
                             }
                             break;
                         case '0001.0002' :
@@ -1060,21 +1072,37 @@ function chartTimeData1() {
                             chartTypeTime[i] = ('移动语音业务');
                             for (var j = 0; j < typeValueTime[i].length; j++) {
                                 yAxis[i][xATime.indexOf(typeValueTime[i][j].day)] = yAxis[i][xATime.indexOf(typeValueTime[i][j].day)] + parseInt(typeValueTime[i][j].connCount);
+                                yAxis[tempArray.length][xATime.indexOf(typeValueTime[i][j].day)] = yAxis[tempArray.length][xATime.indexOf(typeValueTime[i][j].day)] + parseInt(typeValueTime[i][j].connCount);
+                            }
+                            break;
+                        case '0005' :     //飞机
+                            chartTypeTime[i] = ('航班信息');
+                            for (var j = 0; j < typeValueTime[i].length; j++) {
+                                yAxis[i][xATime.indexOf(typeValueTime[i][j].day)] = yAxis[i][xATime.indexOf(typeValueTime[i][j].day)] + parseInt(typeValueTime[i][j].connCount);
+                            }
+                            break;
+                        case '0006' :     //火车
+                            chartTypeTime[i] = ('火车信息');
+                            for (var j = 0; j < typeValueTime[i].length; j++) {
+                                yAxis[i][xATime.indexOf(typeValueTime[i][j].day)] = yAxis[i][xATime.indexOf(typeValueTime[i][j].day)] + parseInt(typeValueTime[i][j].connCount);
                             }
                             break;
                     }
                 }
 
+                //先清空之前的数据,再放数据
                 chartDataTime.splice(0 , chartDataTime.length);
 
                 for (var i = 0; i < chartTypeTime.length; i++) {
-                    chartDataTime.push(
-                        {
-                            name:chartTypeTime[i],
-                            type:'bar',
-                            data:yAxis[i]
-                        }
-                    )
+                    if (chartTypeTime[i] == '航班信息' || chartTypeTime[i] == '火车信息' || chartTypeTime[i] == '话单信息') {
+                        chartDataTime.push(
+                            {
+                                name:chartTypeTime[i],
+                                type:'bar',
+                                data:yAxis[i]
+                            }
+                        )
+                    }
                 }
 
                 chartTimeInit1();
@@ -1089,10 +1117,12 @@ function chartTimeData1() {
     );
 }
 
+var option2; //  散点图数据格式存放
+
 //绘制下方时间轴方式2
 function chartTimeInit1() {
     myChartTwo = echarts.init(document.getElementById('chartinittime'));
-    var option2 = {
+    option2 = {
         title: {
             text: '全量明细数据',
             subtext: 'dataZoom支持'
@@ -1167,25 +1197,6 @@ function chartTimeInit1() {
                     console.log("选中了" + data.name + '(' + data.value + ')');
                 }
             }
-
-            // var _ZR = myChartTwo.getZrender();
-            // var CircleShape = require('zrender/shape/Circle');
-            // var TextShape = require('zrender/shape/Text');
-            // _ZR.addShape(new CircleShape({
-            //     style: {
-            //         x: 100,
-            //         y: 100,
-            //         r: 50,
-            //         brushType: 'both',
-            //         color: 'rgba(220, 20, 60, 0.8)',          // rgba supported
-            //         lineWidth: 5,
-            //         text: 'circle',
-            //         textPosition: 'inside'
-            //     },
-            //     hoverable: true,   // default true
-            //     draggable: true,   // default false
-            //     clickable: true,   // default false
-            // }))
 
             myChartTwo.on(ecConfig.EVENT.CLICK, focus);
 
@@ -1274,12 +1285,16 @@ function changeTab(tabnum) {
     menuHide();
 }
 
+//高级查询重新组装数据,并绘制chart
 function seniorData(e) {
     var selectVal = $('#seniorselect').val();
+    //先清空之前的数据,再放数据
+    chartDataTime.splice(0 , chartDataTime.length);
     chartData.splice(0,chartData.length);
     chartType.splice(0,chartType.length);
-    for (var i = 0; i < tempType.length; i++) {
-        if (selectVal == 1) {
+
+    if (selectVal == 1) {
+        for (var i = 0; i < tempType.length; i++) {
             if (tempType[i] != '短信业务' && tempType[i] != '漫出业务' && tempType[i] != '彩信业务' && tempType[i] != 'GPRS业务' && tempType[i] != '移动语音业务') {
                 chartType.push(tempType[i]);
                 chartData.push(
@@ -1336,66 +1351,94 @@ function seniorData(e) {
                         })()
                     }
                 )
+
             }
-        }else if(selectVal == 2 && tempType[i] == '短信业务' || tempType[i] == '漫出业务' || tempType[i] == '彩信业务' || tempType[i] == 'GPRS业务' || tempType[i] == '移动语音业务') {
-            chartType.push(tempType[i]);
-            chartData.push(
-                {
-                    name: tempType[i],
-                    type: 'scatter',
-                    tooltip: {
-                        trigger: 'item',
-                        formatter: function (params) {
-                            var date = new Date(params.value[0]);
-                            return params.seriesName
-                                + ' （'
-                                + date.getFullYear() + '-'
-                                + (date.getMonth() + 1) + '-'
-                                + date.getDate() + ' '
-                                + date.getHours() + ':'
-                                + date.getMinutes()
-                                + '）<br/>'
-                                + params.value[1] + ', '
-                                + params.value[2] + ', '
-                                + params.value[3];
-                        },
-                        axisPointer: {
-                            type: 'shadow',
-                            lineStyle: {
-                                type: 'dashed',
-                                width: 1
+        }
+
+        for (var j = 0; j < chartTypeTime.length; j++) {
+            if (chartTypeTime[j] == '航班信息' || chartTypeTime[j] == '火车信息' || chartTypeTime[j] == '话单信息') {
+                chartDataTime.push(
+                    {
+                        name:chartTypeTime[j],
+                        type:'bar',
+                        data:yAxis[j]
+                    }
+                )
+            }
+        }
+    }else if (selectVal == 2) {
+        for (var i = 0; i < tempType.length; i++) {
+            if (tempType[i] == '短信业务' || tempType[i] == '漫出业务' || tempType[i] == '彩信业务' || tempType[i] == 'GPRS业务' || tempType[i] == '移动语音业务') {
+                chartType.push(tempType[i]);
+                chartData.push(
+                    {
+                        name: tempType[i],
+                        type: 'scatter',
+                        tooltip: {
+                            trigger: 'item',
+                            formatter: function (params) {
+                                var date = new Date(params.value[0]);
+                                return params.seriesName
+                                    + ' （'
+                                    + date.getFullYear() + '-'
+                                    + (date.getMonth() + 1) + '-'
+                                    + date.getDate() + ' '
+                                    + date.getHours() + ':'
+                                    + date.getMinutes()
+                                    + '）<br/>'
+                                    + params.value[1] + ', '
+                                    + params.value[2] + ', '
+                                    + params.value[3];
+                            },
+                            axisPointer: {
+                                type: 'shadow',
+                                lineStyle: {
+                                    type: 'dashed',
+                                    width: 1
+                                }
                             }
-                        }
-                    },
-                    symbolSize: function (value) {
-                        return 6;    //设置圆大小
-                    },
-                    itemStyle: {
-                        normal: {
-                            color: legendColor[i],
-                            label : {show: false},
-                            borderColor: '#240513',
-                            borderWidth: '0.2'
                         },
-                        emphasis: {
-                            color: legendColor[i],
-                            borderColor: 'black',
-                            borderWidth: '0.5'
-                        }
-                    },
-                    symbol : 'circle',
-                    data: (function () {
-                        var d = [];
-                        for (var k = 0; k < all_xAxis[i].length; k++) {
-                            d.push([new Date(all_xAxis[i][k]), parseInt(all_yAxis[i][k]), all_zAxis[i][k], k])
-                        }
-                        return d;
-                    })()
-                }
-            )
+                        symbolSize: function (value) {
+                            return 6;    //设置圆大小
+                        },
+                        itemStyle: {
+                            normal: {
+                                color: legendColor[i],
+                                label : {show: false},
+                                borderColor: '#240513',
+                                borderWidth: '0.2'
+                            },
+                            emphasis: {
+                                color: legendColor[i],
+                                borderColor: 'black',
+                                borderWidth: '0.5'
+                            }
+                        },
+                        symbol : 'circle',
+                        data: (function () {
+                            var d = [];
+                            for (var k = 0; k < all_xAxis[i].length; k++) {
+                                d.push([new Date(all_xAxis[i][k]), parseInt(all_yAxis[i][k]), all_zAxis[i][k], k])
+                            }
+                            return d;
+                        })()
+                    }
+                )
+            }
+        }
+        for (var j = 0; j < chartTypeTime.length; j++) {
+            if (chartTypeTime[j] == '短信业务' || chartTypeTime[j] == '漫出业务' || chartTypeTime[j] == '彩信业务' || chartTypeTime[j] == 'GPRS业务' || chartTypeTime[j] == '移动语音业务') {
+                chartDataTime.push(
+                    {
+                        name:chartTypeTime[j],
+                        type:'bar',
+                        data:yAxis[j]
+                    }
+                )
+            }
         }
     }
-
     // 为echarts对象加载数据
     myChartOne.setOption(option1,true);
+    myChartTwo.setOption(option2,true);
 }

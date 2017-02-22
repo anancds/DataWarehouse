@@ -8,6 +8,72 @@
     <link rel="stylesheet" href="../css/jquery-confirm.min.css">
     <link rel="stylesheet" href="../css/jquery.loadmask.css">
 
+    <style>
+        .burger {
+            position: absolute;
+            right: 0;
+            top: 100%;
+            width: 50px;
+            height: 50px;
+            background: #428bca;
+            cursor: pointer;
+            display: -webkit-box;
+            display: -webkit-flex;
+            display: -ms-flexbox;
+            display: flex;
+            -webkit-box-align: center;
+            -webkit-align-items: center;
+            -ms-flex-align: center;
+            align-items: center;
+            -webkit-box-pack: center;
+            -webkit-justify-content: center;
+            -ms-flex-pack: center;
+            justify-content: center;
+        }
+        .burger__patty {
+            position: relative;
+            width: 60%;
+            height: 2px;
+            background: #fff;
+            -webkit-transition: all 0.45s cubic-bezier(0.23, 1, 0.32, 1);
+            transition: all 0.45s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        .burger__patty:before,
+        .burger__patty:after {
+            will-change: transform;
+            content: "";
+            position: absolute;
+            left: 0;
+            background: #fff;
+            height: 2px;
+            width: 100%;
+            -webkit-transition: all 0.45s cubic-bezier(0.23, 1, 0.32, 1);
+            transition: all 0.45s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        .burger__patty:before {
+            top: -10px;
+        }
+        .burger__patty:after {
+            top: 10px;
+        }
+        .burger--close .burger__patty {
+            -webkit-transform: rotate(45deg);
+            -ms-transform: rotate(45deg);
+            transform: rotate(45deg);
+        }
+        .burger--close .burger__patty:before {
+            -webkit-transform: rotate(-90deg) translate(-9px, 0);
+            -ms-transform: rotate(-90deg) translate(-9px, 0);
+            transform: rotate(-90deg) translate(-9px, 0);
+        }
+        .burger--close .burger__patty:after {
+            opacity: 0;
+            -webkit-transform: scaleX(0);
+            -ms-transform: scaleX(0);
+            transform: scaleX(0);
+        }
+    </style>
+
     <script src="../js/jquery-3.1.1.js"></script>
     <script src="../js/jquery-confirm.min.js"></script>
     <script src="../js/bootstrap.min.js"></script>
@@ -21,17 +87,14 @@
 
 </head>
 <body>
-
 <!--从后台请求数据-->
 <!--<button class="btn btn-info" onclick="readData()">获取数据</button>-->
-
+<div class="burger burger--close" style="right: 5px;top: 90px;position: fixed;z-index: 999; display: none">
+    <div class="burger__patty"></div>
+</div>
 <div class="panel-body">
 
-    <div style="z-index: 1;position: fixed;text-align: right;right: 100px;top: 30px">
-        <button type="button" class="btn btn-primary" onclick="searchDialog()"><span class="glyphicon glyphicon-search"></span> 检索</button>
-    </div>
-
-    <div style="left: 1%;top: 1.8%;position: fixed;z-index: 999">
+    <div id="pills" style="left: 20px;top: 20px;position: fixed;z-index: 999">
 
         <div style="float: left;width: 300px;height: 50px;text-align: center;border: 0px solid;">
             <a href="#"><img src="../images/logo.png" alt="" onclick="location.reload()" style="margin-top: 10px"></a>
@@ -55,6 +118,10 @@
             </ul>
         </div>
 
+    </div>
+
+    <div style="z-index: 1;position: fixed;text-align: right;right: 100px;top: 30px">
+        <button type="button" class="btn btn-primary" onclick="searchDialog()"><span class="glyphicon glyphicon-search"></span> 检索</button>
     </div>
 
     <hr style="height:1px;border:none;border-top:1px solid #185598;margin-top: 70px" />
@@ -159,7 +226,7 @@
                 </div>
             </div>          <!--列表-->
 
-            <div id="childTabTwo" style="display: none">    <!--全量-->
+            <div id="childTabTwo" style="display: none;">    <!--全量-->
                 <iframe id="mainalladta" name="alldata" src="MainAllData.html" frameborder="0" style="width: 100%;"></iframe>
             </div>
 
