@@ -17,22 +17,28 @@ package com.hikvision.mdp;
  */
 public class EtlConstants {
 
-  //服务地址
-  public static final String URL = "http://10.154.207.161:80/ids-service/api";
-  //服务版本
-  public static final String SERVICE_VERSION = "1.0";
   // TODO: 确定查询是从第几页开始的，0还是1
   //查询第几页信息
   public static final long INDEX = 1;
+  //服务地址
+  public static String URL = "http://10.154.207.161:80/ids-service/api";
+  //服务版本
+  public static String SERVICE_VERSION = "1.0";
   //每页显示的信息数
-  public static final String PAGE_SIZE = "200";
+  public static String PAGE_SIZE = "200";
 
+  //查询总页数
+  public static long TOTAL_INDEX = 0L;
 
   //有几个需要通过命令行获取的，csv路径和文件名字，业务类型，线程数，http请求暂停时间，服务版本号，服务地址，每页显示信息数
   //数据保存路径还需要根据业务类型用不同的目录来区分
 
   public static String CSV_PATH = "D:\\cds.csv";
+
   // TODO:  通过命令行获取
   public static int business_name = 1;
+
+  //http请求之间的暂停时间
+  public static long INTERVAL_TIME = 0L;
 
 }

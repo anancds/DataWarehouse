@@ -1,3 +1,5 @@
+package com.hikvision.mdp
+
 /*
  * @ProjectName: MDP
  * @Copyright: 2017 HangZhou Hikvision System Technology Co., Ltd. All Right Reserved.
