@@ -1,10 +1,8 @@
 package com.hikvision.mdp.web.service;
 
 import com.hikvision.mdp.web.bean.MdpCommunicationsInfoBean;
-import com.hikvision.mdp.web.pojo.MdpCommunicationsInfoReflect;
-import com.hikvision.mdp.web.mapper.MdpCommunicationMapper;
-import com.hikvision.mdp.web.mapper.MdpCommunicationsInfoReflectMapper;
-import com.hikvision.mdp.web.pojo.MdpCommunicationsInfo;
+import com.hikvision.mdp.web.mapper.*;
+import com.hikvision.mdp.web.pojo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +24,17 @@ public class MdpCommunicationInfoService {
 
     @Autowired
     private MdpCommunicationsInfoReflectMapper mdpCommunicationsInfoReflectMapper;
+
+    @Autowired
+    private MdpCommunicationMostLongTimePerWeekMapper mdpCommunicationMostLongTimePerWeekMapper;
+
+
+    @Autowired
+    private MdpCommunicationMostFrequentlyPerMonthMapper mdpCommunicationMostFrequentlyPerMonthMapper;
+
+
+    @Autowired
+    private MdpCommunicationMostFrequentlyPerWeekMapper mdpCommunicationMostFrequentlyPerWeekMapper;
 
     /**
      *
@@ -94,5 +103,26 @@ public class MdpCommunicationInfoService {
         }
         return infoMap;
 
+    }
+
+    public List<MdpCommunicationMostLongTimePerWeek>  queryMdpCommuicationMostLongTimePerWeek(MdpCommunicationMostLongTimePerWeek mdpCommunicationMostLongTimePerWeek){
+        List<MdpCommunicationMostLongTimePerWeek> mdpCommunicationMostLongTimePerWeeks=this.mdpCommunicationMostLongTimePerWeekMapper.select(mdpCommunicationMostLongTimePerWeek);
+        if(mdpCommunicationMostLongTimePerWeeks==null||mdpCommunicationMostLongTimePerWeeks.size()==0)
+            return null;
+        return mdpCommunicationMostLongTimePerWeeks;
+    }
+
+    public List<MdpCommunicationMostFrequentlyPerWeek>  queryMdpCommunicationMostFrequentlyPerWeek(MdpCommunicationMostFrequentlyPerWeek mdpCommunicationMostFrequentlyPerWeek){
+        List<MdpCommunicationMostFrequentlyPerWeek> mdpCommunicationMostFrequentlyPerWeeks=this.mdpCommunicationMostFrequentlyPerWeekMapper.select(mdpCommunicationMostFrequentlyPerWeek);
+        if(mdpCommunicationMostFrequentlyPerWeeks==null||mdpCommunicationMostFrequentlyPerWeeks.size()==0)
+            return null;
+        return mdpCommunicationMostFrequentlyPerWeeks;
+    }
+
+    public List<MdpCommunicationMostFrequentlyPerMonth>  queryMdpCommunicationMostFrequentlyPerMonth(MdpCommunicationMostFrequentlyPerMonth mdpCommunicationMostFrequentlyPerMonth){
+        List<MdpCommunicationMostFrequentlyPerMonth> mdpCommunicationMostFrequentlyPerMonths=this.mdpCommunicationMostFrequentlyPerMonthMapper.select(mdpCommunicationMostFrequentlyPerMonth);
+        if(mdpCommunicationMostFrequentlyPerMonths==null||mdpCommunicationMostFrequentlyPerMonths.size()==0)
+            return null;
+        return mdpCommunicationMostFrequentlyPerMonths;
     }
 }

@@ -42,6 +42,8 @@ public class MdpFullDetailInfoController {
     @Autowired
     private MdpTrainTravelingInfoService mdpTrainTravelingInfoService;
 
+
+
     private static final ObjectMapper MAPPER = new ObjectMapper().setSerializationInclusion(Include.NON_NULL);
 
 
@@ -95,6 +97,50 @@ public class MdpFullDetailInfoController {
             List<MdpAccommodationInfo> mdpAccommodationInfos=this.mdpAccommodationInfoService.queryMdpAccommodationInfo(mdpAccommodationInfo);
             if (mdpAccommodationInfos != null) {
                 return ResponseEntity.ok(mdpAccommodationInfos);
+            }
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+    }
+
+
+    @RequestMapping(value = "most-long-week", method = RequestMethod.GET)
+    public ResponseEntity<List<MdpCommunicationMostLongTimePerWeek>> getMdpCommunicationMostLongTimePerWeek(MdpCommunicationMostLongTimePerWeek mdpCommunicationMostLongTimePerWeek){
+        try {
+            List<MdpCommunicationMostLongTimePerWeek> mdpCommunicationMostLongTimePerWeeks=this.mdpCommunicationInfoService.queryMdpCommuicationMostLongTimePerWeek(mdpCommunicationMostLongTimePerWeek);
+            if (mdpCommunicationMostLongTimePerWeeks != null) {
+                return ResponseEntity.ok(mdpCommunicationMostLongTimePerWeeks);
+            }
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+    }
+
+
+    @RequestMapping(value = "most-freq-per-week", method = RequestMethod.GET)
+    public ResponseEntity<List<MdpCommunicationMostFrequentlyPerWeek>> getMdpCommunicationMostFrequentlyPerWeek(MdpCommunicationMostFrequentlyPerWeek mdpCommunicationMostFrequentlyPerWeek){
+        try {
+            List<MdpCommunicationMostFrequentlyPerWeek> mdpCommunicationMostFrequentlyPerWeeks=this.mdpCommunicationInfoService.queryMdpCommunicationMostFrequentlyPerWeek(mdpCommunicationMostFrequentlyPerWeek);
+            if (mdpCommunicationMostFrequentlyPerWeeks != null) {
+                return ResponseEntity.ok(mdpCommunicationMostFrequentlyPerWeeks);
+            }
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+    }
+
+    @RequestMapping(value = "most-freq-per-month", method = RequestMethod.GET)
+    public ResponseEntity<List<MdpCommunicationMostFrequentlyPerMonth>> getMdpCommunicationMostFrequentlyPerMonth(MdpCommunicationMostFrequentlyPerMonth mdpCommunicationMostFrequentlyPerMonth){
+        try {
+            List<MdpCommunicationMostFrequentlyPerMonth> mdpCommunicationMostFrequentlyPerMonths=this.mdpCommunicationInfoService.queryMdpCommunicationMostFrequentlyPerMonth(mdpCommunicationMostFrequentlyPerMonth);
+            if (mdpCommunicationMostFrequentlyPerMonths != null) {
+                return ResponseEntity.ok(mdpCommunicationMostFrequentlyPerMonths);
             }
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         } catch (Exception e) {
@@ -181,6 +227,9 @@ public class MdpFullDetailInfoController {
 
 
     }
+
+
+
 
 
 
