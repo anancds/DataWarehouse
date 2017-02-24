@@ -62,6 +62,11 @@ public class MdpFullDetailInfoController {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
     }
 
+    /**
+     *
+     * @param mdpCommunicationsInfoReflect
+     * @return
+     */
     @RequestMapping(value = "phone-commuication", method = RequestMethod.GET)
     public ResponseEntity<Map<String,List<MdpCommunicationsInfoReflect>>> getCommunicationsInfoReflect(MdpCommunicationsInfoReflect mdpCommunicationsInfoReflect){
         try {
@@ -76,6 +81,12 @@ public class MdpFullDetailInfoController {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
     }
 
+
+    /**
+     *
+     * @param mdpCommunicationsInfo
+     * @return
+     */
     @RequestMapping(value = "phone-commuication-single", method = RequestMethod.GET)
     public ResponseEntity<Map<String,List<MdpCommunicationsInfo>>> getCommunicationsInfoSingle(MdpCommunicationsInfo mdpCommunicationsInfo){
         try {
@@ -91,6 +102,11 @@ public class MdpFullDetailInfoController {
     }
 
 
+    /**
+     *
+     * @param mdpAccommodationInfo
+     * @return
+     */
     @RequestMapping(value = "accommodationInfo", method = RequestMethod.GET)
     public ResponseEntity<List<MdpAccommodationInfo>> getMdpAccommodationInfo(MdpAccommodationInfo mdpAccommodationInfo){
         try {
@@ -106,6 +122,11 @@ public class MdpFullDetailInfoController {
     }
 
 
+    /**
+     *
+     * @param mdpCommunicationMostLongTimePerWeek
+     * @return
+     */
     @RequestMapping(value = "most-long-week", method = RequestMethod.GET)
     public ResponseEntity<List<MdpCommunicationMostLongTimePerWeek>> getMdpCommunicationMostLongTimePerWeek(MdpCommunicationMostLongTimePerWeek mdpCommunicationMostLongTimePerWeek){
         try {
@@ -121,6 +142,11 @@ public class MdpFullDetailInfoController {
     }
 
 
+    /**
+     *
+     * @param mdpCommunicationMostFrequentlyPerWeek
+     * @return
+     */
     @RequestMapping(value = "most-freq-per-week", method = RequestMethod.GET)
     public ResponseEntity<List<MdpCommunicationMostFrequentlyPerWeek>> getMdpCommunicationMostFrequentlyPerWeek(MdpCommunicationMostFrequentlyPerWeek mdpCommunicationMostFrequentlyPerWeek){
         try {
@@ -135,6 +161,12 @@ public class MdpFullDetailInfoController {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
     }
 
+
+    /**
+     *
+     * @param mdpCommunicationMostFrequentlyPerMonth
+     * @return
+     */
     @RequestMapping(value = "most-freq-per-month", method = RequestMethod.GET)
     public ResponseEntity<List<MdpCommunicationMostFrequentlyPerMonth>> getMdpCommunicationMostFrequentlyPerMonth(MdpCommunicationMostFrequentlyPerMonth mdpCommunicationMostFrequentlyPerMonth){
         try {
@@ -149,6 +181,12 @@ public class MdpFullDetailInfoController {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
     }
 
+
+    /**
+     *
+     * @param mdpFlightTravelingInfo
+     * @return
+     */
     @RequestMapping(value = "flight-traveling", method = RequestMethod.GET)
     public ResponseEntity<List<MdpFlightTravelingInfo>> getMdpFlightTravelingInfo(MdpFlightTravelingInfo mdpFlightTravelingInfo){
         try {
@@ -164,6 +202,11 @@ public class MdpFullDetailInfoController {
     }
 
 
+    /**
+     *上网信息
+     * @param mdpInternetInfo
+     * @return
+     */
     @RequestMapping(value = "internet", method = RequestMethod.GET)
     public ResponseEntity<List<MdpInternetInfo>> getMdpInternetInfo(MdpInternetInfo mdpInternetInfo){
         try {
@@ -193,6 +236,12 @@ public class MdpFullDetailInfoController {
     }*/
 
 
+    /**
+     *
+     * 出行信息
+     * @param mdpTrainTravelingInfo
+     * @return
+     */
     @RequestMapping(value = "train-traveling", method = RequestMethod.GET)
     public ResponseEntity<List<MdpTrainTravelingInfo>> getMdpTrainTravelingInfo(MdpTrainTravelingInfo mdpTrainTravelingInfo){
         try {
@@ -208,6 +257,13 @@ public class MdpFullDetailInfoController {
     }
 
 
+    /**
+     *
+     *
+     * 每小时统计结果
+     * @param mdpConnectionInfoHourCount
+     * @return
+     */
     @RequestMapping(value="phone-communication-hour-count",method=RequestMethod.GET)
     public ResponseEntity<Map<String,List<MdpConnectionInfoHourCount>>> getCommuicationsInfoHourCount(MdpConnectionInfoHourCount mdpConnectionInfoHourCount){
 
