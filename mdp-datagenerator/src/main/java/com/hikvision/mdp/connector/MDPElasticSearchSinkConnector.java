@@ -22,6 +22,7 @@ import com.hikvision.bigdata.hbp.datacollectors.common.io.descriptors.DataCollec
  * @modify by user: chendongsheng5 2017/1/7 15:59
  * @modify by reason:{方法名}:{原因}
  */
+@Deprecated
 public class MDPElasticSearchSinkConnector extends ElasticSearchJESTSinkConnector {
 
   public MDPElasticSearchSinkConnector(DataCollectorPipelineDescriptor descriptor,

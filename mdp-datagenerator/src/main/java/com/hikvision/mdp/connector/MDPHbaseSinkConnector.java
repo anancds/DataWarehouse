@@ -24,6 +24,7 @@ import com.hikvision.bigdata.hbp.datacollectors.common.io.descriptors.DataCollec
  * @modify by user: chendongsheng5 2017/1/7 16:12
  * @modify by reason:{方法名}:{原因}
  */
+@Deprecated
 public class MDPHbaseSinkConnector extends HBaseSinkConnector {
 
 	public MDPHbaseSinkConnector(DataCollectorPipelineDescriptor descriptor, String connectorName, int index,

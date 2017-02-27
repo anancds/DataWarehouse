@@ -23,6 +23,7 @@ import com.hikvision.bigdata.hbp.datacollectors.common.io.descriptors.DataCollec
  * @modify by user: chendongsheng5 2017/1/7 13:42
  * @modify by reason:{方法名}:{原因}
  */
+@Deprecated
 public class KafkaLinkedConnector extends LinkedConnector{
 
 	public KafkaLinkedConnector(DataCollectorPipelineDescriptor descriptor, String connectorName, int index,

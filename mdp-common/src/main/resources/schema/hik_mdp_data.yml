@@ -1,8 +1,8 @@
 ---
 name: hik-mdp-data-collector
 properties:
-  kafka.bootstrap.servers: 10.17.139.66:9092
-  kafka.zookeeper.connector: 10.17.139.66:2181
+  kafka.bootstrap.servers: 10.17.139.67:9092,10.17.139.68:9092,10.17.139.69:9092
+  kafka.zookeeper.connector: 10.17.139.67:2181,10.17.139.68:2181,10.17.139.69:2181
   collector.parser: json
 schemas:
   - name: hik_mdp_cellphone_schema
@@ -183,7 +183,7 @@ schemas:
 topics:
   - name: hik_mdp_cellphone_topic
     partitions: 5
-    replicas: 0
+    replicas: 1
     schema: hik_mdp_cellphone_schema
     properties:
       cleanup.policy: delete
@@ -199,14 +199,14 @@ connectors:
       topic: hik_mdp_cellphone_topic
     to:
       table: hik_mdp_cellphone_table
-      hbase.zookeeper.quorum: 10.17.139.66:2181
+      hbase.zookeeper.quorum: 10.17.139.67:2181,10.17.139.68:2181,10.17.139.69:2181
       index: hik_mdp_cellphone_index
       type: hikmdpcellphonetype
       router: DATE_FIELD
       router.field: qssj
-      router.rules: day:7
+      router.rules: day:1
       router.rules.locale: zh-cn
       router.rules.timezone: GMT
-      es.rest.addresses: 10.17.139.66:9200
+      es.rest.addresses: 10.17.139.67:9200,10.17.139.68:9200,10.17.139.69:9200
       queue.length: 10
 #      package: true

@@ -25,6 +25,7 @@ import java.util.Properties;
  * @modify by user: chendongsheng5 2017/1/6 17:09
  * @modify by reason:{方法名}:{原因}
  */
+@Deprecated
 public class DataGeneratorFromKafka extends ConnectorFromKafka{
 
 	private static Logger LOG = LogManager.getLogger(DataGeneratorFromKafka.class);

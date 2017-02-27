@@ -28,6 +28,7 @@ import java.util.Properties;
  * @modify by user: chendongsheng5 2017/1/6 13:48
  * @modify by reason:{方法名}:{原因}
  */
+@Deprecated
 public class DataGeneratorToKafka extends ConnectorToKafka {
 
 	private final Properties props = new Properties();

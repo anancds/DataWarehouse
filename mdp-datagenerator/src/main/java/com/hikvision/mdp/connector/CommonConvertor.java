@@ -27,6 +27,7 @@ import java.util.Properties;
  * @modify by user: chendongsheng5 2017/1/7 14:34
  * @modify by reason:{方法名}:{原因}
  */
+@Deprecated
 public class CommonConvertor extends ConvertorBase {
 
 	// Configuration of pipeline
