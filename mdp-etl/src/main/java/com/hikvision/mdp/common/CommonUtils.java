@@ -128,28 +128,22 @@ public class CommonUtils {
 
     List<Record> records = new ArrayList<>();
     Schema schema = schemas.get("hik_mdp_cellphone_schema");
-    Record record = null;
     for (int i = 0; i < array.length(); i++) {
-      if (logger.isDebugEnabled()) {
-        // TODO: 这样显示是否可以，需要调试
-        logger.debug("The " + i + " data is: " + array.get(i).toString());
-      }
-      // TODO: checked!
-      Map<String, String> data = ((HashMap)array.get(i));
+      JSONObject data = array.getJSONObject(i);
       String rowKey = data.get("qssj") + "_" + i;
-      record = new Record(Bytes.toBytes(rowKey), schema)
-          .field("yys", data.get("yys")).field("ywlx", data.get("ywlx"))
-          .field("qssj", data.get("qssj")).field("fwhm", data.get("fwhm"))
-          .field("kh", data.get("kh")).field("sbhm", data.get("sbhm"))
-          .field("dfhm", data.get("dfhm"))
-          .field("dfhmgsd", data.get("dfhmgsd"))
-          .field("thsc", data.get("thsc")).field("hjlx", data.get("hjlx"))
-          .field("lac", data.get("lac")).field("cid", data.get("cid"))
-          .field("fwhmjz", data.get("fwhmjz"))
-          .field("msc", data.get("msc")).field("cs", data.get("cs"))
-          .field("dsfhm", data.get("dsfhm"))
-          .field("dsfhmgsd", data.get("dsfhmgsd"));
-
+      Record record = new Record(Bytes.toBytes(rowKey), schema)
+          .field("yys", data.getString("yys")).field("ywlx", data.getString("ywlx"))
+          .field("qssj", data.getString("qssj")).field("fwhm", data.getString("fwhm"))
+          .field("kh", data.getString("kh")).field("sbhm", data.getString("sbhm"))
+          .field("dfhm", data.getString("dfhm"))
+          .field("dfhmgsd", data.getString("dfhmgsd"))
+          .field("thsc", data.getString("thsc")).field("hjlx", data.getString("hjlx"))
+          .field("lac", data.getString("lac")).field("cid", data.getString("cid"))
+          .field("fwhmjz", data.getString("fwhmjz"))
+          .field("msc", data.getString("msc")).field("cs", data.getString("cs"))
+          .field("dsfhm", data.getString("dsfhm"))
+          .field("dsfhmgsd", data.getString("dsfhmgsd"));
+      record.setTs(data.getLong("qssj"));
       records.add(record);
     }
     return records;

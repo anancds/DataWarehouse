@@ -55,17 +55,20 @@ public class Etl {
 
   private static Map<String, Schema> schemas = YmlParse.getSchemas();
 
+  private static ClientSourceConnector CellPhoneClient = ConnectorPool
+      .getConnector(YmlParse.getKafkaAddress(MDPConstants.Collector.PIPELINE_INFO_HIK_MDP_DATA),
+          YmlParse.getTopic(MDPConstants.Collector.PIPELINE_INFO_HIK_MDP_DATA, 0));
+
   public static void main(String[] args)
+
       throws HttpProcessException, IOException, IopException, JSONException {
 
     ParseETLArguments.processArgs(args, System.out);
-    ClientSourceConnector CellPhoneClient = ConnectorPool
-        .getConnector(YmlParse.getKafkaAddress(MDPConstants.Collector.PIPELINE_INFO_HIK_MDP_DATA),
-            YmlParse.getTopic(MDPConstants.Collector.PIPELINE_INFO_HIK_MDP_DATA, 0));
 
     if (EtlConstants.IS_DEBUG) {
 
-      String result = MdpHttpClient.get(HttpConfig.custom().url("http://10.16.132.101:8080/service/hd/1.0"));
+      String result = MdpHttpClient
+          .get(HttpConfig.custom().url("http://10.16.132.101:8080/service/hd/1.0"));
       JSONObject result_get = new JSONObject(result);
       System.out.println(result_get);
       System.out.println(result_get.getJSONObject("result").getJSONArray("data"));
@@ -73,12 +76,11 @@ public class Etl {
 
       List<Record> records = new ArrayList<>();
       Schema schema = schemas.get("hik_mdp_cellphone_schema");
-      Record record = null;
+//      Record record = null;
       for (int i = 0; i < array.length(); i++) {
         JSONObject data = array.getJSONObject(i);
-//        String rowKey = data.getString("qssj") + "_" + i;
-        String rowKey = "1234" + "_" + i;
-        record = new Record(Bytes.toBytes(rowKey), schema)
+        String rowKey = data.getString("qssj") + "_" + i;
+        Record record = new Record(Bytes.toBytes(rowKey), schema)
             .field("yys", data.getString("yys")).field("ywlx", data.getString("ywlx"))
             .field("qssj", data.getString("qssj")).field("fwhm", data.getString("fwhm"))
             .field("kh", data.getString("kh")).field("sbhm", data.getString("sbhm"))
@@ -90,13 +92,16 @@ public class Etl {
             .field("msc", data.getString("msc")).field("cs", data.getString("cs"))
             .field("dsfhm", data.getString("dsfhm"))
             .field("dsfhmgsd", data.getString("dsfhmgsd"));
-        System.out.println(data.getString("dsfhmgsd"));
 
-//        record.setTs(data.getLong("qssj"));
-        record.setTs(4234234L);
+        record.setTs(data.getLong("qssj"));
         records.add(record);
       }
       CellPhoneClient.send(records);
+      records.clear();
+
+      ConnectorPool
+          .close(YmlParse.getKafkaAddress(MDPConstants.Collector.PIPELINE_INFO_HIK_MDP_DATA),
+              YmlParse.getTopic(MDPConstants.Collector.PIPELINE_INFO_HIK_MDP_DATA, 0));
 
     } else {
       String accessTokenString = CommonUtils.getAccessToken();//5.获取token字符串
