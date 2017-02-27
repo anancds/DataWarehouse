@@ -42,6 +42,8 @@ public class MdpFullDetailInfoController {
     @Autowired
     private MdpTrainTravelingInfoService mdpTrainTravelingInfoService;
 
+
+
     private static final ObjectMapper MAPPER = new ObjectMapper().setSerializationInclusion(Include.NON_NULL);
 
 
@@ -60,6 +62,11 @@ public class MdpFullDetailInfoController {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
     }
 
+    /**
+     *
+     * @param mdpCommunicationsInfoReflect
+     * @return
+     */
     @RequestMapping(value = "phone-commuication", method = RequestMethod.GET)
     public ResponseEntity<Map<String,List<MdpCommunicationsInfoReflect>>> getCommunicationsInfoReflect(MdpCommunicationsInfoReflect mdpCommunicationsInfoReflect){
         try {
@@ -74,6 +81,12 @@ public class MdpFullDetailInfoController {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
     }
 
+
+    /**
+     *
+     * @param mdpCommunicationsInfo
+     * @return
+     */
     @RequestMapping(value = "phone-commuication-single", method = RequestMethod.GET)
     public ResponseEntity<Map<String,List<MdpCommunicationsInfo>>> getCommunicationsInfoSingle(MdpCommunicationsInfo mdpCommunicationsInfo){
         try {
@@ -89,6 +102,11 @@ public class MdpFullDetailInfoController {
     }
 
 
+    /**
+     *
+     * @param mdpAccommodationInfo
+     * @return
+     */
     @RequestMapping(value = "accommodationInfo", method = RequestMethod.GET)
     public ResponseEntity<List<MdpAccommodationInfo>> getMdpAccommodationInfo(MdpAccommodationInfo mdpAccommodationInfo){
         try {
@@ -103,6 +121,72 @@ public class MdpFullDetailInfoController {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
     }
 
+
+    /**
+     *
+     * @param mdpCommunicationMostLongTimePerWeek
+     * @return
+     */
+    @RequestMapping(value = "most-long-week", method = RequestMethod.GET)
+    public ResponseEntity<List<MdpCommunicationMostLongTimePerWeek>> getMdpCommunicationMostLongTimePerWeek(MdpCommunicationMostLongTimePerWeek mdpCommunicationMostLongTimePerWeek){
+        try {
+            List<MdpCommunicationMostLongTimePerWeek> mdpCommunicationMostLongTimePerWeeks=this.mdpCommunicationInfoService.queryMdpCommuicationMostLongTimePerWeek(mdpCommunicationMostLongTimePerWeek);
+            if (mdpCommunicationMostLongTimePerWeeks != null) {
+                return ResponseEntity.ok(mdpCommunicationMostLongTimePerWeeks);
+            }
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+    }
+
+
+    /**
+     *
+     * @param mdpCommunicationMostFrequentlyPerWeek
+     * @return
+     */
+    @RequestMapping(value = "most-freq-per-week", method = RequestMethod.GET)
+    public ResponseEntity<List<MdpCommunicationMostFrequentlyPerWeek>> getMdpCommunicationMostFrequentlyPerWeek(MdpCommunicationMostFrequentlyPerWeek mdpCommunicationMostFrequentlyPerWeek){
+        try {
+            List<MdpCommunicationMostFrequentlyPerWeek> mdpCommunicationMostFrequentlyPerWeeks=this.mdpCommunicationInfoService.queryMdpCommunicationMostFrequentlyPerWeek(mdpCommunicationMostFrequentlyPerWeek);
+            if (mdpCommunicationMostFrequentlyPerWeeks != null) {
+                return ResponseEntity.ok(mdpCommunicationMostFrequentlyPerWeeks);
+            }
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+    }
+
+
+    /**
+     *
+     * @param mdpCommunicationMostFrequentlyPerMonth
+     * @return
+     */
+    @RequestMapping(value = "most-freq-per-month", method = RequestMethod.GET)
+    public ResponseEntity<List<MdpCommunicationMostFrequentlyPerMonth>> getMdpCommunicationMostFrequentlyPerMonth(MdpCommunicationMostFrequentlyPerMonth mdpCommunicationMostFrequentlyPerMonth){
+        try {
+            List<MdpCommunicationMostFrequentlyPerMonth> mdpCommunicationMostFrequentlyPerMonths=this.mdpCommunicationInfoService.queryMdpCommunicationMostFrequentlyPerMonth(mdpCommunicationMostFrequentlyPerMonth);
+            if (mdpCommunicationMostFrequentlyPerMonths != null) {
+                return ResponseEntity.ok(mdpCommunicationMostFrequentlyPerMonths);
+            }
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+    }
+
+
+    /**
+     *
+     * @param mdpFlightTravelingInfo
+     * @return
+     */
     @RequestMapping(value = "flight-traveling", method = RequestMethod.GET)
     public ResponseEntity<List<MdpFlightTravelingInfo>> getMdpFlightTravelingInfo(MdpFlightTravelingInfo mdpFlightTravelingInfo){
         try {
@@ -118,6 +202,11 @@ public class MdpFullDetailInfoController {
     }
 
 
+    /**
+     *上网信息
+     * @param mdpInternetInfo
+     * @return
+     */
     @RequestMapping(value = "internet", method = RequestMethod.GET)
     public ResponseEntity<List<MdpInternetInfo>> getMdpInternetInfo(MdpInternetInfo mdpInternetInfo){
         try {
@@ -147,6 +236,12 @@ public class MdpFullDetailInfoController {
     }*/
 
 
+    /**
+     *
+     * 出行信息
+     * @param mdpTrainTravelingInfo
+     * @return
+     */
     @RequestMapping(value = "train-traveling", method = RequestMethod.GET)
     public ResponseEntity<List<MdpTrainTravelingInfo>> getMdpTrainTravelingInfo(MdpTrainTravelingInfo mdpTrainTravelingInfo){
         try {
@@ -162,6 +257,13 @@ public class MdpFullDetailInfoController {
     }
 
 
+    /**
+     *
+     *
+     * 每小时统计结果
+     * @param mdpConnectionInfoHourCount
+     * @return
+     */
     @RequestMapping(value="phone-communication-hour-count",method=RequestMethod.GET)
     public ResponseEntity<Map<String,List<MdpConnectionInfoHourCount>>> getCommuicationsInfoHourCount(MdpConnectionInfoHourCount mdpConnectionInfoHourCount){
 
@@ -181,6 +283,9 @@ public class MdpFullDetailInfoController {
 
 
     }
+
+
+
 
 
 

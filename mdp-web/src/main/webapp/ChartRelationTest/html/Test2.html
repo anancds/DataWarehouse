@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+</head>
+<script src="../js/jquery-3.1.1.js"></script>
+<!--<script src="../js/echarts2.js"></script>
+<script src="../js/echarts_more.js"></script>-->
+<!--<script src="../js/util.js"></script>-->
+<body>
+
+<script src="../js/echarts-all.js"></script>
+<!--<script src="../js/echarts_more.js"></script>
+<script src="../js/util.js"></script>-->
+
+<!-- 为 ECharts 准备一个具备大小（宽高）的 DOM -->
+<div id="main" style="width: 800px;height:800px;"></div>
+<input id="" type="button">
+
+
+<script>
+
+    $.ajax({
+        async: true,
+        type: 'POST',
+        dataType: "jsonp",
+        /*url: 'http://10.16.128.107:8100/service/relationship/full-dose/',*/
+        url:'http://10.16.128.107:8100/service/people/identity-info?'+Date.parse(new Date()),
+        data:{name:encodeURIComponent('玉')},
+        statusCode : {
+            200 : function(data){
+               alert(data)
+            },
+            404 : function(){
+               alert("404")
+            },
+            500 : function(){
+                alert("500");
+            }
+        }
+    });
+
+
+
+</script>
+</body>
+</html>

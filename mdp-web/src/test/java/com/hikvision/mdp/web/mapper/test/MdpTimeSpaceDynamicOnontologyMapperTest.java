@@ -2,13 +2,13 @@ package com.hikvision.mdp.web.mapper.test;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hikvision.mdp.web.pojo.MdpCommunicationsInfoReflect;
+import com.github.abel533.entity.Example;
+import com.hikvision.mdp.web.mapper.UserMapper;
+import com.hikvision.mdp.web.pojo.*;
 import com.hikvision.mdp.web.bean.MdpTimeSpaceDynamicOnontology;
 import com.hikvision.mdp.web.mapper.MdpCommunicationMapper;
-import com.hikvision.mdp.web.pojo.MdpOntologyObjectModel;
-import com.hikvision.mdp.web.pojo.MdpOntologyObjectRelationship;
-import com.hikvision.mdp.web.pojo.MdpOntologyObjectType;
 import com.hikvision.mdp.web.service.MdpCommunicationInfoService;
+import com.hikvision.mdp.web.service.MdpPeopleEntityService;
 import com.hikvision.mdp.web.service.MdpTimeSpaceRelationService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,6 +36,13 @@ public class MdpTimeSpaceDynamicOnontologyMapperTest {
     private MdpCommunicationInfoService mdpCommunicationInfoService;
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
+
+    @Autowired
+    private UserMapper userMapper;
+
+
+    @Autowired
+    private MdpPeopleEntityService mdpPeopleEntityService;
 
     @Test
     public void testQueryAllRelationShip(){
@@ -132,6 +139,33 @@ public class MdpTimeSpaceDynamicOnontologyMapperTest {
     public void testMdpCommunicationInfoService(){
         Map<String,List<MdpCommunicationsInfoReflect>> maps=this.mdpCommunicationInfoService.queryMdpCommuicationInfoReflect(null);
         System.out.print(maps);
+    }
+
+
+    @Test
+    public void testUser(){
+
+        Example example= new Example(User.class);
+
+
+        example.or().andLike("name","葛挺");
+        example.or().andLike("id","2");
+
+        List<User> users=this.userMapper.selectByExample(example);
+         System.out.println(users);
+
+    }
+
+
+    @Test
+    public void testMdpPeopleEntity(){
+
+        MdpPeopleEntity mdpPeopleEntity=new MdpPeopleEntity();
+        mdpPeopleEntity.setName("%玉%");
+        mdpPeopleEntity.setPhoneNum("%18580%");
+        List<MdpPeopleEntity> mdpPeopleEntities=this.mdpPeopleEntityService.queryMdpPeopleEntityByLike(mdpPeopleEntity);
+        System.out.println(mdpPeopleEntities);
+
     }
 
 
