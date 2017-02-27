@@ -71,6 +71,8 @@ function loadSuccess() {
         animation: 'left',
         closeAnimation: 'right',
         backgroundDismiss: true,
+        columnClass: 'col-md-4 col-md-offset-8 col-xs-4 col-xs-offset-8',
+        //containerFluid: true,
         buttons: {
             确定: function () {
 

@@ -9,3 +9,67 @@
 .bootstrap-select:not([class*="col-"]):not([class*="form-control"]):not(.input-group-btn) {
     width: 100px;
 }
+
+.burger {
+    position: absolute;
+    right: 0;
+    top: 100%;
+    width: 50px;
+    height: 50px;
+    background: #428bca;
+    cursor: pointer;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    -webkit-justify-content: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+}
+.burger__patty {
+    position: relative;
+    width: 60%;
+    height: 2px;
+    background: #fff;
+    -webkit-transition: all 0.45s cubic-bezier(0.23, 1, 0.32, 1);
+    transition: all 0.45s cubic-bezier(0.23, 1, 0.32, 1);
+}
+.burger__patty:before,
+.burger__patty:after {
+    will-change: transform;
+    content: "";
+    position: absolute;
+    left: 0;
+    background: #fff;
+    height: 2px;
+    width: 100%;
+    -webkit-transition: all 0.45s cubic-bezier(0.23, 1, 0.32, 1);
+    transition: all 0.45s cubic-bezier(0.23, 1, 0.32, 1);
+}
+.burger__patty:before {
+    top: -10px;
+}
+.burger__patty:after {
+    top: 10px;
+}
+.burger--close .burger__patty {
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+}
+.burger--close .burger__patty:before {
+    -webkit-transform: rotate(-90deg) translate(-9px, 0);
+    -ms-transform: rotate(-90deg) translate(-9px, 0);
+    transform: rotate(-90deg) translate(-9px, 0);
+}
+.burger--close .burger__patty:after {
+    opacity: 0;
+    -webkit-transform: scaleX(0);
+    -ms-transform: scaleX(0);
+    transform: scaleX(0);
+}

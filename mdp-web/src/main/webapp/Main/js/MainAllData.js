@@ -25,7 +25,6 @@ var chartData = [];   //散点图数据初始化,即option中的series
 
 //时间轴
 var chartTypeTime = [];      //所有业务类型
-var chartUse = [];    //根据筛选条件存放业务类型,从chartTypeTime中获取
 var typeValueTime = [];          //业务数据
 var chartDataTime = [];   //时间轴数据初始化,即option中的series
 
@@ -42,7 +41,15 @@ var xATime = [];
 var legendColor = [/*'#36CA2F','#FFBCD7','#4771FF','lightblue','#DC5E5E'*/];
 var legendSymbol = ['circle','rectangle','triangle','diamond','star'];
 
+
+//存放根据输入条件的搜索结果
+var searchRlt;
+
+//记录双击人员请求数据失败次数,若等于总的请求次数,则表示无该人员的话单、出行、航班、火车、上网等信息
+var ajaxTimes = 0;
+
 window.onload = function () {
+    initTree();
     xATime = utilGetDate('2016-1-17','2016-6-5');    //时间轴横轴坐标数据
     dateControl();   //时间选择器初始化
 }
@@ -80,17 +87,27 @@ function dateControl() {
     });
 }
 
+//加载该标签页时大小调整
+function formInit() {
+    var a = $(window).width();
+    $("#chartleft").animate({width: a - 400}, 'slow');
+    $("#chartright").animate({width: 400}, 'slow');
+}
+
 //chart窗口  和   交互窗口  大小调整
 function formResize() {
     if (chartBig == false) {
-        $("#chartleft").animate({width: '100%'}, 'slow');
-        $("#chartright").animate({width: '0'}, 'slow');
-        $("#chartright").hide();
+        $("#chartleft").animate({width: '0px'}, 'slow');
+        $("#chartright").animate({width: '100%'}, 'slow');
+        $("#chartright").css("margin-left","0px");
+        $("#chartleft").hide();
         chartBig = true;
     } else {
-        $("#chartleft").animate({width: '70%'}, 'slow');
-        $("#chartright").animate({width: '30%'}, 'slow');
-        $("#chartright").show();
+        var windowWidth = $(window).width();
+        $("#chartleft").animate({width: '400'}, 'slow');
+        $("#chartright").animate({width: windowWidth - 400}, 'slow');
+        $("#chartright").css("margin-left","400px");
+        $("#chartleft").show();
         chartBig = false;
     }
 }
@@ -232,20 +249,75 @@ function chartAllData() {
     // });
 }
 
-//获取数据
-function getData() {
-    getPhone();//获取话单数据
+//获取检索结果
+function searchData() {
+    $("#searchTab  tr:not(:first)").html("");
+
+    var name = $("#name").val();
+    var cardid = $("#cardid").val();
+    var phone = $("#phone").val();
+    var gender = $('#gender option:selected').val();
+    if (name == '' && cardid == '' && phone == '') {
+        $('#myModal').modal('show');
+        $('#myModalLabel').html('温馨提示')
+        $("#modalText").html('查询条件为空,请先输入查询条件.')
+        return;
+    }
+    name = encodeURIComponent(name)
+    gender == '不详' ? gender = '' : gender == '男' ? gender = 'M' : gender = 'F';   //若为不详  则为空  若为难  则为M   若为女  则为F
+    var xhrurl = 'http://10.16.128.107:8100/service/people/identity-info?'+Date.parse(new Date());
+    $.ajax({
+        async: true,
+        type: 'GET',
+        dataType: "jsonp",
+        url: xhrurl,
+        data: {name: name, phoneNum: phone, cardid: cardid, sex: gender},
+        statusCode: {
+            200: function (data) {
+                var ojson = data;
+                searchRlt = data;
+                for (var i = 0; i < ojson.length; i++) {
+                    var tabHtml;
+                    var imgSrc;
+                    ojson[i].name == '努尔买买提-玉苏甫' ? imgSrc = 'img/1.PNG' : imgSrc = 'img/2.png';
+                    tabHtml = tabHtml + '<tr ondblclick="imgdblclick(this)"><td>'+ojson[i].name+'</td><td><img src='+imgSrc+' width="108" alt=""></td></tr>'
+                }
+                $("#searchTab").append(tabHtml);
+            },
+            404: function () {
+                $('#myModal').modal('show');
+                $('#myModalLabel').html('温馨提示');
+                $("#modalText").html('对不起,没有找到匹配结果.');
+                $("#searchTab").append('<tr><td colspan="2">对不起，没有找到匹配结果。</td></tr>');
+            },
+            500: function () {
+                $('#myModal').modal('show');
+                $('#myModalLabel').html('温馨提示');
+                $("#modalText").html('服务器出错,请稍后再试.');
+            }
+        }
+    })
+}
+
+//双击检索结果行获取数据
+function getData(e) {//e = {phone: strPhone, name: strName, pinyin: strPinyin}   手机号   姓名  姓名拼音
+    all_xAxis.splice(0,all_xAxis.length);
+    all_yAxis.splice(0,all_yAxis.length);
+    all_zAxis.splice(0,all_zAxis.length);
+    getPhone(e);//获取话单数据
 }
 
 //获取话单数据
-function getPhone() {
-    var xhrurl = 'http://127.0.0.1:8100/service/info/phone-commuication?callerNum=18580382828';
-    $.ajax(
-        {
-            type: 'get',
-            url: xhrurl,
-            dataType: 'jsonp',
-            success: function (data) {
+function getPhone(e) {
+    var xhrurl = 'http://127.0.0.1:8100/service/info/phone-commuication?'+Date.parse(new Date());
+    $.ajax({
+        async: true,
+        type: 'GET',
+        dataType: "jsonp",
+        url: xhrurl,
+        data: {callerNum: e.phone},
+        statusCode: {
+            200: function (data) {
                 var ojson = data;
 
                 tempType = Object.keys(ojson);    //获取业务类型
@@ -279,23 +351,32 @@ function getPhone() {
                     }
                 }
 
-                getAccommodation();//住宿信息获取
+                getAccommodation(e);//住宿信息获取
             },
-            error : function() {
-                alert('数据获取失败!');
+            404: function () {
+                getAccommodation(e);
+                ajaxTimes++;
+            },
+            500: function () {
+                getAccommodation(e);
+                ajaxTimes++;
             }
-        })
+        }
+    })
 }
 
 //住宿信息获取
-function getAccommodation() {
-    var xhrurl = 'http://127.0.0.1:8100/service/info/accommodationInfo?name=YUSUFU';
-    $.ajax(
-        {
-            type: 'get',
-            url: xhrurl,
-            dataType: 'jsonp',
-            success: function (data) {
+function getAccommodation(e) {
+    var xhrurl = 'http://127.0.0.1:8100/service/info/accommodationInfo?'+Date.parse(new Date());
+    debugger
+    $.ajax({
+        async: true,
+        type: 'GET',
+        dataType: "jsonp",
+        url: xhrurl,
+        data: {name: e.pinyin},
+        statusCode: {
+            200: function (data) {
                 var ojson = data;
 
                 tempType.push('住宿信息');
@@ -313,23 +394,31 @@ function getAccommodation() {
                     all_zAxis[length - 1][all_zAxis[length - 1].length] = 1;
                 }
 
-                getFlight();//获取飞机出行数据
+                getFlight(e);//获取飞机出行数据
             },
-            error : function() {
-                alert('数据获取失败!');
+            404: function () {
+                getFlight(e);//获取飞机出行数据
+                ajaxTimes++;
+            },
+            500: function () {
+                getFlight(e);//获取飞机出行数据
+                ajaxTimes++;
             }
-        })
+        }
+    })
 }
 
 //获取飞机出行数据
-function getFlight() {
-    var xhrurl = 'http://127.0.0.1:8100/service/info/flight-traveling?name_spell=YUSUFU';
-    $.ajax(
-        {
-            type: 'get',
-            url: xhrurl,
-            dataType: 'jsonp',
-            success: function (data) {
+function getFlight(e) {
+    var xhrurl = 'http://127.0.0.1:8100/service/info/flight-traveling?'+Date.parse(new Date());
+    $.ajax({
+        async: true,
+        type: 'GET',
+        dataType: "jsonp",
+        url: xhrurl,
+        data: {name_spell: e.pinyin},
+        statusCode: {
+            200: function (data) {
                 var ojson = data;
 
                 tempType.push('航班信息');
@@ -347,23 +436,31 @@ function getFlight() {
                     all_zAxis[length - 1][all_zAxis[length - 1].length] = 1;
                 }
 
-                getTrain();//获取火车出行数据
+                getTrain(e);//获取火车出行数据
             },
-            error : function() {
-                alert('数据获取失败!');
+            404: function () {
+                getTrain(e);//获取火车出行数据
+                ajaxTimes++;
+            },
+            500: function () {
+                getTrain(e);//获取火车出行数据
+                ajaxTimes++;
             }
-        })
+        }
+    })
 }
 
 //获取火车出行数据
-function getTrain() {
-    var xhrurl = 'http://127.0.0.1:8100/service/info/train-traveling?nameSpell=YUSUFU';
-    $.ajax(
-        {
-            type: 'get',
-            url: xhrurl,
-            dataType: 'jsonp',
-            success: function (data) {
+function getTrain(e) {
+    var xhrurl = 'http://127.0.0.1:8100/service/info/train-traveling?'+Date.parse(new Date());
+    $.ajax({
+        async: true,
+        type: 'GET',
+        dataType: "jsonp",
+        url: xhrurl,
+        data: {name_spell: e.pinyin},
+        statusCode: {
+            200: function (data) {
                 var ojson = data;
 
                 tempType.push('火车信息');
@@ -381,23 +478,31 @@ function getTrain() {
                     all_zAxis[length - 1][all_zAxis[length - 1].length] = 1;
                 }
 
-                getNet();//获取上网数据
+                getNet(e);//获取上网数据
             },
-            error : function() {
-                alert('数据获取失败!');
+            404: function () {
+                getNet(e);//获取上网数据
+                ajaxTimes++;
+            },
+            500: function () {
+                getNet(e);//获取上网数据
+                ajaxTimes++;
             }
-        })
+        }
+    })
 }
 
 //获取上网数据
-function getNet() {
-    var xhrurl = 'http://127.0.0.1:8100/service/info/internet?name=YUSUFU';
-    $.ajax(
-        {
-            type: 'get',
-            url: xhrurl,
-            dataType: 'jsonp',
-            success: function (data) {
+function getNet(e) {
+    var xhrurl = 'http://127.0.0.1:8100/service/info/internet?'+Date.parse(new Date());
+    $.ajax({
+        async: true,
+        type: 'GET',
+        dataType: "jsonp",
+        url: xhrurl,
+        data: {name: e.pinyin},
+        statusCode: {
+            200: function (data) {
                 var ojson = data;
 
                 tempType.push('上网信息');
@@ -417,14 +522,35 @@ function getNet() {
 
                 initData();   //拼接散点图数据
             },
-            error : function() {
-                alert('数据获取失败!');
+            404: function () {
+                var chartClear = function () {
+                    myChartOne.clear();
+                    myChartTwo.clear();
+                    $('#myModal').modal('show');
+                    $('#myModalLabel').html('温馨提示');
+                    $("#modalText").html('对不起,没有更多相关数据.');
+                }
+                ajaxTimes++;
+                ajaxTimes == 5 ? chartClear() : initData();
+            },
+            500: function () {
+                var chartClear = function () {
+                    myChartOne.clear();
+                    myChartTwo.clear();
+                    $('#myModal').modal('show');
+                    $('#myModalLabel').html('温馨提示');
+                    $("#modalText").html('对不起,没有更多相关数据.');
+                }
+                ajaxTimes++;
+                ajaxTimes == 5 ? chartClear() : initData();
             }
-        })
+        }
+    })
 }
 
 //拼接散点图数据
 function initData() {
+    debugger
     chartData.splice(0,chartData.length);//   清空原有数据,防止chart绘制重叠
     chartType.splice(0,chartType.length);//   清空原有数据,防止chart绘制重叠
     for (var i = 0; i < tempType.length; i++) {//      具体话单业务放入二级
@@ -1210,7 +1336,7 @@ function chartTimeInit1() {
             });
 
             //加载成功
-            loadSuccess();
+            //loadSuccess();
 
             myChartOne.connect([myChartTwo]);
             myChartTwo.connect([myChartOne]);
@@ -1223,6 +1349,28 @@ function chartTimeInit1() {
             }, 200);
         }
     );
+}
+
+//双击搜索结果后,显示画像展示,并显示对应人的信息
+function showInfo(e) {
+    changeTab(2);//展开画像展示tab页
+    e.name == '努尔买买提-玉苏甫' ? $("#tabimg").attr('src','img/1.PNG') : $("#tabimg").attr('src','img/2.png');
+    for (var i = 0; i < searchRlt.length; i++) {//目前是按名字去匹配
+        if (searchRlt[i].name == e.name) {
+            $("#tabname").html(searchRlt[i].name);
+            $("#tabpinyin").html(searchRlt[i].nameSpell);
+            $("#tabcardid").html(searchRlt[i].cardId);
+            $("#tabphone").html(searchRlt[i].phoneNum);
+            $("#tabgender").html(searchRlt[i].sex == 'F' ? '男' : '女');
+            $("#tabnation").html(searchRlt[i].ethnicity);
+            $("#tabbirth").html(searchRlt[i].birDay);
+            $("#tabmarry").html(searchRlt[i].marriage);
+            $("#tabedu").html(searchRlt[i].education);
+            $("#tabjob").html(searchRlt[i].job);
+            $("#tabarea").html(searchRlt[i].adress);
+            $("#tabstate").html(searchRlt[i].state);
+        }
+    }
 }
 
 //隐藏左键菜单
@@ -1263,6 +1411,7 @@ function changeTab(tabnum) {
             $("#tab-four").slideUp(1000, function () {});
             break;
         case 2 :
+            $('#myTab li:eq(1) a').tab('show');
             $("#tab-one").slideUp(500, function () {});
             $("#tab-two").slideDown(1000, function () {});
             $("#tab-three").slideUp(1000, function () {});
@@ -1441,4 +1590,199 @@ function seniorData(e) {
     // 为echarts对象加载数据
     myChartOne.setOption(option1,true);
     myChartTwo.setOption(option2,true);
+}
+
+//搜索结果行双击事件
+function imgdblclick(e) {
+    if(myChartOne != undefined){
+        myChartOne.clear();
+        myChartTwo.clear();
+    }
+    var strPhone;//手机号
+    var strName;//姓名
+    var strPinyin;//姓名拼音
+    for (var i = 0; i < searchRlt.length; i++) {//目前是按名字去匹配
+        if (searchRlt[i].name == $.trim(e.textContent)) {
+            strPhone = searchRlt[i].phoneNum;
+            strName = searchRlt[i].name;
+            strPinyin = searchRlt[i].nameSpell;
+        }
+    }
+    var strObj = {phone: strPhone, name: strName, pinyin: strPinyin};
+    getData(strObj);
+    showInfo(strObj);//搜索结果行双击事件
+}
+
+//初始化高级检索的树
+function initTree() {
+    var defaultData = [
+        {
+            text: '类目筛选',
+            href: '#parent1',
+            tags: ['4'],
+            nodes: [
+                {
+                    text: '通联',
+                    href: '#child1',
+                    tags: ['2'],
+                    nodes: [
+                        {
+                            text: '漫出',
+                            href: '#grandchild1',
+                            tags: ['0']
+                        },
+                        {
+                            text: '短信',
+                            href: '#grandchild2',
+                            tags: ['0']
+                        },
+                        {
+                            text: '语音',
+                            href: '#grandchild2',
+                            tags: ['0']
+                        },
+                        {
+                            text: '彩信',
+                            href: '#grandchild2',
+                            tags: ['0']
+                        },
+                        {
+                            text: 'GPRS',
+                            href: '#grandchild2',
+                            tags: ['0']
+                        }
+                    ]
+                },
+                {
+                    text: '出行',
+                    href: '#child2',
+                    tags: ['0'],
+                    nodes: [
+                        {
+                            text: '飞机',
+                            href: '#grandchild2',
+                            tags: ['0']
+                        },
+                        {
+                            text: '火车',
+                            href: '#grandchild2',
+                            tags: ['0']
+                        }
+                    ]
+                },
+                {
+                    text: '住宿',
+                    href: '#grandchild2',
+                    tags: ['0']
+                },
+                {
+                    text: '上网',
+                    href: '#grandchild2',
+                    tags: ['0']
+                }
+            ]
+        }
+    ];
+
+    var arrayChild = [];
+    var $checkableTree = $('#treeview-checkable').treeview({
+        data: defaultData,
+        showIcon: false,
+        showCheckbox: true,
+        backColor: "#f5f5f5",
+        onhoverColor: "#dddddd",
+        //multiSelect: true,
+        onNodeChecked: function(event, node) {
+            if (arrayChild.length == 0) {
+                switch (node.text) {
+                    case '类目筛选' :
+                        $checkableTree.treeview('checkAll');
+                        break;
+                    case '通联' :
+                        arrayChild = ['漫出','短信','语音','彩信','GPRS'];
+                        break;
+                    case '出行' :
+                        arrayChild = ['飞机','火车'];
+                        break;
+                }
+            }
+            chechNodes();
+            $('#checkable-output').prepend('<p>' + node.text + ' was checked</p>');
+        },
+        onNodeUnchecked: function (event, node) {
+            if (arrayChild.length == 0) {
+                switch (node.text) {
+                    case '类目筛选' :
+                        $checkableTree.treeview('uncheckAll');
+                        break;
+                    case '通联' :
+                        arrayChild = ['漫出','短信','语音','彩信','GPRS'];
+                        break;
+                    case '出行' :
+                        arrayChild = ['飞机','火车'];
+                        break;
+                }
+            }
+            unchechNodes();
+            $('#checkable-output').prepend('<p>' + node.text + ' was unchecked</p>');
+        },
+        onNodeSelected: function(event, node) {
+            if (arrayChild.length == 0) {
+                switch (node.text) {
+                    case '类目筛选' :
+                        $checkableTree.treeview('checkAll');
+                        break;
+                    case '通联' :
+                        arrayChild = ['漫出','短信','语音','彩信','GPRS'];
+                        break;
+                    case '出行' :
+                        arrayChild = ['飞机','火车'];
+                        break;
+                    default :
+                        arrayChild.push(node.text);
+                        break;
+                }
+            }
+            chechNodes()
+            $('#selectable-output').prepend('<p>' + node.text + ' was selected</p>');
+        },
+        onNodeUnselected: function (event, node) {
+            if (arrayChild.length == 0) {
+                switch (node.text) {
+                    case '类目筛选' :
+                        $checkableTree.treeview('uncheckAll');
+                        break;
+                    case '通联' :
+                        arrayChild = ['漫出','短信','语音','彩信','GPRS'];
+                        break;
+                    case '出行' :
+                        arrayChild = ['飞机','火车'];
+                        break;
+                    default :
+                        arrayChild.push(node.text);
+                        break;
+                }
+            }
+            unchechNodes()
+            $('#selectable-output').prepend('<p>' + node.text + ' was unselected</p>');
+        }
+    });
+
+    var chechNodes = function () {
+        for (var i = 0; i < arrayChild.length; i++) {
+            var checkableNodes = $checkableTree.treeview('search', [ arrayChild[i], { ignoreCase: false, exactMatch: false } ]);
+            $checkableTree.treeview('checkNode', [ checkableNodes, { silent: $('#chk-check-silent').is(':checked') }]);
+            //$checkableTree.treeview('selectNode', [ $checkableTree, { silent: $('#chk-select-silent').is(':checked') }]);
+        }
+        arrayChild.splice(0,arrayChild.length);
+    };
+
+    var unchechNodes = function () {
+        for (var i = 0; i < arrayChild.length; i++) {
+            var checkableNodes = $checkableTree.treeview('search', [ arrayChild[i], { ignoreCase: false, exactMatch: false } ]);
+            $checkableTree.treeview('uncheckNode', [ checkableNodes, { silent: $('#chk-check-silent').is(':checked') }]);
+            //$checkableTree.treeview('unselectNode', [ $checkableTree, { silent: $('#chk-select-silent').is(':checked') }]);
+        }
+        arrayChild.splice(0,arrayChild.length);
+    };
 }

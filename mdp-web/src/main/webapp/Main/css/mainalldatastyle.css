@@ -1,5 +1,5 @@
 .bootstrap-select:not([class*="col-"]):not([class*="form-control"]):not(.input-group-btn) {
-    width: auto;
+    width: 240px;
 }
 
 .right-hr {
@@ -46,4 +46,8 @@
 
 .body {
     background-color: rgba(135,206,235,0.1);
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    height: 100%;
 }

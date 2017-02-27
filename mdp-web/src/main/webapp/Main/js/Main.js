@@ -87,6 +87,7 @@ function changeTab(tabnum) {
             $("#childTabOne").slideUp(800, function () {
             });
             $("#childTabTwo").slideDown(800, function () {
+                //alldata.window.formInit();
                 //document.getElementById("childTabTwo").style.visibility = '';
             });
             $("#childTabThree").slideUp(800, function () {

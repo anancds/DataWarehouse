@@ -3996,13 +3996,13 @@ textarea.input-group-sm > .input-group-btn > .btn {
 }
 
 .nav .caret {
-  border-top-color: #428bca;
-  border-bottom-color: #428bca;
+  border-top-color: #1b4f96;
+  border-bottom-color: #1b4f96;
 }
 
 .nav a:hover .caret {
-  border-top-color: #2a6496;
-  border-bottom-color: #2a6496;
+  border-top-color: #1e6d96;
+  border-bottom-color: #1e6d96;
 }
 
 .nav-tabs .dropdown-menu {
@@ -5324,7 +5324,7 @@ a.list-group-item:focus {
 }
 
 .panel-body {
-  padding: 15px;
+  padding: 15px 15px 15px 15px;
 }
 
 .panel-body:before,

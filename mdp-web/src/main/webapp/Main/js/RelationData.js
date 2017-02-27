@@ -92,7 +92,7 @@ function dataControl() {
 function chartRelationData(num) {
     var msgId;
     num == 1 ? msgId = 24 : msgId = 1;
-    var xhrurl = 'http://127.0.0.1:8100/service/relationship/ids-hierarchy?ids='+24+'&hierarchy=1';
+    var xhrurl = 'http://127.0.0.1:8100/service/relationship/ids-hierarchy?ids='+1+'&hierarchy=1';
     $.ajax(
         {
             type: 'get',

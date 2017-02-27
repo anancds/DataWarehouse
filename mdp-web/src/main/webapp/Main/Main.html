@@ -8,71 +8,6 @@
     <link rel="stylesheet" href="../css/jquery-confirm.min.css">
     <link rel="stylesheet" href="../css/jquery.loadmask.css">
 
-    <style>
-        .burger {
-            position: absolute;
-            right: 0;
-            top: 100%;
-            width: 50px;
-            height: 50px;
-            background: #428bca;
-            cursor: pointer;
-            display: -webkit-box;
-            display: -webkit-flex;
-            display: -ms-flexbox;
-            display: flex;
-            -webkit-box-align: center;
-            -webkit-align-items: center;
-            -ms-flex-align: center;
-            align-items: center;
-            -webkit-box-pack: center;
-            -webkit-justify-content: center;
-            -ms-flex-pack: center;
-            justify-content: center;
-        }
-        .burger__patty {
-            position: relative;
-            width: 60%;
-            height: 2px;
-            background: #fff;
-            -webkit-transition: all 0.45s cubic-bezier(0.23, 1, 0.32, 1);
-            transition: all 0.45s cubic-bezier(0.23, 1, 0.32, 1);
-        }
-        .burger__patty:before,
-        .burger__patty:after {
-            will-change: transform;
-            content: "";
-            position: absolute;
-            left: 0;
-            background: #fff;
-            height: 2px;
-            width: 100%;
-            -webkit-transition: all 0.45s cubic-bezier(0.23, 1, 0.32, 1);
-            transition: all 0.45s cubic-bezier(0.23, 1, 0.32, 1);
-        }
-        .burger__patty:before {
-            top: -10px;
-        }
-        .burger__patty:after {
-            top: 10px;
-        }
-        .burger--close .burger__patty {
-            -webkit-transform: rotate(45deg);
-            -ms-transform: rotate(45deg);
-            transform: rotate(45deg);
-        }
-        .burger--close .burger__patty:before {
-            -webkit-transform: rotate(-90deg) translate(-9px, 0);
-            -ms-transform: rotate(-90deg) translate(-9px, 0);
-            transform: rotate(-90deg) translate(-9px, 0);
-        }
-        .burger--close .burger__patty:after {
-            opacity: 0;
-            -webkit-transform: scaleX(0);
-            -ms-transform: scaleX(0);
-            transform: scaleX(0);
-        }
-    </style>
 
     <script src="../js/jquery-3.1.1.js"></script>
     <script src="../js/jquery-confirm.min.js"></script>
@@ -167,10 +102,10 @@
                 </div>
             </div>
             <ul id="chartTabs" class="nav nav-tabs">
-                <li role="presentation" class="active">
+                <li role="presentation" class="active" style="display: none">
                     <a href="#person-list-detail" role="tab" id="person-list" data-toggle="tab" aria-controls="person-list-detail" onclick="changeTab(1)">列表</a>
                 </li>
-                <li role="presentation">
+                <li role="presentation" class="active">
                     <a href="#person-all-detail" role="tab" id="person-all" data-toggle="tab" aria-controls="person-all-detail" onclick="changeTab(2)">全量</a>
                 </li>
                 <li role="presentation">
@@ -184,7 +119,7 @@
                 </li>
             </ul>
 
-            <div id="childTabOne">
+            <div id="childTabOne" style="display: none">
                 <div id="0">
                     <table class="table table-hover" style="table-layout: fixed">
                         <thead>
@@ -226,7 +161,7 @@
                 </div>
             </div>          <!--列表-->
 
-            <div id="childTabTwo" style="display: none;">    <!--全量-->
+            <div id="childTabTwo">    <!--全量-->
                 <iframe id="mainalladta" name="alldata" src="MainAllData.html" frameborder="0" style="width: 100%;"></iframe>
             </div>
 
@@ -246,29 +181,6 @@
                     <br> 详细信息</div>
             </div>
 
-            <!--<div id="chartTabContent" class="tab-content">
-                <div role="tabpanel" class="tab-pane fade in active" id="person-list-detail" aria-labelledby="person-list">    &lt;!&ndash;列表&ndash;&gt;
-
-                </div>
-                <div role="tabpanel" class="tab-pane fade" id="person-all-detail" aria-labelledby="person-all">    &lt;!&ndash;全量&ndash;&gt;
-                    &lt;!&ndash;<div id="chartAllData" style="height: 750px;width: 80%;float: left;border:1px solid #96c2f1;"></div>
-                    <div style="height: 750px;width: 20%;float: left;border:1px solid #96c2f1;font-size: 50px;">操作 <br> 数据筛选
-                        <br> 详细信息
-                    </div>&ndash;&gt;
-                </div>
-                <div role="tabpanel" class="tab-pane fade" id="person-count-detail" aria-labelledby="person-count">    &lt;!&ndash;关联&ndash;&gt;
-                    &lt;!&ndash;<div id="chartCountData" style="height: 750px;width: 80%;float: left;border:1px solid #96c2f1;"></div>&ndash;&gt;
-                    &lt;!&ndash;<div style="height: 750px;width: 20%;float: left;border:1px solid #96c2f1;font-size: 50px;">操作 <br> 数据筛选&ndash;&gt;
-                        &lt;!&ndash;<br> 详细信息</div>&ndash;&gt;
-                </div>
-                <div role="tabpanel" class="tab-pane fade" id="person-relation-detail" aria-labelledby="person-relation">    &lt;!&ndash;地图&ndash;&gt;
-
-                </div>
-                <div role="tabpanel" class="tab-pane fade" id="person-rule-detail" aria-labelledby="person-rule">    &lt;!&ndash;规律&ndash;&gt;
-
-                </div>
-            </div>-->
-
         </div>
         <div role="tabpanel" class="tab-pane fade" id="dropdown1" aria-labelledBy="dropdown1-tab">
             <p>Etsy mixtape wayfarers, ethical wes anderson tofu before they sold out mcsweeney's organic lomo retro fanny pack lo-fi farm-to-table readymade. Messenger bag gentrify pitchfork tattooed craft beer, iphone skateboard locavore carles etsy salvia banksy hoodie helvetica. DIY synth PBR banksy irony. Leggings gentrify squid 8-bit cred pitchfork. Williamsburg banh mi whatever gluten-free, carles pitchfork biodiesel fixie etsy retro mlkshk vice blog. Scenester cred you probably haven't heard of them, vinyl craft beer blog stumptown. Pitchfork sustainable tofu synth chambray yr.</p>
@@ -285,10 +197,10 @@
 
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title" id="myModalLabel">检索</h4>
+                <h4 class="modal-title" id="myModalLabel">提示</h4>
             </div>
             <div class="modal-body">
-                in
+                <input id="modalText" type="text" value="">
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
