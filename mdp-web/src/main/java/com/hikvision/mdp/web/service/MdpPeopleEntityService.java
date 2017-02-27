@@ -7,6 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.net.URLDecoder;
 import java.util.List;
 
 /**
@@ -18,7 +19,7 @@ public class MdpPeopleEntityService {
     @Autowired
     private MdpPeopleEntityMapper mdpPeopleEntityMapper;
 
-    public List<MdpPeopleEntity> queryMdpPeopleEntityByLike(MdpPeopleEntity mdpPeopleEntity){
+    public List<MdpPeopleEntity> queryMdpPeopleEntityByLike(MdpPeopleEntity mdpPeopleEntity) throws  Exception{
 
         Example example=new Example(MdpPeopleEntity.class);
 
@@ -28,17 +29,17 @@ public class MdpPeopleEntityService {
         }
 
         if(StringUtils.isNotEmpty(mdpPeopleEntity.getName())){
-            example.or().andLike("name","%"+mdpPeopleEntity.getName()+"%");
+            example.createCriteria().andLike("name","%"+ URLDecoder.decode(mdpPeopleEntity.getName(),"utf-8")+"%");
         }
         if(StringUtils.isNotEmpty(mdpPeopleEntity.getCardId())){
-            example.or().andLike("cardId","%"+mdpPeopleEntity.getCardId()+"%");
+            example.createCriteria().andLike("cardId","%"+mdpPeopleEntity.getCardId()+"%");
         }
         if(StringUtils.isNotEmpty(mdpPeopleEntity.getPhoneNum())){
-            example.or().andLike("phoneNum","%"+mdpPeopleEntity.getPhoneNum()+"%");
+            example.createCriteria().andLike("phoneNum","%"+mdpPeopleEntity.getPhoneNum()+"%");
         }
 
         if(StringUtils.isNotEmpty(mdpPeopleEntity.getSex())){
-            example.or().andLike("sex","%"+mdpPeopleEntity.getSex()+"%");
+            example.createCriteria().andLike("sex","%"+mdpPeopleEntity.getSex()+"%");
         }
 
        mdpPeopleEntities= this.mdpPeopleEntityMapper.selectByExample(example);
