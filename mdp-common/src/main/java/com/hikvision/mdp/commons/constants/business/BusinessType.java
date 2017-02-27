@@ -22,7 +22,7 @@ public enum BusinessType {
   HIGHWAY_VEHICLE(0, "/service/1163317", HighwayVehicles.class),
   RAILWAY_SECURITY_CHECK(1, "", Object.class),
   TEMPORARY_RESIDENT(2, "", Object.class),
-  CELL_PHONE(3, "", Object.class);
+  CELL_PHONE(3, "", Cellphone.class);
 
   Class<?> obj;
   private int code;

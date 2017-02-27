@@ -62,25 +62,27 @@ public class ParseETLArguments {
             .desc("The Number of Thread to generator data!").build())
         .addOption(builder("h").hasArg(false).desc("usage information").longOpt("help").build())
         .addOption(
-            builder("v").hasArg(false).desc("display Data Generator version and jvm version!")
+            builder("v").hasArg(false).desc("display ETL version and jvm version!")
                 .build())
         .addOption(
-            builder("p").hasArg(false).argName("Path").desc("The path used to save data!").build())
-        .addOption(builder("t").hasArg(false).argName("TotalNumber").desc("Total number of indexes")
+            builder("p").hasArg(true).argName("Path").desc("The path used to save data!").build())
+        .addOption(builder("t").hasArg(true).argName("TotalNumber").desc("Total number of indexes")
             .build())
-        .addOption(builder("i").hasArg(false).argName("IntervalTime")
+        .addOption(builder("i").hasArg(true).argName("IntervalTime")
             .desc("The Interval time between every http request").build())
         .addOption(
-            builder("s").hasArg(false).argName("PageSize").desc("Page Size of result").build())
-        .addOption(builder("S").hasArg(false).argName("ServerVersion")
+            builder("s").hasArg(true).argName("PageSize").desc("Page Size of result").build())
+        .addOption(builder("S").hasArg(true).argName("ServerVersion")
             .desc("The version of server,1.0 or 2.0").build())
         .addOption(
-            builder("u").hasArg(false).argName("URL").desc("The URL of the server!").build());
+            builder("u").hasArg(true).argName("URL").desc("The URL of the server!").build())
+        .addOption(builder("d").hasArg(true).argName("IsDebug")
+            .desc("Is or not debug mode! true or false").build());
   }
 
   private static boolean process(CommandLine line) {
     if (line.hasOption('b')) {
-      EtlConstants.business_name = Integer.valueOf(line.getOptionValue('b'));
+      EtlConstants.BUSINESS_NAME = Integer.valueOf(line.getOptionValue('b'));
     }
 
     if (line.hasOption('t')) {
@@ -101,6 +103,10 @@ public class ParseETLArguments {
 
     if (line.hasOption('u')) {
       EtlConstants.URL = line.getOptionValue('u');
+    }
+
+    if (line.hasOption('d')) {
+      EtlConstants.IS_DEBUG = Boolean.parseBoolean(line.getOptionValue('d'));
     }
 
     return true;

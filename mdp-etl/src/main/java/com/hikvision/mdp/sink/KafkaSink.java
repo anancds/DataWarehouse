@@ -57,6 +57,7 @@ public class KafkaSink extends AbstractSink implements Configurable {
         Record record = (Record) ObjectByteConvertUtils.ByteToObject(event.getBody());
         Schema schema = schemas.get("hik_mdp_cellphone_schema");
         record.setSchema(schema);
+//        record.setKey("".getBytes());
         flag = client.sendSync(record);
         if (flag) {
           transaction.commit();

@@ -33,12 +33,15 @@ public class EtlConstants {
   //有几个需要通过命令行获取的，csv路径和文件名字，业务类型，线程数，http请求暂停时间，服务版本号，服务地址，每页显示信息数
   //数据保存路径还需要根据业务类型用不同的目录来区分
 
-  public static String CSV_PATH = "D:\\cds.csv";
+  public static String PATH = "D:\\";
 
   // TODO:  通过命令行获取
-  public static int business_name = 1;
+  public static int BUSINESS_NAME = 1;
 
   //http请求之间的暂停时间
   public static long INTERVAL_TIME = 0L;
+
+  //是否是调试模式
+  public static boolean IS_DEBUG = false;
 
 }

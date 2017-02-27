@@ -567,4 +567,8 @@ public class MdpHttpClient {
       CommonUtils.exception(e);
     }
   }
+
+  public static void main(String[] args) throws HttpProcessException {
+    System.out.println(MdpHttpClient.get(HttpConfig.custom().url("http://10.16.132.101:8080/service/hd/1.0")));
+  }
 }

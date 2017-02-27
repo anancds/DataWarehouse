@@ -9,10 +9,18 @@ package com.hikvision.mdp.common;
 
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SequenceWriter;
+import com.hikvision.bigdata.hbp.common.data.record.Record;
+import com.hikvision.bigdata.hbp.common.data.schema.Schema;
+import com.hikvision.bigdata.hbp.common.utils.Bytes;
+import com.hikvision.bigdata.hbp.datacollectors.api.connector.impl.source.ClientSourceConnector;
 import com.hikvision.mdp.EtlConstants;
+import com.hikvision.mdp.commons.constants.MDPConstants;
 import com.hikvision.mdp.commons.constants.business.BusinessType;
 import com.hikvision.mdp.commons.jackson.MapperType;
 import com.hikvision.mdp.commons.jackson.ObjectMapperFactory;
+import com.hikvision.mdp.commons.kafka.ConnectorPool;
+import com.hikvision.mdp.commons.parser.YmlParse;
+import com.hikvision.mdp.datagenerator.gen.CellPhoneTicketGen;
 import iop.Oauth;
 import iop.OpenApi;
 import iop.http.AccessToken;
@@ -26,6 +34,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -44,12 +53,22 @@ public class CommonUtils {
   private static SequenceWriter writer = null;
   private static OpenApi api = new OpenApi();//2.创建调用对象
 
+  private static Map<String, Schema> schemas;
+
+  private static ClientSourceConnector CellPhoneClient;
+
   // TODO: 类加载时是否会出错
   static {
-    Class<?> clazz = BusinessType.values()[EtlConstants.business_name].getObj();
+    Class<?> clazz = BusinessType.values()[EtlConstants.BUSINESS_NAME].getObj();
     try {
+      schemas = YmlParse.getSchemas();
+      CellPhoneClient = ConnectorPool
+          .getConnector(YmlParse.getKafkaAddress(MDPConstants.Collector.PIPELINE_INFO_HIK_MDP_DATA),
+              YmlParse.getTopic(MDPConstants.Collector.PIPELINE_INFO_HIK_MDP_DATA, 0));
       ObjectWriter objectWriter = ObjectMapperFactory.getObjectWriter(MapperType.CSV, clazz);
-      writer = objectWriter.writeValues(new File(EtlConstants.CSV_PATH));
+      String path_csv =
+          EtlConstants.PATH + clazz.getSimpleName() + "\\" + clazz.getSimpleName() + ".csv";
+      writer = objectWriter.writeValues(new File(path_csv));
     } catch (IOException e) {
       logger.error("Get object writer failed!", e);
     }
@@ -96,26 +115,44 @@ public class CommonUtils {
    * @return 数据集合，每条数据都是值的集合
    */
   @SuppressWarnings("unchecked")
-  public static List<List<String>> getQueryResult(String accessTokenString,
+  public static List<Record> getQueryResult(String accessTokenString,
       List<PostParameter> list)
       throws IopException, JSONException {
     //数据查询服务调用参数说明：(服务上下文, 服务版本, 请求方式, 请求参数)
     //返回结果为异步查询任务号时，该任务正在执行，可通过taskId 在aynQurey.java中查询结果或任务执行情况
 
-    List<List<String>> data = new ArrayList<>();
     api.client.setToken(accessTokenString);//6.传递上一步获取到的访问令牌参数
-    String context = BusinessType.values()[EtlConstants.business_name].getService_context();
+    String context = BusinessType.values()[EtlConstants.BUSINESS_NAME].getService_context();
     JSONObject result_get = api.sendCommand(context, EtlConstants.SERVICE_VERSION, "GET", list);
-    JSONArray array = result_get.getJSONArray("data");
+    JSONArray array = result_get.getJSONObject("result").getJSONArray("data");
+
+    List<Record> records = new ArrayList<>();
+    Schema schema = schemas.get("hik_mdp_cellphone_schema");
+    Record record = null;
     for (int i = 0; i < array.length(); i++) {
       if (logger.isDebugEnabled()) {
         // TODO: 这样显示是否可以，需要调试
         logger.debug("The " + i + " data is: " + array.get(i).toString());
       }
       // TODO: checked!
-      data.add((List<String>) ((HashMap) array.get(i)).values());
+      Map<String, String> data = ((HashMap)array.get(i));
+      String rowKey = data.get("qssj") + "_" + i;
+      record = new Record(Bytes.toBytes(rowKey), schema)
+          .field("yys", data.get("yys")).field("ywlx", data.get("ywlx"))
+          .field("qssj", data.get("qssj")).field("fwhm", data.get("fwhm"))
+          .field("kh", data.get("kh")).field("sbhm", data.get("sbhm"))
+          .field("dfhm", data.get("dfhm"))
+          .field("dfhmgsd", data.get("dfhmgsd"))
+          .field("thsc", data.get("thsc")).field("hjlx", data.get("hjlx"))
+          .field("lac", data.get("lac")).field("cid", data.get("cid"))
+          .field("fwhmjz", data.get("fwhmjz"))
+          .field("msc", data.get("msc")).field("cs", data.get("cs"))
+          .field("dsfhm", data.get("dsfhm"))
+          .field("dsfhmgsd", data.get("dsfhmgsd"));
+
+      records.add(record);
     }
-    return data;
+    return records;
   }
 
   /**
@@ -134,16 +171,17 @@ public class CommonUtils {
   }
 
   public static void sendData(String accessTokenString) throws IopException, JSONException {
+    //循环时需要判断获取的数据，如果数据的size > 0 才需要继续，否则退出。
     long index;
     List<PostParameter> list;
-    List<List<String>> result;
+    List<Record> result;
     for (index = 1; index < EtlConstants.TOTAL_INDEX; index++) {
       list = CommonUtils.getParam(String.valueOf(index), EtlConstants.PAGE_SIZE);
 
       result = CommonUtils.getQueryResult(accessTokenString, list);
 
       if (result.size() != 0) {
-        CommonUtils.sendDataToCSV(result);
+        CellPhoneClient.send(result);//kafka
       } else {
         break;
       }

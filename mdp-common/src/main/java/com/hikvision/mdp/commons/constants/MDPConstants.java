@@ -122,7 +122,7 @@ public class MDPConstants {
 
   public final class Collector {
 
-    public static final String PIPELINE_INFO_HIK_MDP_DATA = "hik_mdp_data.yml";
+    public static final String PIPELINE_INFO_HIK_MDP_DATA = "hik_mdp_data_v66.yml";
     public static final String UNDERLINE = "_";
     /**
      * 数据采集配置目录环境变量名称
